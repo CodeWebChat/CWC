@@ -1,12 +1,12 @@
 {
   "name": "browser",
   "scripts": {
-    "build": "webpack --mode production && ts-node scripts/create-firefox-build.ts && ts-node scripts/create-zip-archives.ts",
+    "build": "tsc --noEmit && node scripts/build.mjs && ts-node scripts/create-firefox-build.ts && ts-node scripts/create-zip-archives.ts",
+    "watch": "node scripts/build.mjs --watch",
+    "typecheck": "tsc --noEmit",
     "bump": "node scripts/bump.js"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "0.6.1",
-    "@svgr/webpack": "8.1.0",
     "@types/archiver": "6.0.3",
     "@types/node": "20.x",
     "@types/react": "18.2.60",
@@ -14,25 +14,14 @@
     "@types/webextension-polyfill": "0.12.4",
     "archiver": "6.0.1",
     "baseline-browser-mapping": "2.11.35",
-    "clean-webpack-plugin": "4.0.0",
-    "copy-webpack-plugin": "12.0.2",
-    "css-loader": "6.8.1",
-    "mini-css-extract-plugin": "2.9.4",
-    "react-refresh": "0.17.0",
     "sass": "1.93.2",
-    "sass-loader": "13.3.3",
-    "style-loader": "3.3.3",
-    "ts-loader": "9.5.4",
     "ts-node": "10.9.2",
-    "webextension-polyfill": "0.12.0",
-    "webpack": "5.112.2",
-    "webpack-cli": "5.1.4",
-    "webpack-dev-server": "5.2.7"
+    "vite": "8.3.6",
+    "webextension-polyfill": "0.12.0"
   },
   "dependencies": {
     "classnames": "2.5.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "tsconfig-paths-webpack-plugin": "4.2.0"
+    "react-dom": "18.2.0"
   }
 }
