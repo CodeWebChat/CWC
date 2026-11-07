@@ -525,6 +525,27 @@ foreach ($i in $indices) {
 
     $ok = Invoke-Step "$msg_step_install $($editor.Name)..." {
         & $editor.Cmd --install-extension $vsixFile.FullName --force *>$null
+
+        # Migrate global storage from old extension ID to new one
+        $oldId = "robertpiosik.gemini-coder"
+        $newId = "codewebchat.cwc"
+        $appData = $env:APPDATA
+        if (Test-Path $appData) {
+            foreach ($appDir in Get-ChildItem -Path $appData -Directory) {
+                $oldPath = Join-Path $appDir.FullName "User\globalStorage\$oldId"
+                $newPath = Join-Path $appDir.FullName "User\globalStorage\$newId"
+                if (Test-Path $oldPath) {
+                    if (-not (Test-Path $newPath)) {
+                        New-Item -ItemType Directory -Path $newPath -Force | Out-Null
+                    }
+                    Copy-Item -Path "$oldPath\*" -Destination $newPath -Recurse -Force -ErrorAction SilentlyContinue
+                    Remove-Item -Path $oldPath -Recurse -Force -ErrorAction SilentlyContinue
+                }
+            }
+        }
+        
+        # Uninstall old extension
+        & $editor.Cmd --uninstall-extension $oldId *>$null
     }
     
     Write-Host ""
