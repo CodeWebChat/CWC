@@ -311,9 +311,6 @@ importers:
       axios:
         specifier: 1.21.0
         version: 1.21.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      bufferutil:
-        specifier: 4.0.9
-        version: 4.0.9
       classnames:
         specifier: 2.5.1
         version: 2.5.1
@@ -362,9 +359,6 @@ importers:
       ui:
         specifier: workspace:*
         version: link:../../packages/ui
-      utf-8-validate:
-        specifier: 6.0.5
-        version: 6.0.5
       ws:
         specifier: 8.21.3
         version: 8.21.3(bufferutil@4.0.9)(utf-8-validate@6.0.5)
@@ -10763,6 +10757,7 @@ snapshots:
   bufferutil@4.0.9:
     dependencies:
       node-gyp-build: 4.8.4
+    optional: true
 
   bundle-name@4.1.1:
     dependencies:
@@ -13652,7 +13647,8 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  node-gyp-build@4.8.4: {}
+  node-gyp-build@4.8.4:
+    optional: true
 
   node-int64@0.4.0: {}
 
@@ -15387,6 +15383,7 @@ snapshots:
   utf-8-validate@6.0.5:
     dependencies:
       node-gyp-build: 4.8.4
+    optional: true
 
   util-deprecate@1.0.2: {}
 

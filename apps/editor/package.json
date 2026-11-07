@@ -1388,7 +1388,6 @@
     "@svgr/webpack": "8.1.0",
     "@vscode/codicons": "0.0.46-38",
     "axios": "1.21.0",
-    "bufferutil": "4.0.9",
     "classnames": "2.5.1",
     "dayjs": "1.11.10",
     "diff": "8.0.4",
@@ -1405,7 +1404,6 @@
     "rimraf": "6.0.1",
     "simplebar-react": "3.3.1",
     "ui": "workspace:*",
-    "utf-8-validate": "6.0.5",
     "ws": "8.21.3"
   }
 }
