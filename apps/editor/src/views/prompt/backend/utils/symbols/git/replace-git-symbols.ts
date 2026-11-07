@@ -6,6 +6,7 @@ import { AsciiTree } from '@/utils/ascii-tree/ascii-tree'
 import { Logger } from '@shared/utils/logger'
 import { t } from '@/i18n'
 import { SymbolCacheManager } from '../symbol-cache'
+import { IGNORED_LOCK_FILES } from '@/constants/ignored-lock-files'
 
 const patch_diff_paths = (
   diff_text: string,
@@ -94,6 +95,11 @@ export const build_changes_markdown = (params: {
     }
 
     if (file_path) {
+      const file_name = file_path.split('/').pop()
+      if (file_name && IGNORED_LOCK_FILES.includes(file_name)) {
+        continue
+      }
+
       const display_path = params.path_prefix
         ? `${params.path_prefix}/${file_path}`
         : file_path
@@ -538,6 +544,11 @@ export const build_commit_changes_markdown = (params: {
     }
 
     if (file_path) {
+      const file_name = file_path.split('/').pop()
+      if (file_name && IGNORED_LOCK_FILES.includes(file_name)) {
+        continue
+      }
+
       const display_path = params.path_prefix
         ? `${params.path_prefix}/${file_path}`
         : file_path
