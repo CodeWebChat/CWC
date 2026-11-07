@@ -2,7 +2,7 @@
   "name": "cwc",
   "displayName": "Code Web Chat",
   "description": "Markdown prompts for chatbots, APIs, and CLIs with seamless integration",
-  "version": "2026.1107.399",
+  "version": "2026.1108.400",
   "scripts": {
     "build": "vsce package --no-dependencies",
     "vscode:prepublish": "npm run compile",
