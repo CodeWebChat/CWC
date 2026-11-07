@@ -2,8 +2,6 @@ import * as vscode from 'vscode'
 import { OpenWebsiteMessage } from '../../types/messages'
 import * as fs from 'fs'
 import { marked } from 'marked'
-import { JSDOM } from 'jsdom'
-import createDOMPurify from 'dompurify'
 import { PromptViewProvider } from '../prompt-view-provider'
 import { PersistentPromptStorage } from '../utils/persistent-prompt-storage'
 
@@ -47,10 +45,7 @@ export const handle_open_website = async (
 
   if (id && fs.existsSync(file_path)) {
     const markdown = fs.readFileSync(file_path, 'utf8')
-    const raw_html = await marked.parse(markdown)
-    const window = new JSDOM('').window
-    const DOMPurify = createDOMPurify(window as any)
-    const html = DOMPurify.sanitize(raw_html)
+    const html = await marked.parse(markdown)
 
     const webview_panel = vscode.window.createWebviewPanel(
       'websitePreview',

@@ -1,8 +1,12 @@
+const start_time = Date.now()
+console.log('Building...')
+
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
-import { build } from 'vite'
+
+const { build } = await import('vite')
 
 const app_dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -30,8 +34,6 @@ const clean = () => {
 }
 
 const run = async () => {
-  const start_time = Date.now()
-  console.log('Building...')
   clean()
 
   if (is_watch) {

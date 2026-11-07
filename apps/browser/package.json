@@ -1,7 +1,7 @@
 {
   "name": "browser",
   "scripts": {
-    "build": "tsc --noEmit && node scripts/build.mjs && ts-node scripts/create-firefox-build.ts && ts-node scripts/create-zip-archives.ts",
+    "build": "tsc --noEmit && node scripts/build.mjs && node scripts/create-firefox-build.ts && node scripts/create-zip-archives.ts",
     "watch": "node scripts/build.mjs --watch",
     "typecheck": "tsc --noEmit",
     "bump": "node scripts/bump.js"
@@ -15,7 +15,6 @@
     "archiver": "6.0.2",
     "baseline-browser-mapping": "2.11.35",
     "sass": "1.93.3",
-    "ts-node": "10.9.2",
     "vite": "8.3.6",
     "webextension-polyfill": "0.12.0"
   },

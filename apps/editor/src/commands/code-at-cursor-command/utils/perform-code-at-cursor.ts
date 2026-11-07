@@ -1,6 +1,5 @@
 import * as vscode from 'vscode'
 import axios from 'axios'
-import he from 'he'
 import { send_llm_message } from '../../../utils/send-llm-message'
 import {
   code_at_cursor_output_formatting,
@@ -422,7 +421,7 @@ export const perform_code_at_cursor = async (params: {
       }
     }
 
-    let decoded_completion = he.decode(extracted_content.trim())
+    let decoded_completion = extracted_content.trim()
 
     if (decoded_completion.startsWith('```')) {
       const first_newline = decoded_completion.indexOf('\n')
@@ -612,7 +611,7 @@ export const perform_code_at_cursor = async (params: {
             extracted_content = remaining_text
           }
 
-          let decoded_completion = he.decode(extracted_content.trim())
+          let decoded_completion = extracted_content.trim()
 
           if (decoded_completion.startsWith('```')) {
             const first_newline = decoded_completion.indexOf('\n')

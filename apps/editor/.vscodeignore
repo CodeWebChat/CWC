@@ -1,5 +1,9 @@
 src
 .gitignore
 tsconfig.json
-__mocks__
 jest.config.js
+.env*
+tsconfig.tsbuildinfo
+vite.config.ts
+scripts
+package*

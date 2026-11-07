@@ -1,12 +1,10 @@
 import axios from 'axios'
-import { JSDOM } from 'jsdom'
+import { parseHTML } from 'linkedom'
 import * as dns from 'dns'
 import * as http from 'http'
 import * as https from 'https'
 import { Readability, isProbablyReaderable } from '@mozilla/readability'
-import TurndownServiceJoplin from '@joplin/turndown'
-import * as turndownPluginGfm from '@joplin/turndown-plugin-gfm'
-import type TurndownService from 'turndown'
+import TurndownService from 'turndown'
 
 const remove_markdown_images = (text: string) => {
   const without_images = text.replace(/!\[([^\]]*)\]\(([^)]*)\)/g, '')
@@ -14,10 +12,9 @@ const remove_markdown_images = (text: string) => {
 }
 
 const create_turndown_service = () => {
-  const turndown_service: TurndownService = new TurndownServiceJoplin({
+  const turndown_service = new TurndownService({
     codeBlockStyle: 'fenced'
   })
-  turndown_service.use(turndownPluginGfm.gfm)
   turndown_service.addRule('fencedCodeBlock', {
     filter: (node: any, options: any) => {
       return (
@@ -189,8 +186,10 @@ export const fetch_website = async (
 
     if (response.status === 200 && typeof response.data === 'string') {
       const html = response.data
-      const dom = new JSDOM(html, { url })
-      const doc = dom.window.document
+      const { document: doc } = parseHTML(html)
+      try {
+        Object.defineProperty(doc, 'documentURI', { value: url })
+      } catch {}
 
       doc.querySelectorAll('pre').forEach((pre) => {
         const code = pre.querySelector('code')
@@ -229,15 +228,17 @@ export const fetch_website = async (
         }
       })
 
-      if (isProbablyReaderable(doc)) {
-        const reader = new Readability(doc, { keepClasses: true })
+      if (isProbablyReaderable(doc as any)) {
+        const reader = new Readability(doc as any, { keepClasses: true })
         const article = reader.parse()
 
         if (article && article.content) {
           const turndown_service = create_turndown_service()
-          const article_dom = new JSDOM(article.content)
+          const { document: article_doc } = parseHTML(
+            `<!DOCTYPE html><html><body>${article.content}</body></html>`
+          )
           let content = turndown_service.turndown(
-            article_dom.window.document.body
+            (article_doc.body || article_doc.documentElement) as any
           )
           content = remove_markdown_images(content)
 

@@ -1,7 +1,11 @@
+const start_time = Date.now()
+console.log('Building...')
+
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { build } from 'vite'
+
+const { build } = await import('vite')
 
 const app_dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -12,9 +16,6 @@ const mode = is_watch ? 'development' : 'production'
 process.env.NODE_ENV = mode
 
 const run = async () => {
-  const start_time = Date.now()
-  console.log('Building...')
-
   if (!is_watch) {
     fs.rmSync(path.join(app_dir, 'dist'), { recursive: true, force: true })
   }
