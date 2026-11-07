@@ -12,6 +12,7 @@ const mode = is_watch ? 'development' : 'production'
 process.env.NODE_ENV = mode
 
 const run = async () => {
+  const start_time = Date.now()
   console.log('Building...')
 
   if (!is_watch) {
@@ -21,7 +22,8 @@ const run = async () => {
   const pending = new Set(targets)
   const finish = (target) => {
     if (pending.delete(target) && pending.size == 0) {
-      console.log('Done.')
+      const time = ((Date.now() - start_time) / 1000).toFixed(1)
+      console.log(`Finished in ${time}s.`)
     }
   }
 
