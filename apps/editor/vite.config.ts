@@ -2,7 +2,6 @@ import * as crypto from 'crypto'
 import * as fs from 'fs'
 import * as path from 'path'
 import { defineConfig, type Plugin, type UserConfig } from 'vite'
-import svgr from 'vite-plugin-svgr'
 
 const node_targets: Record<string, string> = {
   extension: 'src/extension.ts',
@@ -53,6 +52,56 @@ const copy_readme = (): Plugin => {
     }
   }
 }
+
+const svg_as_component = (): Plugin => ({
+  name: 'svg-as-component',
+  enforce: 'pre',
+  load(id) {
+    const file = id.split('?')[0]
+    if (!file.endsWith('.svg')) return null
+
+    const source = fs
+      .readFileSync(file, 'utf8')
+      .replace(/<\?xml[\s\S]*?\?>/g, '')
+      .replace(/<!DOCTYPE[\s\S]*?>/gi, '')
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .trim()
+
+    const match = source.match(/^<svg([\s\S]*?)>([\s\S]*)<\/svg>$/i)
+    if (!match) {
+      this.error(`Unsupported SVG structure: ${file}`)
+    }
+
+    const attributes: Record<string, string> = {}
+    const attribute_regex = /([^\s=]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g
+    let attribute_match: RegExpExecArray | null
+    while ((attribute_match = attribute_regex.exec(match![1])) !== null) {
+      const name = attribute_match[1]
+      if (name == 'style') continue // inline style strings are not valid React props
+      const react_name =
+        name == 'class'
+          ? 'className'
+          : name.replace(/[-:](\w)/g, (_, char: string) => char.toUpperCase())
+      attributes[react_name] = attribute_match[2] ?? attribute_match[3]
+    }
+
+    return {
+      code: [
+        `import { createElement } from 'react'`,
+        `const attributes = ${JSON.stringify(attributes)}`,
+        `const html = ${JSON.stringify(match![2])}`,
+        `const SvgComponent = (props) =>`,
+        `  createElement('svg', {`,
+        `    ...attributes,`,
+        `    ...props,`,
+        `    dangerouslySetInnerHTML: { __html: html }`,
+        `  })`,
+        `export default SvgComponent`
+      ].join('\n'),
+      map: null
+    }
+  }
+})
 
 const generate_scoped_name = (local_name: string, filename: string) => {
   const file = filename.split('?')[0]
@@ -111,12 +160,7 @@ const create_view_config = (
   is_production: boolean
 ): UserConfig => ({
   publicDir: false,
-  plugins: [
-    svgr({
-      include: '**/*.svg',
-      svgrOptions: { exportType: 'default' }
-    })
-  ],
+  plugins: [svg_as_component()],
   define: {
     'process.env.NODE_ENV': JSON.stringify(
       is_production ? 'production' : 'development'
