@@ -568,14 +568,6 @@
           "when": "false"
         },
         {
-          "command": "codeWebChat.searchFiles",
-          "when": "false"
-        },
-        {
-          "command": "codeWebChat.searchSelectedFiles",
-          "when": "false"
-        },
-        {
           "command": "codeWebChat.searchFilesWorkspaceAction",
           "when": "false"
         },
