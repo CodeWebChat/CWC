@@ -555,32 +555,6 @@ for i in "${indices[@]}"; do
     echo ""
     echo "$msg_error $msg_install_fail $editor_name."
   else
-    # Migrate global storage and uninstall old extension
-    old_id="robertpiosik.gemini-coder"
-    new_id="codewebchat.cwc"
-    config_base=""
-    if [ "$(uname)" = "Darwin" ]; then
-      config_base="$HOME/Library/Application Support"
-    else
-      config_base="${XDG_CONFIG_HOME:-$HOME/.config}"
-    fi
-
-    if [ -d "$config_base" ]; then
-      for app_dir in "$config_base"/*; do
-        if [ -d "$app_dir" ]; then
-          old_path="$app_dir/User/globalStorage/$old_id"
-          new_path="$app_dir/User/globalStorage/$new_id"
-          if [ -d "$old_path" ]; then
-            mkdir -p "$new_path"
-            cp -a "$old_path"/. "$new_path"/ 2>/dev/null || true
-            rm -rf "$old_path"
-          fi
-        fi
-      done
-    fi
-
-    "$editor_cmd" --uninstall-extension "$old_id" >/dev/null 2>&1 || true
-
     echo ""
     if [ "$is_update" = false ]; then
       echo "$msg_success $editor_name!"

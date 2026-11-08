@@ -1,5 +1,5 @@
 {
-  "name": "cwc",
+  "name": "gemini-coder",
   "displayName": "Code Web Chat",
   "description": "Markdown prompts for chatbots, APIs, and CLIs with seamless integration",
   "version": "2026.1108.400",
@@ -13,7 +13,7 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "publisher": "codewebchat",
+  "publisher": "robertpiosik",
   "homepage": "https://cwc.dev/",
   "repository": {
     "type": "git",
