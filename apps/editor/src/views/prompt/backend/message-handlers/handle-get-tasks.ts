@@ -1,13 +1,13 @@
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { Task } from '@shared/types/task'
-import { TasksUtils } from '@/utils/tasks-utils'
+import { TasksStorage } from '@/utils/global-workspace-storage'
 
 export const handle_get_tasks = async (
   prompt_view_provider: PromptViewProvider
 ): Promise<void> => {
   const workspace_roots =
     prompt_view_provider.workspace_provider.get_workspace_roots()
-  const all_data = TasksUtils.load_all(prompt_view_provider.extension_context)
+  const all_data = TasksStorage.load_all(prompt_view_provider.extension_context)
 
   const tasks: Record<string, Task[]> = {}
 

@@ -9,7 +9,7 @@ import { LAST_RANGES_SAVE_LOCATION_STATE_KEY } from '../constants/state-keys'
 import { t } from '../i18n'
 import { get_error_message } from '@/utils/get-error-message'
 import { is_binary_file } from '../utils/is-binary'
-import { RangesUtils } from '../utils/ranges-utils'
+import { RangesStorage } from '../utils/global-workspace-storage'
 import { normalize_path } from '../utils/normalize-path'
 
 export const set_ranges_command = (
@@ -71,7 +71,7 @@ export const set_ranges_command = (
         }
       } catch {}
 
-      const all_global_ranges = RangesUtils.load_all(extension_context)
+      const all_global_ranges = RangesStorage.load_all(extension_context)
       const global_ranges_for_workspace =
         all_global_ranges[workspace_folder.uri.fsPath] || {}
 
@@ -203,10 +203,7 @@ export const set_ranges_command = (
               delete updated_all[workspace_folder.uri.fsPath]
             }
           }
-          RangesUtils.save_all({
-            extension_context,
-            ranges: updated_all
-          })
+          RangesStorage.save_all(extension_context, updated_all)
           changed = true
         }
 
@@ -283,10 +280,7 @@ export const set_ranges_command = (
                   delete updated_all[workspace_folder.uri.fsPath]
                 }
               }
-              RangesUtils.save_all({
-                extension_context,
-                ranges: updated_all
-              })
+              RangesStorage.save_all(extension_context, updated_all)
             }
           } catch (error) {
             vscode.window.showErrorMessage(
@@ -303,10 +297,7 @@ export const set_ranges_command = (
           updated_all[workspace_folder.uri.fsPath][relative_path] =
             formatted_range
 
-          RangesUtils.save_all({
-            extension_context,
-            ranges: updated_all
-          })
+          RangesStorage.save_all(extension_context, updated_all)
 
           if (file_ranges[relative_path]) {
             delete file_ranges[relative_path]

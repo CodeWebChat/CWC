@@ -3,7 +3,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { Logger } from '@shared/utils/logger'
 import { get_error_message } from '@/utils/get-error-message'
-import { RangesUtils } from '@/utils/ranges-utils'
+import { RangesStorage } from '@/utils/global-workspace-storage'
+import { normalize_path } from '@/utils/normalize-path'
 import { RANGES_STATE_KEY } from '@/constants/state-keys'
 
 const MIGRATION_ID = 'ranges-to-global-storage-migration-20261108'
@@ -22,7 +23,7 @@ export async function migrate_ranges_to_global_storage(
       )
 
     if (state_ranges && Object.keys(state_ranges).length > 0) {
-      const all_global_ranges = RangesUtils.load_all(extension_context)
+      const all_global_ranges = RangesStorage.load_all(extension_context)
 
       const workspace_folders = vscode.workspace.workspaceFolders || []
       const workspace_roots = workspace_folders.map((f) => f.uri.fsPath)
@@ -61,14 +62,11 @@ export async function migrate_ranges_to_global_storage(
           if (!all_global_ranges[resolved.root]) {
             all_global_ranges[resolved.root] = {}
           }
-          all_global_ranges[resolved.root][resolved.rel] = range
+          all_global_ranges[resolved.root][normalize_path(resolved.rel)] = range
         }
       }
 
-      RangesUtils.save_all({
-        extension_context,
-        ranges: all_global_ranges
-      })
+      RangesStorage.save_all(extension_context, all_global_ranges)
     }
 
     await extension_context.workspaceState.update(MIGRATION_ID, true)

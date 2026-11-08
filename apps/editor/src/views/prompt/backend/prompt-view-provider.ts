@@ -48,7 +48,7 @@ import {
   check_for_updates
 } from './utils'
 import * as path from 'path'
-import { TasksUtils } from '@/utils/tasks-utils'
+import { TasksStorage } from '@/utils/global-workspace-storage'
 
 export class PromptViewProvider implements vscode.WebviewViewProvider {
   public readonly extension_uri: vscode.Uri
@@ -283,9 +283,7 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
       })
     )
 
-    const tasks_file_path = TasksUtils.get_file_path({
-      extension_context: this.extension_context
-    })
+    const tasks_file_path = TasksStorage.get_file_path(this.extension_context)
     const tasks_watcher = vscode.workspace.createFileSystemWatcher(
       new vscode.RelativePattern(
         vscode.Uri.file(path.dirname(tasks_file_path)),

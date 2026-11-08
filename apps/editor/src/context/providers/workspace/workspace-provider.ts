@@ -12,7 +12,7 @@ import { Logger } from '@shared/utils/logger'
 import { display_token_count } from '@shared/utils/display-token-count'
 import { TokenCalculator } from './modules/token-calculator'
 import { normalize_path } from '@/utils/normalize-path'
-import { RangesUtils } from '@/utils/ranges-utils'
+import { RangesStorage } from '@/utils/global-workspace-storage'
 
 export interface IWorkspaceProvider {
   get_workspace_roots(): string[]
@@ -148,9 +148,9 @@ export class WorkspaceProvider
     this._ranges_watcher.onDidChange(() => this.load_all_ranges())
     this._ranges_watcher.onDidDelete(() => this.load_all_ranges())
 
-    const global_ranges_file_path = RangesUtils.get_file_path({
-      extension_context: this._extension_context
-    })
+    const global_ranges_file_path = RangesStorage.get_file_path(
+      this._extension_context
+    )
     this._global_ranges_watcher = vscode.workspace.createFileSystemWatcher(
       new vscode.RelativePattern(
         vscode.Uri.file(path.dirname(global_ranges_file_path)),
@@ -832,7 +832,7 @@ export class WorkspaceProvider
       }
     }
 
-    const all_global_ranges = RangesUtils.load_all(this._extension_context)
+    const all_global_ranges = RangesStorage.load_all(this._extension_context)
     for (const workspace_root of this._workspace_roots) {
       const global_ranges_for_workspace =
         all_global_ranges[workspace_root] || {}
