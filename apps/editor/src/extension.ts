@@ -11,7 +11,8 @@ import {
   migrate_commit_message_details_filename,
   migrate_prompt_templates_to_templates,
   migrate_model_providers_to_providers,
-  migrate_settings_keys_to_chatbots_and_models
+  migrate_settings_keys_to_chatbots_and_models,
+  migrate_ranges_to_global_storage
 } from './migrations'
 import {
   agentic_search_command,
@@ -79,6 +80,8 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
     await migrate_model_providers_to_providers(extension_context)
     // 26 October 2026
     await migrate_settings_keys_to_chatbots_and_models(extension_context)
+    // 8 November 2026
+    await migrate_ranges_to_global_storage(extension_context)
   }
 
   await migrations()

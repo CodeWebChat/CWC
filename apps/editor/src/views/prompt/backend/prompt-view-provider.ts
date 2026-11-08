@@ -47,6 +47,8 @@ import {
   estimate_token_count,
   check_for_updates
 } from './utils'
+import * as path from 'path'
+import { TasksUtils } from '@/utils/tasks-utils'
 
 export class PromptViewProvider implements vscode.WebviewViewProvider {
   public readonly extension_uri: vscode.Uri
@@ -277,10 +279,24 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
           this.send_message({
             command: 'RESET_APPLY_BUTTON_TEMPORARY_DISABLED_STATE'
           })
-          handlers.handle_get_tasks(this)
         }
       })
     )
+
+    const tasks_file_path = TasksUtils.get_file_path({
+      extension_context: this.extension_context
+    })
+    const tasks_watcher = vscode.workspace.createFileSystemWatcher(
+      new vscode.RelativePattern(
+        vscode.Uri.file(path.dirname(tasks_file_path)),
+        path.basename(tasks_file_path)
+      )
+    )
+    tasks_watcher.onDidCreate(() => handlers.handle_get_tasks(this))
+    tasks_watcher.onDidChange(() => handlers.handle_get_tasks(this))
+    tasks_watcher.onDidDelete(() => handlers.handle_get_tasks(this))
+
+    this.extension_context.subscriptions.push(tasks_watcher)
 
     this.extension_context.subscriptions.push(
       vscode.workspace.onDidChangeWorkspaceFolders(() => {

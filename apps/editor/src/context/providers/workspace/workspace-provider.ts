@@ -4,8 +4,7 @@ import * as vscode from 'vscode'
 import ignore, { Ignore } from 'ignore'
 import {
   CONTEXT_SELECTED_PATHS_STATE_KEY,
-  CONTEXT_SELECTED_TIMESTAMPS_STATE_KEY,
-  RANGES_STATE_KEY
+  CONTEXT_SELECTED_TIMESTAMPS_STATE_KEY
 } from '@/constants/state-keys'
 import { IGNORED_LOCK_FILES } from '@/constants/ignored-lock-files'
 import { natural_sort } from '@/utils/natural-sort'
@@ -13,6 +12,7 @@ import { Logger } from '@shared/utils/logger'
 import { display_token_count } from '@shared/utils/display-token-count'
 import { TokenCalculator } from './modules/token-calculator'
 import { normalize_path } from '@/utils/normalize-path'
+import { RangesUtils } from '@/utils/ranges-utils'
 
 export interface IWorkspaceProvider {
   get_workspace_roots(): string[]
@@ -61,6 +61,7 @@ export class WorkspaceProvider
   private _user_allow_patterns: Ignore = ignore()
   private _watcher: vscode.FileSystemWatcher
   private _ranges_watcher: vscode.FileSystemWatcher
+  private _global_ranges_watcher: vscode.FileSystemWatcher
   private _gitignore_watcher: vscode.FileSystemWatcher
   private _file_ranges: Map<string, string> = new Map()
   private _token_calculator: TokenCalculator
@@ -146,6 +147,19 @@ export class WorkspaceProvider
     this._ranges_watcher.onDidCreate(() => this.load_all_ranges())
     this._ranges_watcher.onDidChange(() => this.load_all_ranges())
     this._ranges_watcher.onDidDelete(() => this.load_all_ranges())
+
+    const global_ranges_file_path = RangesUtils.get_file_path({
+      extension_context: this._extension_context
+    })
+    this._global_ranges_watcher = vscode.workspace.createFileSystemWatcher(
+      new vscode.RelativePattern(
+        vscode.Uri.file(path.dirname(global_ranges_file_path)),
+        path.basename(global_ranges_file_path)
+      )
+    )
+    this._global_ranges_watcher.onDidCreate(() => this.load_all_ranges())
+    this._global_ranges_watcher.onDidChange(() => this.load_all_ranges())
+    this._global_ranges_watcher.onDidDelete(() => this.load_all_ranges())
 
     this.ranges_initialization = this.load_all_ranges()
 
@@ -263,6 +277,7 @@ export class WorkspaceProvider
   dispose() {
     this._watcher.dispose()
     this._ranges_watcher.dispose()
+    this._global_ranges_watcher.dispose()
     this._gitignore_watcher.dispose()
     this._config_change_handler.dispose()
     this._on_did_change_selected_files.dispose()
@@ -803,9 +818,12 @@ export class WorkspaceProvider
       try {
         const content = await fs.promises.readFile(ranges_file_path, 'utf-8')
         const ranges = JSON.parse(content) as Record<string, string>
-        for (const [relativePath, range] of Object.entries(ranges)) {
-          const absolutePath = path.join(workspace_root, relativePath)
-          this._file_ranges.set(absolutePath, range)
+        for (const [relative_path, range] of Object.entries(ranges)) {
+          const absolute_path = path.join(
+            workspace_root,
+            normalize_path(relative_path)
+          )
+          this._file_ranges.set(absolute_path, range)
         }
       } catch (e) {
         if ((e as NodeJS.ErrnoException).code !== 'ENOENT') {
@@ -814,43 +832,25 @@ export class WorkspaceProvider
       }
     }
 
-    const state_ranges = this._extension_context.workspaceState.get<
-      Record<string, string>
-    >(RANGES_STATE_KEY, {})
-    for (const [key, range] of Object.entries(state_ranges)) {
-      const resolved_path = this._resolve_state_path(key)
-      if (resolved_path && fs.existsSync(resolved_path)) {
-        this._file_ranges.set(resolved_path, range)
+    const all_global_ranges = RangesUtils.load_all(this._extension_context)
+    for (const workspace_root of this._workspace_roots) {
+      const global_ranges_for_workspace =
+        all_global_ranges[workspace_root] || {}
+      for (const [rel_path, range] of Object.entries(
+        global_ranges_for_workspace
+      )) {
+        const absolute_path = path.join(
+          workspace_root,
+          normalize_path(rel_path)
+        )
+        if (fs.existsSync(absolute_path)) {
+          this._file_ranges.set(absolute_path, range)
+        }
       }
     }
 
     this._token_calculator.clear_caches()
     this.refresh()
-  }
-
-  private _resolve_state_path(key: string): string | undefined {
-    if (this._workspace_roots.length === 1) {
-      return path.join(this._workspace_roots[0], key)
-    }
-
-    const parts = key.split(':')
-    if (parts.length > 1) {
-      const name = parts[0]
-      const rel_path = parts.slice(1).join(':')
-      const index = this._workspace_names.indexOf(name)
-      if (index !== -1) {
-        return path.join(this._workspace_roots[index], rel_path)
-      }
-    }
-
-    for (const root of this._workspace_roots) {
-      const abs = path.join(root, key)
-      if (fs.existsSync(abs)) {
-        return abs
-      }
-    }
-
-    return undefined
   }
 
   get_range(filePath: string): string | undefined {

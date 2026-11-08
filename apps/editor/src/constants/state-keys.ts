@@ -142,7 +142,6 @@ export type DuplicateWorkspaceContext = {
   timestamp: number
   workspace_root_folders: string[]
   open_editors?: { path: string; view_column?: number }[]
-  ranges?: Record<string, string>
 }
 
 export type HistoryEntry = {

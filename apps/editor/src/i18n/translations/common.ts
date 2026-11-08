@@ -35,6 +35,24 @@ export const translations = {
     hu: 'Munkaterület állapota',
     bg: 'Състояние на работното пространство'
   },
+  'common.source.extension-storage': {
+    en: 'Extension Storage',
+    pl: 'Pamięć rozszerzenia',
+    'zh-cn': '扩展存储',
+    ja: '拡張機能のストレージ',
+    'zh-tw': '擴充功能儲存空間',
+    de: 'Erweiterungsspeicher',
+    es: 'Almacenamiento de extensión',
+    fr: 'Stockage de l’extension',
+    'pt-br': 'Armazenamento da extensão',
+    ru: 'Хранилище расширения',
+    ko: '확장 저장소',
+    it: 'Archiviazione estensione',
+    tr: 'Uzantı Depolama',
+    cs: 'Úložiště rozšíření',
+    hu: 'Bővítmény tárhelye',
+    bg: 'Хранилище на разширението'
+  },
   'common.error.provider-not-found': {
     en: 'Provider {name} not found.',
     pl: 'Nie znaleziono providera {name}.',

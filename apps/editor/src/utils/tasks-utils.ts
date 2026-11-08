@@ -34,14 +34,6 @@ export namespace TasksUtils {
     extension_context: vscode.ExtensionContext
     tasks: Record<string, Task[]>
   }) => {
-    const filtered_tasks: Record<string, Task[]> = {}
-
-    for (const root in params.tasks) {
-      if (fs.existsSync(root)) {
-        filtered_tasks[root] = params.tasks[root]
-      }
-    }
-
     const file_path = get_file_path({
       extension_context: params.extension_context
     })
@@ -52,11 +44,7 @@ export namespace TasksUtils {
     }
 
     try {
-      fs.writeFileSync(
-        file_path,
-        JSON.stringify(filtered_tasks, null, 2),
-        'utf8'
-      )
+      fs.writeFileSync(file_path, JSON.stringify(params.tasks, null, 2), 'utf8')
     } catch (error) {
       console.error('Failed to save tasks', error)
     }

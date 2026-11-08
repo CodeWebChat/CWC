@@ -5,14 +5,12 @@ import {
   WorkspaceProvider,
   FileItem
 } from '../context/providers/workspace/workspace-provider'
-import {
-  RANGES_STATE_KEY,
-  LAST_RANGES_SAVE_LOCATION_STATE_KEY
-} from '../constants/state-keys'
+import { LAST_RANGES_SAVE_LOCATION_STATE_KEY } from '../constants/state-keys'
 import { t } from '../i18n'
-import { normalize_path } from '../utils/normalize-path'
 import { get_error_message } from '@/utils/get-error-message'
 import { is_binary_file } from '../utils/is-binary'
+import { RangesUtils } from '../utils/ranges-utils'
+import { normalize_path } from '../utils/normalize-path'
 
 export const set_ranges_command = (
   workspace_provider: WorkspaceProvider,
@@ -29,7 +27,6 @@ export const set_ranges_command = (
       const workspace_folder = vscode.workspace.getWorkspaceFolder(
         item.resourceUri
       )
-      const workspace_folders = vscode.workspace.workspaceFolders || []
 
       if (!workspace_folder) {
         vscode.window.showErrorMessage(
@@ -56,37 +53,30 @@ export const set_ranges_command = (
         return
       }
 
-      const relative_path = path.relative(
-        workspace_folder.uri.fsPath,
-        file_path
+      const relative_path = normalize_path(
+        path.relative(workspace_folder.uri.fsPath, file_path)
       )
-
-      const get_path_key_for_state = () => {
-        const rel_path_unix = normalize_path(relative_path)
-        if (workspace_folders.length > 1) {
-          return `${workspace_folder.name}:${rel_path_unix}`
-        }
-        return rel_path_unix
-      }
-      const state_key = get_path_key_for_state()
 
       const ranges_file_path = path.join(
         workspace_folder.uri.fsPath,
         '.vscode',
         'ranges.json'
       )
-      let file_ranges: Record<string, string> = {}
+      const file_ranges: Record<string, string> = {}
       try {
         const content = await fs.readFile(ranges_file_path, 'utf-8')
-        file_ranges = JSON.parse(content)
+        const raw_ranges = JSON.parse(content)
+        for (const [key, value] of Object.entries(raw_ranges)) {
+          file_ranges[normalize_path(key)] = value as string
+        }
       } catch {}
 
-      const state_ranges = extension_context.workspaceState.get<
-        Record<string, string>
-      >(RANGES_STATE_KEY, {})
+      const all_global_ranges = RangesUtils.load_all(extension_context)
+      const global_ranges_for_workspace =
+        all_global_ranges[workspace_folder.uri.fsPath] || {}
 
       const file_range_value = file_ranges[relative_path]
-      const state_range_value = state_ranges[state_key]
+      const state_range_value = global_ranges_for_workspace[relative_path]
       const current_range = file_range_value || state_range_value
 
       const new_ranges = await vscode.window.showInputBox({
@@ -203,13 +193,20 @@ export const set_ranges_command = (
           }
         }
 
-        if (state_ranges[state_key]) {
-          const updated_state = { ...state_ranges }
-          delete updated_state[state_key]
-          await extension_context.workspaceState.update(
-            RANGES_STATE_KEY,
-            updated_state
-          )
+        if (state_range_value) {
+          const updated_all = { ...all_global_ranges }
+          if (updated_all[workspace_folder.uri.fsPath]) {
+            delete updated_all[workspace_folder.uri.fsPath][relative_path]
+            if (
+              Object.keys(updated_all[workspace_folder.uri.fsPath]).length === 0
+            ) {
+              delete updated_all[workspace_folder.uri.fsPath]
+            }
+          }
+          RangesUtils.save_all({
+            extension_context,
+            ranges: updated_all
+          })
           changed = true
         }
 
@@ -238,9 +235,9 @@ export const set_ranges_command = (
               picked: last_location !== 'state'
             },
             {
-              label: t('common.source.workspace-state'),
+              label: t('common.source.extension-storage'),
               description: t(
-                'command.set-ranges-command.quick-pick.workspace-state-description'
+                'command.set-ranges-command.quick-pick.extension-storage-description'
               ),
               picked: last_location === 'state'
             }
@@ -275,13 +272,21 @@ export const set_ranges_command = (
               JSON.stringify(file_ranges, null, 2)
             )
 
-            if (state_ranges[state_key]) {
-              const updated_state = { ...state_ranges }
-              delete updated_state[state_key]
-              await extension_context.workspaceState.update(
-                RANGES_STATE_KEY,
-                updated_state
-              )
+            if (state_range_value) {
+              const updated_all = { ...all_global_ranges }
+              if (updated_all[workspace_folder.uri.fsPath]) {
+                delete updated_all[workspace_folder.uri.fsPath][relative_path]
+                if (
+                  Object.keys(updated_all[workspace_folder.uri.fsPath])
+                    .length === 0
+                ) {
+                  delete updated_all[workspace_folder.uri.fsPath]
+                }
+              }
+              RangesUtils.save_all({
+                extension_context,
+                ranges: updated_all
+              })
             }
           } catch (error) {
             vscode.window.showErrorMessage(
@@ -291,14 +296,17 @@ export const set_ranges_command = (
             )
           }
         } else {
-          const updated_state = {
-            ...state_ranges,
-            [state_key]: formatted_range
+          const updated_all = { ...all_global_ranges }
+          if (!updated_all[workspace_folder.uri.fsPath]) {
+            updated_all[workspace_folder.uri.fsPath] = {}
           }
-          await extension_context.workspaceState.update(
-            RANGES_STATE_KEY,
-            updated_state
-          )
+          updated_all[workspace_folder.uri.fsPath][relative_path] =
+            formatted_range
+
+          RangesUtils.save_all({
+            extension_context,
+            ranges: updated_all
+          })
 
           if (file_ranges[relative_path]) {
             delete file_ranges[relative_path]

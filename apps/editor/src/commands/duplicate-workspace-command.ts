@@ -3,7 +3,6 @@ import { WorkspaceProvider } from '../context/providers/workspace/workspace-prov
 import {
   EDIT_FORMAT_STATE_KEY,
   DUPLICATE_WORKSPACE_CONTEXT_STATE_KEY,
-  RANGES_STATE_KEY,
   type DuplicateWorkspaceContext
 } from '../constants/state-keys'
 
@@ -35,17 +34,12 @@ export const duplicate_workspace_command = (
         }
       }
 
-      const ranges =
-        extension_context.workspaceState.get<Record<string, string>>(
-          RANGES_STATE_KEY
-        )
       const context_to_save: DuplicateWorkspaceContext = {
         selected_files: export_state.selected_files,
         selected_files_timestamps: export_state.selected_timestamps,
         workspace_root_folders,
         timestamp: Date.now(),
-        open_editors,
-        ranges
+        open_editors
       }
 
       const edit_format = extension_context.workspaceState.get(
