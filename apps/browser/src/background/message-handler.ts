@@ -79,9 +79,9 @@ const process_next_chat = async () => {
         ? {
             chatbot: current_chat_message.chatbot,
             model: current_chat_message.model
-              ? CHATBOTS[current_chat_message.chatbot as keyof typeof CHATBOTS]?.models?.[
-                  current_chat_message.model
-                ]?.label ?? current_chat_message.model
+              ? (CHATBOTS[current_chat_message.chatbot as keyof typeof CHATBOTS]
+                  ?.models?.[current_chat_message.model]?.label ??
+                current_chat_message.model)
               : undefined,
             reasoning_effort: current_chat_message.reasoning_effort
           }
@@ -114,7 +114,8 @@ const process_next_chat = async () => {
     last_opened_tab_client_id === current_chat_message.client_id &&
     last_opened_tab_chatbot === current_chat_message.chatbot &&
     is_finished_responding &&
-    last_opened_tab_injected_apply_button
+    last_opened_tab_injected_apply_button &&
+    current_chat_message.inject_apply_response_button
   ) {
     try {
       const tab = await browser.tabs.get(last_opened_tab_id)
@@ -190,7 +191,9 @@ const handle_initialize_chat_message = async (
     }
 
     if (!is_allowed) {
-      console.warn(`Blocked initialize-chat with disallowed URL: ${message.url}`)
+      console.warn(
+        `Blocked initialize-chat with disallowed URL: ${message.url}`
+      )
       return
     }
   } catch {
