@@ -1385,7 +1385,6 @@
     "react-dom": "18.2.0",
     "simplebar-react": "3.3.1",
     "turndown": "7.2.5",
-    "ui": "workspace:*",
     "ws": "8.21.3"
   }
 }

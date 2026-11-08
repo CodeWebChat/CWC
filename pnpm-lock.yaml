@@ -296,9 +296,6 @@ importers:
       turndown:
         specifier: 7.2.5
         version: 7.2.5
-      ui:
-        specifier: workspace:*
-        version: link:../../packages/ui
       ws:
         specifier: 8.21.3
         version: 8.21.3(bufferutil@4.0.9)(utf-8-validate@6.0.5)
