@@ -5,7 +5,8 @@ import { Logger } from '@shared/utils/logger'
 import { get_error_message } from '@/utils/get-error-message'
 import { RangesStorage } from '@/utils/global-workspace-storage'
 import { normalize_path } from '@/utils/normalize-path'
-import { RANGES_STATE_KEY } from '@/constants/state-keys'
+
+export const RANGES_STATE_KEY = 'ranges'
 
 const MIGRATION_ID = 'ranges-to-global-storage-migration-20261108'
 
