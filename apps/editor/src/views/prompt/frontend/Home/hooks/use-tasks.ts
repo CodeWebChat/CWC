@@ -100,11 +100,11 @@ export const use_tasks = (vscode: any) => {
     )
   }
 
-  const handle_add = (root: string, root_tasks: Task[]) => {
+  const handle_add = (root: string, root_tasks: Task[], timestamp: number) => {
     const new_task: Task = {
       text: '',
       is_checked: false,
-      created_at: Date.now(),
+      created_at: timestamp,
       children: []
     }
     const new_list = [...root_tasks, new_task]
@@ -114,12 +114,13 @@ export const use_tasks = (vscode: any) => {
   const handle_add_subtask = (
     root: string,
     root_tasks: Task[],
-    parent_task: Task
+    parent_task: Task,
+    timestamp: number
   ) => {
     const new_task: Task = {
       text: '',
       is_checked: false,
-      created_at: Date.now(),
+      created_at: timestamp,
       children: []
     }
     handle_tasks_change(

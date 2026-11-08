@@ -10,7 +10,6 @@ import cn from 'classnames'
 import { Task } from '@shared/types/task'
 import { IconButton } from '../../common/IconButton'
 import { TaskGroup, SortableTask } from './components/TaskGroup'
-import { use_auto_focus_new_task } from './hooks/use-auto-focus-new-task'
 
 dayjs.extend(relativeTime)
 
@@ -19,8 +18,8 @@ export namespace Tasks {
     tasks: Task[]
     on_reorder: (tasks: Task[]) => void
     on_change: (task: Task) => void
-    on_add: () => void
-    on_add_subtask?: (parent_task: Task) => void
+    on_add: (timestamp: number) => void
+    on_add_subtask?: (parent_task: Task, timestamp: number) => void
     on_delete: (created_at: number) => void
     translations: {
       placeholder: string
@@ -51,6 +50,7 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
     null
   )
   const [editing_initial_text, set_editing_initial_text] = useState<string>('')
+  const [editing_current_text, set_editing_current_text] = useState<string>('')
   const [copied_timestamp, set_copied_timestamp] = useState<number | null>(null)
   const prevent_edit_ref = useRef(false)
   const is_canceling_ref = useRef(false)
@@ -59,10 +59,24 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
     set_editing_timestamp(timestamp)
     if (text !== undefined) {
       set_editing_initial_text(text)
+      set_editing_current_text(text)
     }
   }
 
-  use_auto_focus_new_task(props.tasks, handle_set_editing)
+  const commit_edit = (task: Task) => {
+    const text = editing_current_text.trim()
+    const has_children = task.children && task.children.length > 0
+
+    if (!text) {
+      if (!editing_initial_text.trim() && !has_children) {
+        props.on_delete(task.created_at)
+      }
+    } else {
+      if (editing_current_text !== task.text) {
+        props.on_change({ ...task, text: editing_current_text })
+      }
+    }
+  }
 
   const handle_cancel_edit = (task: Task) => {
     is_canceling_ref.current = true
@@ -71,9 +85,6 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
     const has_children = task.children && task.children.length > 0
     if (!editing_initial_text.trim() && !has_children) {
       props.on_delete(task.created_at)
-    } else {
-      const { ...rest } = task as any
-      props.on_change({ ...rest, text: editing_initial_text })
     }
 
     setTimeout(() => {
@@ -85,15 +96,16 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
     if (is_canceling_ref.current) return
     if (editing_timestamp !== task.created_at) return
     set_editing_timestamp(null)
-    if (!task.text.trim()) {
-      const has_children = task.children && task.children.length > 0
-      if (!editing_initial_text.trim() && !has_children) {
-        props.on_delete(task.created_at)
-      } else if (editing_initial_text.trim()) {
-        const { ...rest } = task as any
-        props.on_change({ ...rest, text: editing_initial_text })
-      }
-    }
+    commit_edit(task)
+  }
+
+  const handle_save_edit = (task: Task) => {
+    is_canceling_ref.current = true
+    set_editing_timestamp(null)
+    commit_edit(task)
+    setTimeout(() => {
+      is_canceling_ref.current = false
+    }, 100)
   }
 
   const tree = useMemo(() => add_ids(props.tasks), [props.tasks])
@@ -163,7 +175,9 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
                   is_collapsed: !params.task.is_collapsed
                 })
               } else {
-                props.on_add_subtask?.(params.task)
+                const timestamp = Date.now()
+                props.on_add_subtask?.(params.task, timestamp)
+                handle_set_editing(timestamp, '')
               }
             }}
             title={
@@ -194,7 +208,7 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
                 [styles['item__actions--visible']]: is_editing
               })}
             >
-              {params.task.text && (
+              {(is_editing ? editing_current_text : params.task.text) && (
                 <IconButton
                   codicon_icon={
                     copied_timestamp === params.task.created_at
@@ -207,7 +221,9 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
                   }
                   on_click={(e) => {
                     e.stopPropagation()
-                    navigator.clipboard.writeText(params.task.text)
+                    navigator.clipboard.writeText(
+                      is_editing ? editing_current_text : params.task.text
+                    )
                     set_copied_timestamp(params.task.created_at)
                     setTimeout(() => {
                       set_copied_timestamp((current) =>
@@ -234,10 +250,9 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
 
           {is_editing ? (
             <Textarea
-              value={params.task.text}
+              value={editing_current_text}
               on_change={(value) => {
-                const { ...rest } = params.task as any
-                props.on_change({ ...rest, text: value })
+                set_editing_current_text(value)
               }}
               autofocus
               on_blur={() => {
@@ -249,6 +264,7 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
                   handle_cancel_edit(params.task)
                 } else if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
+                  handle_save_edit(params.task)
                 }
               }}
             />
@@ -289,8 +305,16 @@ export const Tasks: React.FC<Tasks.Props> = (props) => {
         on_reorder={handle_tree_reorder}
         render_item={render_item}
         className={styles.tasks}
-        on_add={props.on_add}
-        get_on_add_subtask={(parent) => () => props.on_add_subtask?.(parent)}
+        on_add={() => {
+          const timestamp = Date.now()
+          props.on_add(timestamp)
+          handle_set_editing(timestamp, '')
+        }}
+        get_on_add_subtask={(parent) => () => {
+          const timestamp = Date.now()
+          props.on_add_subtask?.(parent, timestamp)
+          handle_set_editing(timestamp, '')
+        }}
         add_text={props.translations.add_new}
       />
     </div>

@@ -287,14 +287,15 @@ export const Home: React.FC<Props> = (props) => {
           on_change={(updated_task) => {
             handle_change(active_root, tasks[active_root] || [], updated_task)
           }}
-          on_add={() => {
-            handle_add(active_root, tasks[active_root] || [])
+          on_add={(timestamp) => {
+            handle_add(active_root, tasks[active_root] || [], timestamp)
           }}
-          on_add_subtask={(parent_task) => {
+          on_add_subtask={(parent_task, timestamp) => {
             handle_add_subtask(
               active_root,
               tasks[active_root] || [],
-              parent_task
+              parent_task,
+              timestamp
             )
           }}
           on_delete={(timestamp) => {
