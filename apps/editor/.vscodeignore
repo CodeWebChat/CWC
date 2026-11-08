@@ -6,4 +6,3 @@ jest.config.js
 tsconfig.tsbuildinfo
 vite.config.ts
 scripts
-package*
