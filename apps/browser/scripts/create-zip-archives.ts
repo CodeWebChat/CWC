@@ -1,6 +1,10 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import archiver from 'archiver'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const get_version = (): string => {
   const manifest_path = path.join(__dirname, '..', 'src', 'manifest.json')

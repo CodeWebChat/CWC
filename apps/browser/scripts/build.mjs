@@ -1,5 +1,4 @@
 const start_time = Date.now()
-console.log('Building...')
 
 import * as fs from 'node:fs'
 import * as path from 'node:path'
@@ -24,7 +23,7 @@ const run = async () => {
   const finish = (target) => {
     if (pending.delete(target) && pending.size == 0) {
       const time = ((Date.now() - start_time) / 1000).toFixed(1)
-      console.log(`Finished in ${time}s.`)
+      console.log(`Built in ${time}s.`)
     }
   }
 
