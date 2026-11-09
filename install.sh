@@ -580,10 +580,8 @@ for i in "${indices[@]}"; do
   fi
 
   if ! run_step "$msg_step_install $editor_name" "$editor_cmd" --install-extension "$VSIX_FILE" --force; then
-    echo ""
     echo "$msg_error $msg_install_fail $editor_name."
   else
-    echo ""
     if [ "$is_update" = false ]; then
       echo "$msg_success $editor_name!"
     fi

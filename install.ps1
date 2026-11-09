@@ -585,7 +585,6 @@ foreach ($i in $indices) {
         & $editor.Cmd --install-extension $vsixFile.FullName --force *>$null
     }
     
-    Write-Host ""
     if ($ok) {
         if (-not $updated) {
             Write-Host "$msg_success $($editor.Name)!"
