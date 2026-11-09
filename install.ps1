@@ -463,7 +463,15 @@ function Invoke-Step {
 Write-Host ""
 
 if (!(Get-Command pnpm -ErrorAction SilentlyContinue)) {
-    npm install -g pnpm *>$null
+    if (Get-Command npm -ErrorAction SilentlyContinue) {
+        npm install -g pnpm *>$null
+        if (!(Get-Command pnpm -ErrorAction SilentlyContinue)) {
+            $npmGlobalBin = npm prefix -g 2>$null
+            if ($npmGlobalBin) {
+                $env:PATH = "$npmGlobalBin;" + $env:PATH
+            }
+        }
+    }
 }
 
 $originalLocation = Get-Location
@@ -540,6 +548,7 @@ Set-Location $repoDir
 
 $depsOk = Invoke-Step "$msg_step_deps..." {
     pnpm install *>$null
+    if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
 }
 
 if (-not $depsOk) {
@@ -560,6 +569,7 @@ if (-not $depsOk) {
 
     $null = Invoke-Step "$msg_step_deps..." {
         pnpm install *>$null
+        if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
     } $msg_step_deps
 }
 
@@ -569,6 +579,7 @@ Remove-Item *.vsix -Force -ErrorAction SilentlyContinue
 
 $null = Invoke-Step "$msg_step_build..." {
     pnpm run build *>$null
+    if ($LASTEXITCODE -ne 0) { throw "pnpm run build failed" }
 } $msg_step_build
 
 $vsixFile = Get-ChildItem *.vsix -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -583,6 +594,7 @@ foreach ($i in $indices) {
 
     $ok = Invoke-Step "$msg_step_install $($editor.Name)..." {
         & $editor.Cmd --install-extension $vsixFile.FullName --force *>$null
+        if ($LASTEXITCODE -ne 0) { throw "Extension install failed" }
     }
     
     if ($ok) {
