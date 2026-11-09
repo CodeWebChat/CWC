@@ -16,7 +16,7 @@
 
 Get started building with CWC in VS Code, Cursor, Antigravity, etc. by running the installation script.
 
-**macOS/Linux/WSL\_**
+**macOS/Linux/WSL**
 
 ```
 curl -fsSL https://github.com/CodeWebChat/CWC/raw/refs/heads/main/install.sh | sh
