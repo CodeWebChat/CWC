@@ -1,0 +1,53 @@
+name: 'Create App Release'
+description: 'Checks tag, generates changelog, and publishes a GitHub Release.'
+
+inputs:
+  app_name:
+    description: 'Display name of the application'
+    required: true
+  app_suffix:
+    description: 'Suffix for the release tag'
+    required: true
+  version:
+    description: 'Raw version string from manifest'
+    required: true
+  changelog_paths:
+    description: 'Paths to filter git log'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check if tag exists
+      id: check_tag
+      shell: bash
+      run: |
+        if git ls-remote --tags origin refs/tags/${{ inputs.version }}-${{ inputs.app_suffix }} | grep -q 'refs/tags/'; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Generate Release Notes
+      if: steps.check_tag.outputs.exists == 'false'
+      shell: bash
+      run: |
+        PREV_TAG=$(git describe --tags --match "*-${{ inputs.app_suffix }}" --abbrev=0 2>/dev/null || echo "")
+
+        echo "### What's changed in the ${{ inputs.app_name }} extension:" > release_notes.md
+        echo "" >> release_notes.md
+
+        if [ -n "$PREV_TAG" ]; then
+          git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" -- ${{ inputs.changelog_paths }} >> release_notes.md
+        else
+          git log --pretty=format:"* %s (%h)" -- ${{ inputs.changelog_paths }} >> release_notes.md
+        fi
+
+    - name: Create Release
+      if: steps.check_tag.outputs.exists == 'false'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ inputs.version }}-${{ inputs.app_suffix }}
+        name: ${{ inputs.version }} - ${{ inputs.app_name }}
+        body_path: release_notes.md
+        target_commitish: ${{ github.sha }}

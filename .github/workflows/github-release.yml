@@ -12,6 +12,22 @@ permissions:
   contents: write
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      editor: ${{ steps.filter.outputs.editor }}
+      browser: ${{ steps.filter.outputs.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            editor:
+              - 'apps/editor/package.json'
+            browser:
+              - 'apps/browser/src/manifest.json'
+
   check:
     runs-on: ubuntu-latest
 
@@ -20,17 +36,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2
+        uses: pnpm/setup@v3
         with:
           version: 12.17.0
-          run_install: false
+          cache: true
+          install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm i
@@ -45,7 +61,8 @@ jobs:
         run: pnpm test
 
   release:
-    needs: check
+    needs: [check, changes]
+    if: needs.changes.outputs.editor == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -59,44 +76,19 @@ jobs:
         id: package_version
         run: |
           VERSION=$(jq -r .version apps/editor/package.json)
-          echo "version=$VERSION-vscode" >> $GITHUB_OUTPUT
           echo "raw_version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Check if tag exists
-        id: check_tag
-        run: |
-          # Prevent failing if package.json was modified but version wasn't bumped
-          if git ls-remote --tags origin refs/tags/${{ steps.package_version.outputs.version }} | grep -q 'refs/tags/'; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Generate Release Notes
-        if: steps.check_tag.outputs.exists == 'false'
-        run: |
-          PREV_TAG=$(git describe --tags --match "*-vscode" --abbrev=0 2>/dev/null || echo "")
-
-          echo "### What's changed in the VS Code extension:" > release_notes.md
-          echo "" >> release_notes.md
-
-          if [ -n "$PREV_TAG" ]; then
-            git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" -- apps/editor packages/ui/src/components/editor >> release_notes.md
-          else
-            git log --pretty=format:"* %s (%h)" -- apps/editor packages/ui/src/components/editor >> release_notes.md
-          fi
-
       - name: Create Release
-        if: steps.check_tag.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v2
+        uses: ./.github/actions/create-app-release
         with:
-          tag_name: ${{ steps.package_version.outputs.version }}
-          name: ${{ steps.package_version.outputs.raw_version }} - VS Code
-          body_path: release_notes.md
-          target_commitish: ${{ github.sha }}
+          app_name: 'VS Code'
+          app_suffix: 'vscode'
+          version: ${{ steps.package_version.outputs.raw_version }}
+          changelog_paths: 'apps/editor packages/ui/src/components/editor'
 
   release-browser:
-    needs: check
+    needs: [check, changes]
+    if: needs.changes.outputs.browser == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -110,38 +102,12 @@ jobs:
         id: browser_version
         run: |
           VERSION=$(jq -r .version apps/browser/src/manifest.json)
-          echo "version=$VERSION-browser" >> $GITHUB_OUTPUT
           echo "raw_version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Check if tag exists
-        id: check_tag
-        run: |
-          # Prevent failing if manifest.json was modified but version wasn't bumped
-          if git ls-remote --tags origin refs/tags/${{ steps.browser_version.outputs.version }} | grep -q 'refs/tags/'; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Generate Release Notes
-        if: steps.check_tag.outputs.exists == 'false'
-        run: |
-          PREV_TAG=$(git describe --tags --match "*-browser" --abbrev=0 2>/dev/null || echo "")
-
-          echo "### What's changed in the browser extension:" > release_notes_browser.md
-          echo "" >> release_notes_browser.md
-
-          if [ -n "$PREV_TAG" ]; then
-            git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" -- apps/browser packages/shared/src/constants/chatbots.ts packages/ui/src/components/browser >> release_notes_browser.md
-          else
-            git log --pretty=format:"* %s (%h)" -- apps/browser packages/shared/src/constants/chatbots.ts packages/ui/src/components/browser >> release_notes_browser.md
-          fi
-
       - name: Create Release
-        if: steps.check_tag.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v2
+        uses: ./.github/actions/create-app-release
         with:
-          tag_name: ${{ steps.browser_version.outputs.version }}
-          name: ${{ steps.browser_version.outputs.raw_version }} - Browser
-          body_path: release_notes_browser.md
-          target_commitish: ${{ github.sha }}
+          app_name: 'Browser'
+          app_suffix: 'browser'
+          version: ${{ steps.browser_version.outputs.raw_version }}
+          changelog_paths: 'apps/browser packages/shared/src/constants/chatbots.ts packages/ui/src/components/browser'
