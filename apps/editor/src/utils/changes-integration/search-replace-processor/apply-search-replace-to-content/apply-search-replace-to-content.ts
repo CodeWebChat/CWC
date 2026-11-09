@@ -8,9 +8,8 @@ export const apply_search_replace_to_content = (params: {
   original_content: string
   segments: Segment[]
 }): string => {
-  const uses_crlf = params.original_content.includes('\r\n')
-  const line_ending = '\n'
-  let current_content = params.original_content.replace(/\r\n/g, '\n')
+  const line_ending = params.original_content.includes('\r\n') ? '\r\n' : '\n'
+  let current_content = params.original_content
   const segments = params.segments
   let cursor = 0
 
@@ -38,7 +37,7 @@ export const apply_search_replace_to_content = (params: {
     const clean_context_after = clean_lines(context_after)
 
     // Allow invisible characters alongside tabs and spaces
-    const SEPARATOR = '(?:[ \\t\\r\\u200B-\\u200F\\uFEFF]*\\n){1,5}'
+    const SEPARATOR = '(?:[ \\t\\u200B-\\u200F\\uFEFF]*\\r?\\n){1,5}'
 
     const build_block_pattern = (lines: string[]) => {
       return lines
@@ -49,7 +48,7 @@ export const apply_search_replace_to_content = (params: {
           const flexible = [...cleaned]
             .map(escape_reg_exp)
             .join('[\\u200B-\\u200F\\uFEFF]*')
-          return `[ \\t\\r\\u200B-\\u200F\\uFEFF]*${flexible}`
+          return `[ \\t\\u200B-\\u200F\\uFEFF]*${flexible}`
         })
         .join(SEPARATOR)
     }
@@ -123,5 +122,5 @@ export const apply_search_replace_to_content = (params: {
       : match_index + replacement_text.length
   }
 
-  return uses_crlf ? current_content.replace(/\n/g, '\r\n') : current_content
+  return current_content
 }
