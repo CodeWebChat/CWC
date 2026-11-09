@@ -4,7 +4,9 @@ import { t } from '../i18n'
 import { update_extension } from '../utils/update-extension'
 import { MINIMUM_WAIT_TIME } from '../constants/values'
 
-export const install_specific_version_command = () => {
+export const install_specific_version_command = (
+  extension_context: vscode.ExtensionContext
+) => {
   return vscode.commands.registerCommand(
     'codeWebChat.installSpecificVersion',
     async () => {
@@ -141,7 +143,9 @@ export const install_specific_version_command = () => {
       quick_pick.placeholder = t(
         'command.install-specific-version-command.select-version'
       )
+      const current_tag = `${extension_context.extension.packageJSON.version}-vscode`
       quick_pick.items = items
+      quick_pick.activeItems = items.filter((item) => item.tag === current_tag)
       quick_pick.matchOnDetail = true
       quick_pick.ignoreFocusOut = true
 

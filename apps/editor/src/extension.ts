@@ -157,7 +157,7 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
       prompt_view_provider
     }),
     check_for_updates_command(prompt_view_provider),
-    install_specific_version_command()
+    install_specific_version_command(extension_context)
   )
 
   prompt_view_provider.set_prompt_view_api_calls_manager(
