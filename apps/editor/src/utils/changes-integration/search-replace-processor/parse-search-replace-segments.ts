@@ -7,7 +7,7 @@ export type Segment =
     }
 
 export const parse_search_replace_segments = (content: string): Segment[] => {
-  const lines = content.replace(/\r\n/g, '\n').split('\n')
+  const lines = content.replace(/\r/g, '').split('\n')
   const segments: Segment[] = []
   let current_lines: string[] = []
 

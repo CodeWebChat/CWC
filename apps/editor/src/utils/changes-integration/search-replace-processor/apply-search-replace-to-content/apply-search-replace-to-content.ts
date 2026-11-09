@@ -1,7 +1,127 @@
 import { Segment } from '../types'
 
-const escape_reg_exp = (string: string) => {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const INVISIBLE_CHARS_REGEX = /[\u200B-\u200F\uFEFF]/g
+const IGNORABLE_CHAR_REGEX = /[\s\u200B-\u200F\uFEFF]/
+
+type Normalizer = (line: string) => string
+
+type IndexedLine = {
+  // Absolute offset of the line start (including leading whitespace)
+  start: number
+  // Absolute offset right after the last visible character of the line
+  content_end: number
+  normalized: string
+}
+
+const strip_invisible = (text: string) =>
+  text.replace(INVISIBLE_CHARS_REGEX, '')
+
+const normalize_strict: Normalizer = (line) => strip_invisible(line).trim()
+
+const normalize_loose: Normalizer = (line) =>
+  strip_invisible(line).replace(/\s+/g, ' ').trim()
+
+const index_non_blank_lines = (params: {
+  content: string
+  from: number
+  normalize: Normalizer
+}): IndexedLine[] => {
+  const { content, from, normalize } = params
+  const result: IndexedLine[] = []
+  let line_start = from
+
+  while (line_start <= content.length) {
+    let line_end = content.indexOf('\n', line_start)
+    if (line_end == -1) line_end = content.length
+
+    const normalized = normalize(content.slice(line_start, line_end))
+    if (normalized !== '') {
+      let content_end = line_end
+      while (
+        content_end > line_start &&
+        IGNORABLE_CHAR_REGEX.test(content[content_end - 1])
+      ) {
+        content_end--
+      }
+      result.push({ start: line_start, content_end, normalized })
+    }
+
+    line_start = line_end + 1
+  }
+
+  return result
+}
+
+const find_sequence = (lines: IndexedLine[], pattern: string[]): number => {
+  outer: for (let i = 0; i + pattern.length <= lines.length; i++) {
+    for (let k = 0; k < pattern.length; k++) {
+      if (lines[i + k].normalized !== pattern[k]) continue outer
+    }
+    return i
+  }
+  return -1
+}
+
+type BlockMatch = {
+  match_start: number
+  match_end: number
+  matched_before: string
+  matched_after: string
+}
+
+const find_block = (params: {
+  content: string
+  from: number
+  context_before: string[]
+  original: string[]
+  context_after: string[]
+  normalize: Normalizer
+}): BlockMatch | null => {
+  const prepare = (lines: string[]) =>
+    lines.map(params.normalize).filter((l) => l !== '')
+
+  const before = prepare(params.context_before)
+  const original = prepare(params.original)
+  const after = prepare(params.context_after)
+  const pattern = [...before, ...original, ...after]
+
+  if (pattern.length == 0) {
+    return {
+      match_start: params.from,
+      match_end: params.from,
+      matched_before: '',
+      matched_after: ''
+    }
+  }
+
+  const lines = index_non_blank_lines({
+    content: params.content,
+    from: params.from,
+    normalize: params.normalize
+  })
+  const i = find_sequence(lines, pattern)
+  if (i == -1) return null
+
+  const match_start = lines[i].start
+  const match_end = lines[i + pattern.length - 1].content_end
+
+  const matched_before =
+    before.length > 0
+      ? params.content.slice(
+          match_start,
+          lines[i + before.length - 1].content_end
+        )
+      : ''
+
+  const matched_after =
+    after.length > 0
+      ? params.content.slice(
+          lines[i + before.length + original.length].start,
+          match_end
+        )
+      : ''
+
+  return { match_start, match_end, matched_before, matched_after }
 }
 
 export const apply_search_replace_to_content = (params: {
@@ -29,47 +149,19 @@ export const apply_search_replace_to_content = (params: {
         ? next.lines.slice(0, MAX_CONTEXT_LINES)
         : []
 
-    const clean_lines = (lines: string[]) =>
-      lines.filter((l) => l.replace(/[\u200B-\u200F\uFEFF]/g, '').trim() !== '')
-
-    const clean_context_before = clean_lines(context_before)
-    const clean_original = clean_lines(segment.original_lines)
-    const clean_context_after = clean_lines(context_after)
-
-    // Allow invisible characters alongside tabs and spaces
-    const SEPARATOR = '(?:[ \\t\\u200B-\\u200F\\uFEFF]*\\r?\\n){1,5}'
-
-    const build_block_pattern = (lines: string[]) => {
-      return lines
-        .map((line) => {
-          const cleaned = line.replace(/[\u200B-\u200F\uFEFF]/g, '').trim()
-          // Spread operator iterates code points correctly (safeguards emojis/surrogate pairs).
-          // Allow optional zero-width characters anywhere inside the matched line.
-          const flexible = [...cleaned]
-            .map(escape_reg_exp)
-            .join('[\\u200B-\\u200F\\uFEFF]*')
-          return `[ \\t\\u200B-\\u200F\\uFEFF]*${flexible}`
-        })
-        .join(SEPARATOR)
+    // Line-based matching (no giant regex) - avoids stack overflows and
+    // "regular expression too large" errors for long blocks, notably on
+    // Windows where the thread stack is small.
+    const find_params = {
+      content: current_content,
+      from: cursor,
+      context_before,
+      original: segment.original_lines,
+      context_after
     }
-
-    const regex_parts: string[] = []
-
-    if (clean_context_before.length > 0) {
-      regex_parts.push(`(${build_block_pattern(clean_context_before)})`)
-    }
-
-    if (clean_original.length > 0) {
-      regex_parts.push(`(${build_block_pattern(clean_original)})`)
-    }
-
-    if (clean_context_after.length > 0) {
-      regex_parts.push(`(${build_block_pattern(clean_context_after)})`)
-    }
-
-    const regex = new RegExp(regex_parts.join(SEPARATOR))
-    const content_slice = current_content.slice(cursor)
-    const match = regex.exec(content_slice)
+    const match =
+      find_block({ ...find_params, normalize: normalize_strict }) ??
+      find_block({ ...find_params, normalize: normalize_loose })
 
     if (!match) {
       const all_search_lines = [
@@ -86,18 +178,13 @@ export const apply_search_replace_to_content = (params: {
       )
     }
 
-    const match_index = cursor + match.index
-    const matched_text = match[0]
-
-    let group_index = 1
-    const matched_before =
-      clean_context_before.length > 0 ? match[group_index++] : ''
-    if (clean_original.length > 0) group_index++
-    const matched_after =
-      clean_context_after.length > 0 ? match[group_index++] : ''
+    const match_index = match.match_start
+    const matched_length = match.match_end - match.match_start
+    const matched_before = match.matched_before
+    const matched_after = match.matched_after
 
     const updated_text = segment.updated_lines
-      .map((line) => line.replace(/[\u200B-\u200F\uFEFF]/g, ''))
+      .map((line) => strip_invisible(line))
       .join(line_ending)
 
     const replacement_parts: string[] = []
@@ -112,7 +199,7 @@ export const apply_search_replace_to_content = (params: {
     current_content =
       current_content.slice(0, match_index) +
       replacement_text +
-      current_content.slice(match_index + matched_text.length)
+      current_content.slice(match_index + matched_length)
 
     const content_before_after_context = matched_before
       ? matched_before + line_ending + updated_text
