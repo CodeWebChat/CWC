@@ -558,7 +558,7 @@ for i in "${indices[@]}"; do
   if ! run_step "$msg_step_deps" npx --yes pnpm install; then
     echo -e "  \033[33m$msg_deps_retry\033[0m"
     cd "$CWC_DIR"
-    rm -rf "$CWC_DIR"/repository-*
+    rm -rf "$CWC_DIR"/repository*
     npx --yes pnpm store prune > /dev/null 2>&1 || true
     run_step "$msg_step_cloning" clone_repo
     cd "$REPO_DIR"

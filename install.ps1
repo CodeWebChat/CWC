@@ -538,7 +538,7 @@ foreach ($i in $indices) {
     if (-not $depsOk) {
         Write-Host "  $msg_deps_retry" -ForegroundColor Yellow
         Set-Location $cwcDir
-        Get-ChildItem -Path $cwcDir -Filter "repository-*" -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+        Get-ChildItem -Path $cwcDir -Filter "repository*" -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
 
         $prevPreference = $ErrorActionPreference
         $ErrorActionPreference = "Continue"
