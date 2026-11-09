@@ -19,7 +19,10 @@ export const normalize_original_code = (params: {
       .replace(/\r/g, '')
       .replace(/\n/g, '')
 
-    const clean_invisibles = line_normalized.replace(/[\u200B-\u200F\uFEFF]/g, '')
+    const clean_invisibles = line_normalized.replace(
+      /[\u200B-\u200F\uFEFF]/g,
+      ''
+    )
     let line_normalized_processed = clean_invisibles.replace(/\s+/g, '')
 
     if (params.use_strict_whitespace) {
@@ -43,15 +46,21 @@ export const normalize_patch_lines = (params: {
 }): { patch_lines_original: string[]; patch_lines_normalized: string[] } => {
   const patch_lines_original: string[] = []
   const patch_lines_normalized: string[] = []
+  let in_hunk = false
 
   for (let i = 0; i < params.patch_lines.length; i++) {
     let line = params.patch_lines[i]
 
+    if (line.startsWith('@@')) {
+      in_hunk = true
+    }
+
     if (
-      line.startsWith('diff --git') ||
-      line.startsWith('index') ||
-      line.startsWith('---') ||
-      line.startsWith('+++')
+      !in_hunk &&
+      (line.startsWith('diff --git') ||
+        line.startsWith('index') ||
+        line.startsWith('---') ||
+        line.startsWith('+++'))
     ) {
       continue
     }
@@ -65,9 +74,10 @@ export const normalize_patch_lines = (params: {
     }
 
     const cleaned_line = line.replace(/[\u200B-\u200F\uFEFF]/g, '')
-    
+
+    const content_line = line.replace(/[\u200B\uFEFF]/g, '')
     patch_lines_original.push(
-      cleaned_line.startsWith(' ') ? cleaned_line.substring(1, cleaned_line.length) : cleaned_line
+      content_line.startsWith(' ') ? content_line.substring(1) : content_line
     )
 
     let line_normalized = cleaned_line

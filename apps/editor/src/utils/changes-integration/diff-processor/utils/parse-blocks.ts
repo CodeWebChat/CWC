@@ -71,23 +71,23 @@ export const parse_patch_blocks = (params: {
         current_block_has_changes = true
       }
 
-      if (line.startsWith('~nnn') || line.startsWith('-~nnn')) {
+      if (line === '~nnn' || line === '-~nnn') {
         search_chunks.push('~nnn')
       } else {
-        search_chunks.push(line.replace(/^-/, '').replace(/^~/, ''))
+        search_chunks.push(line.substring(1))
       }
 
       current_search_index_tracker = search_chunks.length - 1
 
       if (!line.startsWith('-')) {
-        if (line.startsWith('~nnn')) {
+        if (line === '~nnn') {
           after_search_chunks.push('~nnn')
         } else {
-          after_search_chunks.push(line.replace(/^~/, ''))
+          after_search_chunks.push(line.substring(1))
         }
       }
 
-      if (line.startsWith('~nnn')) {
+      if (line === '~nnn') {
         replace_chunks.push({
           content: line_original.replace(/^~nnn/, '') + '\n',
           search_index: search_chunks.length - 1,

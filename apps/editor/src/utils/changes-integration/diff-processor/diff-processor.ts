@@ -13,11 +13,14 @@ export const apply_diff = (params: {
   use_strict_whitespace?: boolean
 }): string => {
   const original_code_normalized = params.original_code.replace(/\r\n/g, '\n')
+  const uses_crlf = params.original_code.includes('\r\n')
+  const restore_eol = (text: string): string =>
+    uses_crlf ? text.replace(/\n/g, '\r\n') : text
 
   if (original_code_normalized.trim() === '') {
     const empty_file_result = handle_empty_file(params.diff_patch)
     if (empty_file_result !== null) {
-      return empty_file_result
+      return restore_eol(empty_file_result)
     }
   }
 
@@ -60,8 +63,10 @@ export const apply_diff = (params: {
     (a, b) => b.search_block_start_index - a.search_block_start_index
   )
 
-  return apply_blocks({
-    valid_blocks,
-    original_code_lines
-  })
+  return restore_eol(
+    apply_blocks({
+      valid_blocks,
+      original_code_lines
+    })
+  )
 }
