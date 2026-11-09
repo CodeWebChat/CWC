@@ -26,6 +26,7 @@
 
   @include modern-ui {
     width: 10px;
+    transform: translateX(-1px);
   }
 
   &:active {
