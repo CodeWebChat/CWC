@@ -457,6 +457,10 @@ function Invoke-Step {
 
 Write-Host ""
 
+if (!(Get-Command pnpm -ErrorAction SilentlyContinue)) {
+    npm install -g pnpm *>$null
+}
+
 $originalLocation = Get-Location
 
 $cwcDir = Join-Path $env:USERPROFILE ".cwc"
@@ -532,7 +536,7 @@ foreach ($i in $indices) {
     Set-Location $repoDir
 
     $depsOk = Invoke-Step "$msg_step_deps..." {
-        npx.cmd --yes pnpm install *>$null
+        pnpm install *>$null
     }
 
     if (-not $depsOk) {
@@ -542,7 +546,7 @@ foreach ($i in $indices) {
 
         $prevPreference = $ErrorActionPreference
         $ErrorActionPreference = "Continue"
-        try { npx.cmd --yes pnpm store prune *>$null } catch {}
+        try { pnpm store prune *>$null } catch {}
         $ErrorActionPreference = $prevPreference
 
         $null = Invoke-Step "$msg_step_cloning..." {
@@ -552,7 +556,7 @@ foreach ($i in $indices) {
         Set-Location $repoDir
 
         $null = Invoke-Step "$msg_step_deps..." {
-            npx.cmd --yes pnpm install *>$null
+            pnpm install *>$null
         } $msg_step_deps
     }
 
@@ -561,7 +565,7 @@ foreach ($i in $indices) {
     Remove-Item *.vsix -Force -ErrorAction SilentlyContinue
 
     $null = Invoke-Step "$msg_step_build..." {
-        npx.cmd --yes pnpm run build *>$null
+        pnpm run build *>$null
     } $msg_step_build
 
     $vsixFile = Get-ChildItem *.vsix -ErrorAction SilentlyContinue | Select-Object -First 1

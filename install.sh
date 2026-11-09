@@ -492,6 +492,10 @@ run_step() {
 
 echo ""
 
+if ! command -v pnpm >/dev/null 2>&1; then
+  npm install -g pnpm >/dev/null 2>&1 || true
+fi
+
 CWC_DIR="$HOME/.cwc"
 
 mkdir -p -m 700 "$CWC_DIR"
@@ -555,21 +559,21 @@ for i in "${indices[@]}"; do
 
   cd "$REPO_DIR"
 
-  if ! run_step "$msg_step_deps" npx --yes pnpm install; then
+  if ! run_step "$msg_step_deps" pnpm install; then
     echo -e "  \033[33m$msg_deps_retry\033[0m"
     cd "$CWC_DIR"
     rm -rf "$CWC_DIR"/repository*
-    npx --yes pnpm store prune > /dev/null 2>&1 || true
+    pnpm store prune > /dev/null 2>&1 || true
     run_step "$msg_step_cloning" clone_repo
     cd "$REPO_DIR"
-    run_step "$msg_step_deps" npx --yes pnpm install
+    run_step "$msg_step_deps" pnpm install
   fi
 
   cd apps/editor
 
   rm -f ./*.vsix
 
-  run_step "$msg_step_build" npx --yes pnpm run build
+  run_step "$msg_step_build" pnpm run build
 
   vsix_files=(*.vsix)
   VSIX_FILE="${vsix_files[0]}"
