@@ -580,10 +580,6 @@ if (!$vsixFile) {
 $indices = if ($installAll) { 0..($availableEditors.Count - 1) } else { $selectedIndex }
 foreach ($i in $indices) {
     $editor = $availableEditors[$i]
-    
-    if ($installAll) {
-        Write-Host "`n=== $($editor.Name) ===" -ForegroundColor Cyan
-    }
 
     $ok = Invoke-Step "$msg_step_install $($editor.Name)..." {
         & $editor.Cmd --install-extension $vsixFile.FullName --force *>$null

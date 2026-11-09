@@ -543,10 +543,6 @@ for i in "${indices[@]}"; do
   editor_cmd="${EDITOR_CMDS[$i]}"
   editor_scheme="${EDITOR_SCHEMES[$i]}"
 
-  if [[ "$choice" == [aA] ]]; then
-    echo -e "\n\033[36m=== $editor_name ===\033[0m"
-  fi
-
   REPO_DIR="$CWC_DIR/repository-${editor_scheme}"
 
   is_update=false
