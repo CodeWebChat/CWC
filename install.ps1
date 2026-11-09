@@ -30,6 +30,7 @@ while ($i -lt $args.Count) {
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue
 $targetScheme = $editor
 $tagName = $tag
 
