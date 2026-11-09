@@ -6,9 +6,7 @@ const IGNORABLE_CHAR_REGEX = /[\s\u200B-\u200F\uFEFF]/
 type Normalizer = (line: string) => string
 
 type IndexedLine = {
-  // Absolute offset of the line start (including leading whitespace)
   start: number
-  // Absolute offset right after the last visible character of the line
   content_end: number
   normalized: string
 }
@@ -224,9 +222,6 @@ export const apply_search_replace_to_content = (params: {
         ? next.lines.slice(0, MAX_CONTEXT_LINES)
         : []
 
-    // Line-based matching (no giant regex) - avoids stack overflows and
-    // "regular expression too large" errors for long blocks, notably on
-    // Windows where the thread stack is small.
     const find_params = {
       content: current_content,
       from: cursor,
