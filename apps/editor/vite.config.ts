@@ -197,9 +197,7 @@ const create_view_config = (
     },
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "${path
-          .resolve(ui_dir, 'styles/foundation')
-          .replace(/\\/g, '/')}" as *;`
+        additionalData: `@use "@ui/styles/foundation" as *;`
       }
     }
   },
