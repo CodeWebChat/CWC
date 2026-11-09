@@ -405,6 +405,8 @@ $idx = [Array]::IndexOf(@($availableEditors.Scheme), $targetScheme)
 
 if ($targetScheme -and $idx -ge 0) {
     $selectedIndex = $idx
+} elseif ($targetScheme -eq "all") {
+    $installAll = $true
 } else {
     Write-Host ""
     for ($i = 0; $i -lt $availableEditors.Count; $i++) {
@@ -493,86 +495,92 @@ if (!(Test-Path $cwcDir)) {
     New-Item -ItemType Directory -Path $cwcDir | Out-Null
 }
 
-$indices = if ($installAll) { 0..($availableEditors.Count - 1) } else { $selectedIndex }
-foreach ($i in $indices) {
-    $editor = $availableEditors[$i]
+if ($installAll) {
+    $repoDir = Join-Path $cwcDir "repository"
+} else {
+    $editor = $availableEditors[$selectedIndex]
     $repoDir = Join-Path $cwcDir "repository-$($editor.Scheme)"
+}
 
-    if ($installAll) {
-        Write-Host "`n=== $($editor.Name) ===" -ForegroundColor Cyan
-    }
-
-    $updated = $false
-    if (Test-Path (Join-Path $repoDir ".git")) {
-        $updated = Invoke-Step "$msg_step_cloning..." {
-            git -C $repoDir fetch origin --tags --quiet *>$null
-            if ($LASTEXITCODE -ne 0) { throw "Failed to fetch" }
-            if ($tagName) {
-                git -C $repoDir checkout $tagName --quiet *>$null
-                if ($LASTEXITCODE -ne 0) { throw "Failed to checkout" }
+$updated = $false
+if (Test-Path (Join-Path $repoDir ".git")) {
+    $updated = Invoke-Step "$msg_step_cloning..." {
+        git -C $repoDir fetch origin --tags --quiet *>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to fetch" }
+        if ($tagName) {
+            git -C $repoDir checkout $tagName --quiet *>$null
+            if ($LASTEXITCODE -ne 0) { throw "Failed to checkout" }
+        } else {
+            $latestTag = git -C $repoDir tag -l '*-vscode' --sort=-creatordate | Select-Object -First 1
+            if ($latestTag) {
+                git -C $repoDir checkout $latestTag --quiet *>$null
+                if ($LASTEXITCODE -ne 0) { throw "Failed to checkout latest tag" }
             } else {
-                $latestTag = git -C $repoDir tag -l '*-vscode' --sort=-creatordate | Select-Object -First 1
-                if ($latestTag) {
-                    git -C $repoDir checkout $latestTag --quiet *>$null
-                    if ($LASTEXITCODE -ne 0) { throw "Failed to checkout latest tag" }
-                } else {
-                    git -C $repoDir reset --hard origin/main --quiet *>$null
-                    if ($LASTEXITCODE -ne 0) { throw "Failed to reset" }
-                }
+                git -C $repoDir reset --hard origin/main --quiet *>$null
+                if ($LASTEXITCODE -ne 0) { throw "Failed to reset" }
             }
-            git -C $repoDir clean -fd --quiet *>$null
-            if ($LASTEXITCODE -ne 0) { throw "Failed to clean" }
-        } $msg_step_cloning
-    }
-
-    if (-not $updated) {
-        if (Test-Path $repoDir) {
-            Remove-Item -Path $repoDir -Recurse -Force -ErrorAction SilentlyContinue
         }
-        $null = Invoke-Step "$msg_step_cloning..." {
-            Clone-Repo
-        } $msg_step_cloning
+        git -C $repoDir clean -fd --quiet *>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to clean" }
+    } $msg_step_cloning
+}
+
+if (-not $updated) {
+    if (Test-Path $repoDir) {
+        Remove-Item -Path $repoDir -Recurse -Force -ErrorAction SilentlyContinue
     }
+    $null = Invoke-Step "$msg_step_cloning..." {
+        Clone-Repo
+    } $msg_step_cloning
+}
+
+Set-Location $repoDir
+
+$depsOk = Invoke-Step "$msg_step_deps..." {
+    pnpm install *>$null
+}
+
+if (-not $depsOk) {
+    Write-Host "  $msg_deps_retry" -ForegroundColor Yellow
+    Set-Location $cwcDir
+    Remove-Item -Path $repoDir -Recurse -Force -ErrorAction SilentlyContinue
+
+    $prevPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try { pnpm store prune *>$null } catch {}
+    $ErrorActionPreference = $prevPreference
+
+    $null = Invoke-Step "$msg_step_cloning..." {
+        Clone-Repo
+    } $msg_step_cloning
 
     Set-Location $repoDir
 
-    $depsOk = Invoke-Step "$msg_step_deps..." {
+    $null = Invoke-Step "$msg_step_deps..." {
         pnpm install *>$null
-    }
+    } $msg_step_deps
+}
 
-    if (-not $depsOk) {
-        Write-Host "  $msg_deps_retry" -ForegroundColor Yellow
-        Set-Location $cwcDir
-        Get-ChildItem -Path $cwcDir -Filter "repository*" -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+Set-Location apps/editor
 
-        $prevPreference = $ErrorActionPreference
-        $ErrorActionPreference = "Continue"
-        try { pnpm store prune *>$null } catch {}
-        $ErrorActionPreference = $prevPreference
+Remove-Item *.vsix -Force -ErrorAction SilentlyContinue
 
-        $null = Invoke-Step "$msg_step_cloning..." {
-            Clone-Repo
-        } $msg_step_cloning
+$null = Invoke-Step "$msg_step_build..." {
+    pnpm run build *>$null
+} $msg_step_build
 
-        Set-Location $repoDir
+$vsixFile = Get-ChildItem *.vsix -ErrorAction SilentlyContinue | Select-Object -First 1
 
-        $null = Invoke-Step "$msg_step_deps..." {
-            pnpm install *>$null
-        } $msg_step_deps
-    }
+if (!$vsixFile) {
+    Fail $msg_vsix_error
+}
 
-    Set-Location apps/editor
-
-    Remove-Item *.vsix -Force -ErrorAction SilentlyContinue
-
-    $null = Invoke-Step "$msg_step_build..." {
-        pnpm run build *>$null
-    } $msg_step_build
-
-    $vsixFile = Get-ChildItem *.vsix -ErrorAction SilentlyContinue | Select-Object -First 1
-
-    if (!$vsixFile) {
-        Fail $msg_vsix_error
+$indices = if ($installAll) { 0..($availableEditors.Count - 1) } else { $selectedIndex }
+foreach ($i in $indices) {
+    $editor = $availableEditors[$i]
+    
+    if ($installAll) {
+        Write-Host "`n=== $($editor.Name) ===" -ForegroundColor Cyan
     }
 
     $ok = Invoke-Step "$msg_step_install $($editor.Name)..." {
@@ -587,8 +595,6 @@ foreach ($i in $indices) {
     } else {
         Write-Host "$msg_error $msg_install_fail $($editor.Name)." -ForegroundColor Red
     }
-
-    Set-Location $originalLocation
 }
 
 } finally {
