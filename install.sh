@@ -535,7 +535,7 @@ for i in "${indices[@]}"; do
 
   cd "$REPO_DIR"
 
-  run_step "$msg_step_deps" npx --yes pnpm install
+  run_step "$msg_step_deps" npx --yes pnpm install --force
 
   cd apps/editor
 
