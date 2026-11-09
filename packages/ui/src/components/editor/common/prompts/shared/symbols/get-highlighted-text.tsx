@@ -196,12 +196,12 @@ export const get_highlighted_text = (params: {
       const image_match = part.match(/^#Image\(([a-fA-F0-9]+)\)$/)
       if (part && image_match) {
         const hash = image_match[1]
-        const is_warning = params.is_web_target
+        const is_disabled = params.is_web_target
         return `<span class="${cn(styles['symbol'], styles['symbol--image'], {
-          [styles['symbol--error']]: is_warning,
+          [styles['symbol--disabled']]: is_disabled,
           [styles['symbol--non-interactive']]: !interactive_text
         })}" data-type="image-symbol" data-hash="${hash}"${
-          is_warning
+          is_disabled
             ? ' title="The prompt autofill feature can\'t handle images.\nUpload in chatbot or use API with a multimodal model."'
             : ''
         }><span class="${
