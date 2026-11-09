@@ -506,7 +506,7 @@ foreach ($i in $indices) {
     Set-Location $repoDir
 
     $null = Invoke-Step "$msg_step_deps..." {
-        npx.cmd --yes pnpm install --force *>$null
+        npx.cmd --yes pnpm install *>$null
     } $msg_step_deps
 
     Set-Location apps/editor
