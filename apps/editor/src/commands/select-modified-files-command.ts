@@ -34,7 +34,7 @@ export const select_modified_files_command = (
         }
 
         if (git_api.repositories.length === 0) {
-          vscode.window.showInformationMessage(
+          vscode.window.showWarningMessage(
             t('common.warning.no-git-repository-found')
           )
           return
