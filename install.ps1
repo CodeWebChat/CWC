@@ -33,6 +33,8 @@ $ProgressPreference = "SilentlyContinue"
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue
 $targetScheme = $editor
 $tagName = $tag
+$installAll = $false
+$selectedIndex = -1
 
 $msg_error="Error:"
 $msg_git_required="git is required but not installed."
