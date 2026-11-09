@@ -1129,6 +1129,26 @@
             ]
           }
         },
+        "codeWebChat.targetsOrder": {
+          "type": "array",
+          "scope": "application",
+          "items": {
+            "type": "string",
+            "enum": [
+              "WEB",
+              "API",
+              "CLI"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 3,
+          "maxItems": 3,
+          "default": [
+            "WEB",
+            "API",
+            "CLI"
+          ]
+        },
         "codeWebChat.forwardedPorts": {
           "type": "array",
           "scope": "application",

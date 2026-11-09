@@ -87,7 +87,9 @@ export const Prompt = () => {
     handle_commit_click,
     handle_skill_click,
     handle_agentic_search,
-    update_info
+    update_info,
+    targets_order,
+    handle_targets_reorder
   } = use_panel(vscode)
 
   const {
@@ -399,6 +401,7 @@ export const Prompt = () => {
                 on_commit_click={handle_commit_click}
                 on_skill_click={handle_skill_click}
                 on_agentic_search={handle_agentic_search}
+                targets_order={targets_order}
               />
             </div>
             <div
@@ -410,6 +413,8 @@ export const Prompt = () => {
                 vscode={vscode}
                 is_active={active_view === 'home'}
                 is_connected={is_connected}
+                targets_order={targets_order}
+                on_targets_reorder={handle_targets_reorder}
                 web_prompt_type={web_prompt_type}
                 api_prompt_type={api_prompt_type}
                 cli_prompt_type={cli_prompt_type}

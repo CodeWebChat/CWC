@@ -658,6 +658,20 @@ export interface UpdateExtensionMessage extends BaseMessage {
   command: 'UPDATE_EXTENSION'
 }
 
+export interface GetTargetsOrderMessage extends BaseMessage {
+  command: 'GET_TARGETS_ORDER'
+}
+
+export interface SaveTargetsOrderMessage extends BaseMessage {
+  command: 'SAVE_TARGETS_ORDER'
+  targets_order: Target[]
+}
+
+export interface TargetsOrderMessage extends BaseMessage {
+  command: 'TARGETS_ORDER'
+  targets_order: Target[]
+}
+
 export type FrontendMessage =
   | GetInstructionsMessage
   | SaveInstructionsMessage
@@ -769,6 +783,8 @@ export type FrontendMessage =
   | ClearCompletedTasksMessage
   | UpdateExtensionMessage
   | GetUpdateInfoMessage
+  | GetTargetsOrderMessage
+  | SaveTargetsOrderMessage
 
 // === FROM BACKEND TO FRONTEND ===
 export interface InstructionsMessage extends BaseMessage {
@@ -1106,3 +1122,4 @@ export type BackendMessage =
   | SelectedAgentConfigurationChangedMessage
   | CompletedTasksMessage
   | UpdateInfoMessage
+  | TargetsOrderMessage

@@ -438,7 +438,10 @@ export const Footer: React.FC<Props> = (props) => {
                   className={styles['footer__right__target-switch__dropdown']}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {(['WEB', 'API', 'CLI'] as Target[]).map((t, idx) => (
+                  {(
+                    props.props.targets_order ||
+                    (['WEB', 'API', 'CLI'] as Target[])
+                  ).map((t, idx) => (
                     <button
                       key={t}
                       className={

@@ -21,7 +21,7 @@ import {
   config_cli_configuration_to_ui_format,
   ConfigAgentConfigurationFormat
 } from '@/utils/cli-configuration-format-converters'
-import { Target } from '@shared/types/target'
+import { Target, TARGET } from '@shared/types/target'
 import {
   ApiPromptType,
   WebPromptType,
@@ -196,6 +196,14 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
     })
   }
 
+  send_targets_order() {
+    const config = vscode.workspace.getConfiguration('codeWebChat')
+    this.send_message({
+      command: 'TARGETS_ORDER',
+      targets_order: config.get<Target[]>('targetsOrder', [...TARGET])
+    })
+  }
+
   constructor(params: {
     extension_uri: vscode.Uri
     workspace_provider: WorkspaceProvider
@@ -339,6 +347,10 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
 
         if (event.affectsConfiguration('workbench.experimental.modernUI')) {
           this._send_is_modern_ui()
+        }
+
+        if (event.affectsConfiguration('codeWebChat.targetsOrder')) {
+          this.send_targets_order()
         }
 
         if (event.affectsConfiguration('codeWebChat.agents')) {
@@ -846,6 +858,10 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
             await handlers.handle_clear_completed_tasks(this)
           } else if (message.command === 'UPDATE_EXTENSION') {
             handlers.handle_update_extension(this)
+          } else if (message.command === 'GET_TARGETS_ORDER') {
+            this.send_targets_order()
+          } else if (message.command === 'SAVE_TARGETS_ORDER') {
+            await handlers.handle_save_targets_order(message)
           } else if (message.command === 'GET_UPDATE_INFO') {
             this.send_message({
               command: 'UPDATE_INFO',

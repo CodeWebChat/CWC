@@ -3,6 +3,8 @@ import styles from './Home.module.scss'
 import { Scrollable as UiScrollable } from '@ui/components/editor/common/Scrollable'
 import { Tabs as UiTabs } from '@ui/components/editor/prompt-view/Tabs'
 import { TargetButton as UiTargetButton } from '@ui/components/editor/prompt-view/TargetButton'
+import { TargetButtons as UiTargetButtons } from '@ui/components/editor/prompt-view/TargetButtons'
+import { Target } from '@shared/types/target'
 import cn from 'classnames'
 import { post_message } from '../utils/post-message'
 import { BackendMessage } from '@/views/prompt/types/messages'
@@ -37,6 +39,8 @@ type Props = {
   api_prompt_type: ApiPromptType
   cli_prompt_type: CliPromptType
   update_info: UpdateInfo
+  targets_order: Target[]
+  on_targets_reorder: (new_order: Target[]) => void
 }
 
 export const Home: React.FC<Props> = (props) => {
@@ -46,8 +50,9 @@ export const Home: React.FC<Props> = (props) => {
   const { has_scrolled_past_target_button, target_ref, handle_scroll } =
     use_has_scrolled_past_target_button(props.is_active)
 
-  const { is_alt_pressed } = use_keyboard_shortcuts({
+  const { is_alt_pressed, clear_keys } = use_keyboard_shortcuts({
     is_active: props.is_active,
+    targets_order: props.targets_order,
     on_chatbots_click: props.on_chatbots_click,
     on_api_calls_click: props.on_api_calls_click,
     on_cli_calls_click: props.on_cli_calls_click
@@ -87,6 +92,49 @@ export const Home: React.FC<Props> = (props) => {
     window.addEventListener('message', handle_message)
     return () => window.removeEventListener('message', handle_message)
   }, [])
+
+  const target_items: Record<
+    Target,
+    Omit<UiTargetButtons.Item<Target>, 'keycap_char'>
+  > = {
+    WEB: {
+      id: 'WEB',
+      label: 'WEB',
+      description: props.is_connected
+        ? t('home.target.web.description-connected')
+        : t('home.target.web.description'),
+      on_click: () => {
+        clear_keys()
+        props.on_chatbots_click()
+      },
+      hover_color: props.web_prompt_type === 'edit' ? 'blue' : 'purple'
+    },
+    API: {
+      id: 'API',
+      label: 'API',
+      description: t('home.target.api.description'),
+      on_click: () => {
+        clear_keys()
+        props.on_api_calls_click()
+      },
+      hover_color: props.api_prompt_type === 'edit' ? 'blue' : 'purple'
+    },
+    CLI: {
+      id: 'CLI',
+      label: 'CLI',
+      description: t('home.target.cli.description'),
+      on_click: () => {
+        clear_keys()
+        props.on_cli_calls_click()
+      },
+      hover_color: props.cli_prompt_type === 'edit' ? 'blue' : 'purple'
+    }
+  }
+
+  const ordered_target_items = props.targets_order.map((target, index) => ({
+    ...target_items[target],
+    keycap_char: is_alt_pressed ? (index + 1).toString() : undefined
+  }))
 
   const header = (
     <div className={styles.header}>
@@ -133,27 +181,16 @@ export const Home: React.FC<Props> = (props) => {
           [styles['header__targets--visible']]: has_scrolled_past_target_button
         })}
       >
-        <UiTargetButton
-          label="WEB"
-          on_click={props.on_chatbots_click}
-          is_compact
-          hover_color={props.web_prompt_type === 'edit' ? 'blue' : 'purple'}
-          keycap_char={is_alt_pressed ? '1' : undefined}
-        />
-        <UiTargetButton
-          label="API"
-          on_click={props.on_api_calls_click}
-          is_compact
-          hover_color={props.api_prompt_type === 'edit' ? 'blue' : 'purple'}
-          keycap_char={is_alt_pressed ? '2' : undefined}
-        />
-        <UiTargetButton
-          label="CLI"
-          on_click={props.on_cli_calls_click}
-          is_compact
-          hover_color={props.cli_prompt_type === 'edit' ? 'blue' : 'purple'}
-          keycap_char={is_alt_pressed ? '3' : undefined}
-        />
+        {ordered_target_items.map((item) => (
+          <UiTargetButton
+            key={item.id}
+            label={item.label}
+            on_click={item.on_click}
+            is_compact
+            hover_color={item.hover_color}
+            keycap_char={item.keycap_char}
+          />
+        ))}
       </div>
     </div>
   )
@@ -208,30 +245,9 @@ export const Home: React.FC<Props> = (props) => {
 
   const targets_section = (
     <div className={styles.inner__target} ref={target_ref}>
-      <UiTargetButton
-        label="WEB"
-        description={
-          props.is_connected
-            ? t('home.target.web.description-connected')
-            : t('home.target.web.description')
-        }
-        on_click={props.on_chatbots_click}
-        hover_color={props.web_prompt_type === 'edit' ? 'blue' : 'purple'}
-        keycap_char={is_alt_pressed ? '1' : undefined}
-      />
-      <UiTargetButton
-        label="API"
-        description={t('home.target.api.description')}
-        on_click={props.on_api_calls_click}
-        hover_color={props.api_prompt_type === 'edit' ? 'blue' : 'purple'}
-        keycap_char={is_alt_pressed ? '2' : undefined}
-      />
-      <UiTargetButton
-        label="CLI"
-        description={t('home.target.cli.description')}
-        on_click={props.on_cli_calls_click}
-        hover_color={props.cli_prompt_type === 'edit' ? 'blue' : 'purple'}
-        keycap_char={is_alt_pressed ? '3' : undefined}
+      <UiTargetButtons
+        items={ordered_target_items}
+        on_reorder={props.on_targets_reorder}
       />
     </div>
   )

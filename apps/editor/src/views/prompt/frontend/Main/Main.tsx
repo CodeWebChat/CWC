@@ -91,6 +91,7 @@ type Props = {
   on_skill_click?: (agent: string, repo: string, skill_name: string) => void
   on_agentic_search: () => void
   has_update?: boolean
+  targets_order: Target[]
 }
 
 export const Main: React.FC<Props> = (props) => {
@@ -760,6 +761,7 @@ export const Main: React.FC<Props> = (props) => {
       on_task_completed={handle_task_completed}
       on_clear_completed_tasks={handle_clear_completed_tasks}
       has_update={props.has_update}
+      targets_order={props.targets_order}
     />
   )
 }

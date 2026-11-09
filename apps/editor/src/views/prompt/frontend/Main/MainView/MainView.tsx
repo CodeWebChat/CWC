@@ -155,6 +155,7 @@ type Props = {
   on_task_completed: () => void
   on_clear_completed_tasks: () => void
   has_update?: boolean
+  targets_order: Target[]
 }
 
 const chatbot_to_icon: Record<keyof typeof CHATBOTS, Icon.Variant> = {
@@ -529,6 +530,7 @@ export const MainView: React.FC<Props> = (props) => {
           are_keyboard_shortcuts_disabled={
             props.are_keyboard_shortcuts_disabled
           }
+          targets_order={props.targets_order}
           completed_tasks={is_edit_prompt_type ? props.completed_tasks : []}
           on_task_completed={
             is_edit_prompt_type ? props.on_task_completed : undefined

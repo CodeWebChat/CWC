@@ -41,21 +41,23 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
         !e.ctrlKey &&
         !e.metaKey
       ) {
+        const targets_order = props.targets_order || ['WEB', 'API', 'CLI']
+
         if (e.code === 'Digit1') {
           e.preventDefault()
-          props.on_target_change?.('WEB')
+          props.on_target_change?.(targets_order[0])
           update_alt_pressed(false)
           return
         }
         if (e.code === 'Digit2') {
           e.preventDefault()
-          props.on_target_change?.('API')
+          props.on_target_change?.(targets_order[1])
           update_alt_pressed(false)
           return
         }
         if (e.code === 'Digit3') {
           e.preventDefault()
-          props.on_target_change?.('CLI')
+          props.on_target_change?.(targets_order[2])
           update_alt_pressed(false)
           return
         }

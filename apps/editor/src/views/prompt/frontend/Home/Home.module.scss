@@ -125,13 +125,13 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    margin: 0 12px;
+    margin-right: 12px;
     overflow: hidden;
     border-radius: 10px;
     position: relative;
 
     @include modern-ui {
-      margin: 0 10px;
+      margin-right: 10px;
     }
 
     > button {

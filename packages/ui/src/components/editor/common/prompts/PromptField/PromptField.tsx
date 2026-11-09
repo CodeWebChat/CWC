@@ -96,6 +96,7 @@ export namespace PromptField {
     is_copy_only?: boolean
     target: Target
     on_target_change: (target: Target) => void
+    targets_order?: Target[]
     active_border_color?: 'blue' | 'purple' | 'yellow'
     are_keyboard_shortcuts_disabled?: boolean
     completed_tasks: string[]
