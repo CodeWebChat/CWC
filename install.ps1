@@ -49,6 +49,7 @@ $msg_step_install="Installing to"
 $msg_vsix_error="VSIX file was not generated."
 $msg_install_fail="Failed to install to"
 $msg_success="Successfully installed to"
+$msg_deps_retry="Dependency installation failed. Cleaning up and retrying..."
 
 switch -Regex ($lang) {
     "^pl" {
@@ -68,6 +69,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="Plik VSIX nie został wygenerowany."
         $msg_install_fail="Nie udało się zainstalować w"
         $msg_success="Pomyślnie zainstalowano w"
+        $msg_deps_retry="Instalacja zależności nie powiodła się. Czyszczenie i ponawianie próby..."
         break
     }
     "^zh-(tw|hk)" {
@@ -87,6 +89,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="未產生 VSIX 檔案。"
         $msg_install_fail="無法安裝至"
         $msg_success="成功安裝至"
+        $msg_deps_retry="依賴套件安裝失敗。正在清理並重試..."
         break
     }
     "^zh" {
@@ -106,6 +109,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="未生成 VSIX 文件。"
         $msg_install_fail="未能安装到"
         $msg_success="成功安装到"
+        $msg_deps_retry="依赖安装失败。正在清理并重试..."
         break
     }
     "^ja" {
@@ -125,6 +129,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="VSIXファイルが生成されませんでした。"
         $msg_install_fail="インストールに失敗しました:"
         $msg_success="正常にインストールされました:"
+        $msg_deps_retry="依存関係のインストールに失敗しました。クリーンアップして再試行中..."
         break
     }
     "^de" {
@@ -144,6 +149,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="VSIX-Datei wurde nicht generiert."
         $msg_install_fail="Fehler bei der Installation in"
         $msg_success="Erfolgreich installiert in"
+        $msg_deps_retry="Fehler bei der Installation der Abhängigkeiten. Aufräumen und erneuter Versuch..."
         break
     }
     "^es" {
@@ -163,6 +169,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="No se generó el archivo VSIX."
         $msg_install_fail="Fallo al instalar en"
         $msg_success="Instalado correctamente en"
+        $msg_deps_retry="La instalación de dependencias falló. Limpiando y reintentando..."
         break
     }
     "^fr" {
@@ -182,6 +189,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="Le fichier VSIX n'a pas été généré."
         $msg_install_fail="Échec de l'installation sur"
         $msg_success="Installé avec succès sur"
+        $msg_deps_retry="L'installation des dépendances a échoué. Nettoyage et nouvelle tentative..."
         break
     }
     "^pt" {
@@ -201,6 +209,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="O arquivo VSIX não foi gerado."
         $msg_install_fail="Falha ao instalar no"
         $msg_success="Instalado com sucesso no"
+        $msg_deps_retry="A instalação das dependências falhou. Limpando e tentando novamente..."
         break
     }
     "^ru" {
@@ -220,6 +229,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="Файл VSIX не был сгенерирован."
         $msg_install_fail="Не удалось установить в"
         $msg_success="Успешно установлено в"
+        $msg_deps_retry="Сбой установки зависимостей. Очистка и повторная попытка..."
         break
     }
     "^ko" {
@@ -239,6 +249,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="VSIX 파일이 생성되지 않았습니다."
         $msg_install_fail="설치 실패:"
         $msg_success="성공적으로 설치되었습니다:"
+        $msg_deps_retry="종속성 설치에 실패했습니다. 정리 및 재시도 중..."
         break
     }
     "^it" {
@@ -258,6 +269,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="Il file VSIX non è stato generato."
         $msg_install_fail="Installazione non riuscita su"
         $msg_success="Installato con successo su"
+        $msg_deps_retry="Installazione delle dipendenze non riuscita. Pulizia e nuovo tentativo..."
         break
     }
     "^tr" {
@@ -277,6 +289,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="VSIX dosyası oluşturulmadı."
         $msg_install_fail="Şuraya kurulum başarısız:"
         $msg_success="Şuraya başarıyla kuruldu:"
+        $msg_deps_retry="Bağımlılık yüklemesi başarısız oldu. Temizleniyor ve yeniden deneniyor..."
         break
     }
     "^cs" {
@@ -285,7 +298,7 @@ switch -Regex ($lang) {
         $msg_node_required="Nepodařilo se najít kompatibilní verzi Node.js a žádný podporovaný správce verzí (fnm, nvm) ji nedokázal přepnout."
         $msg_no_editors="Ve vaší proměnné PATH nebyly nalezeny žádné podporované editory."
         $msg_invalid="Neplatná volba. Ukončování."
-        $msg_all_editors="Všechny zjištěěné editory"
+        $msg_all_editors="Všechny zjištěné editory"
         $msg_quit="Ukončit"
         $msg_select_install="Vyberte, kam nainstalovat CWC: "
         $msg_cancelled="Instalace zrušena."
@@ -296,6 +309,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="Soubor VSIX nebyl vygenerován."
         $msg_install_fail="Nepodařilo se nainstalovat do"
         $msg_success="Úspěšně nainstalováno do"
+        $msg_deps_retry="Instalace závislostí selhala. Probíhá čištění a nový pokus..."
         break
     }
     "^hu" {
@@ -315,6 +329,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="A VSIX fájl nem jött létre."
         $msg_install_fail="Nem sikerült telepíteni ide:"
         $msg_success="Sikeresen telepítve ide:"
+        $msg_deps_retry="A függőségek telepítése sikertelen. Tisztítás és újrapróbálkozás..."
         break
     }
     "^bg" {
@@ -334,6 +349,7 @@ switch -Regex ($lang) {
         $msg_vsix_error="VSIX файлът не бе създаден."
         $msg_install_fail="Неуспешно инсталиране в"
         $msg_success="Успешно инсталирано в"
+        $msg_deps_retry="Инсталирането на зависимостите е неуспешно. Почистване и нов опит..."
         break
     }
 }
@@ -445,6 +461,27 @@ $originalLocation = Get-Location
 
 $cwcDir = Join-Path $env:USERPROFILE ".cwc"
 
+function Clone-Repo {
+    git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git $repoDir *>$null
+    if ($LASTEXITCODE -ne 0) {
+        if (Test-Path $repoDir) {
+            Remove-Item -Path $repoDir -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git $repoDir *>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to clone" }
+    }
+    if ($tagName) {
+        git -C $repoDir checkout $tagName --quiet *>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to checkout" }
+    } else {
+        $latestTag = git -C $repoDir tag -l '*-vscode' --sort=-creatordate | Select-Object -First 1
+        if ($latestTag) {
+            git -C $repoDir checkout $latestTag --quiet *>$null
+            if ($LASTEXITCODE -ne 0) { throw "Failed to checkout latest tag" }
+        }
+    }
+}
+
 try {
 
 if (!(Test-Path $cwcDir)) {
@@ -488,26 +525,36 @@ foreach ($i in $indices) {
             Remove-Item -Path $repoDir -Recurse -Force -ErrorAction SilentlyContinue
         }
         $null = Invoke-Step "$msg_step_cloning..." {
-            git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git $repoDir *>$null
-            if ($LASTEXITCODE -ne 0) { throw "Failed to clone" }
-            if ($tagName) {
-                git -C $repoDir checkout $tagName --quiet *>$null
-                if ($LASTEXITCODE -ne 0) { throw "Failed to checkout" }
-            } else {
-                $latestTag = git -C $repoDir tag -l '*-vscode' --sort=-creatordate | Select-Object -First 1
-                if ($latestTag) {
-                    git -C $repoDir checkout $latestTag --quiet *>$null
-                    if ($LASTEXITCODE -ne 0) { throw "Failed to checkout latest tag" }
-                }
-            }
+            Clone-Repo
         } $msg_step_cloning
     }
 
     Set-Location $repoDir
 
-    $null = Invoke-Step "$msg_step_deps..." {
+    $depsOk = Invoke-Step "$msg_step_deps..." {
         npx.cmd --yes pnpm install *>$null
-    } $msg_step_deps
+    }
+
+    if (-not $depsOk) {
+        Write-Host "  $msg_deps_retry" -ForegroundColor Yellow
+        Set-Location $cwcDir
+        Get-ChildItem -Path $cwcDir -Filter "repository-*" -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+
+        $prevPreference = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        try { npx.cmd --yes pnpm store prune *>$null } catch {}
+        $ErrorActionPreference = $prevPreference
+
+        $null = Invoke-Step "$msg_step_cloning..." {
+            Clone-Repo
+        } $msg_step_cloning
+
+        Set-Location $repoDir
+
+        $null = Invoke-Step "$msg_step_deps..." {
+            npx.cmd --yes pnpm install *>$null
+        } $msg_step_deps
+    }
 
     Set-Location apps/editor
 

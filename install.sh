@@ -32,6 +32,7 @@ msg_step_install="Installing to"
 msg_vsix_error="VSIX file was not generated."
 msg_install_fail="Failed to install to"
 msg_success="Successfully installed to"
+msg_deps_retry="Dependency installation failed. Cleaning up and retrying..."
 
 case "$LANGUAGE" in
   pl*)
@@ -53,6 +54,7 @@ case "$LANGUAGE" in
     msg_vsix_error="Plik VSIX nie został wygenerowany."
     msg_install_fail="Nie udało się zainstalować w"
     msg_success="Pomyślnie zainstalowano w"
+    msg_deps_retry="Instalacja zależności nie powiodła się. Czyszczenie i ponawianie próby..."
     ;;
   zh-tw* | zh-hk*)
     msg_error="錯誤："
@@ -73,6 +75,7 @@ case "$LANGUAGE" in
     msg_vsix_error="未產生 VSIX 檔案。"
     msg_install_fail="無法安裝至"
     msg_success="成功安裝至"
+    msg_deps_retry="依賴套件安裝失敗。正在清理並重試..."
     ;;
   zh*)
     msg_error="错误："
@@ -93,6 +96,7 @@ case "$LANGUAGE" in
     msg_vsix_error="未生成 VSIX 文件。"
     msg_install_fail="未能安装到"
     msg_success="成功安装到"
+    msg_deps_retry="依赖安装失败。正在清理并重试..."
     ;;
   ja*)
     msg_error="エラー:"
@@ -113,6 +117,7 @@ case "$LANGUAGE" in
     msg_vsix_error="VSIXファイルが生成されませんでした。"
     msg_install_fail="インストールに失敗しました:"
     msg_success="正常にインストールされました:"
+    msg_deps_retry="依存関係のインストールに失敗しました。クリーンアップして再試行中..."
     ;;
   de*)
     msg_error="Fehler:"
@@ -133,6 +138,7 @@ case "$LANGUAGE" in
     msg_vsix_error="VSIX-Datei wurde nicht generiert."
     msg_install_fail="Fehler bei der Installation in"
     msg_success="Erfolgreich installiert in"
+    msg_deps_retry="Fehler bei der Installation der Abhängigkeiten. Aufräumen und erneuter Versuch..."
     ;;
   es*)
     msg_error="Error:"
@@ -153,6 +159,7 @@ case "$LANGUAGE" in
     msg_vsix_error="No se generó el archivo VSIX."
     msg_install_fail="Fallo al instalar en"
     msg_success="Instalado correctamente en"
+    msg_deps_retry="La instalación de dependencias falló. Limpiando y reintentando..."
     ;;
   fr*)
     msg_error="Erreur :"
@@ -173,6 +180,7 @@ case "$LANGUAGE" in
     msg_vsix_error="Le fichier VSIX n'a pas été généré."
     msg_install_fail="Échec de l'installation sur"
     msg_success="Installé avec succès sur"
+    msg_deps_retry="L'installation des dépendances a échoué. Nettoyage et nouvelle tentative..."
     ;;
   pt*)
     msg_error="Erro:"
@@ -193,6 +201,7 @@ case "$LANGUAGE" in
     msg_vsix_error="O arquivo VSIX não foi gerado."
     msg_install_fail="Falha ao instalar no"
     msg_success="Instalado com sucesso no"
+    msg_deps_retry="A instalação das dependências falhou. Limpando e tentando novamente..."
     ;;
   ru*)
     msg_error="Ошибка:"
@@ -213,6 +222,7 @@ case "$LANGUAGE" in
     msg_vsix_error="Файл VSIX не был сгенерирован."
     msg_install_fail="Не удалось установить в"
     msg_success="Успешно установлено в"
+    msg_deps_retry="Сбой установки зависимостей. Очистка и повторная попытка..."
     ;;
   ko*)
     msg_error="오류:"
@@ -233,6 +243,7 @@ case "$LANGUAGE" in
     msg_vsix_error="VSIX 파일이 생성되지 않았습니다."
     msg_install_fail="설치 실패:"
     msg_success="성공적으로 설치되었습니다:"
+    msg_deps_retry="종속성 설치에 실패했습니다. 정리 및 재시도 중..."
     ;;
   it*)
     msg_error="Errore:"
@@ -253,6 +264,7 @@ case "$LANGUAGE" in
     msg_vsix_error="Il file VSIX non è stato generato."
     msg_install_fail="Installazione non riuscita su"
     msg_success="Installato con successo su"
+    msg_deps_retry="Installazione delle dipendenze non riuscita. Pulizia e nuovo tentativo..."
     ;;
   tr*)
     msg_error="Hata:"
@@ -273,6 +285,7 @@ case "$LANGUAGE" in
     msg_vsix_error="VSIX dosyası oluşturulmadı."
     msg_install_fail="Şuraya kurulum başarısız:"
     msg_success="Şuraya başarıyla kuruldu:"
+    msg_deps_retry="Bağımlılık yüklemesi başarısız oldu. Temizleniyor ve yeniden deneniyor..."
     ;;
   cs*)
     msg_error="Chyba:"
@@ -282,7 +295,7 @@ case "$LANGUAGE" in
     msg_invalid="Neplatná volba. Ukončování."
     msg_hint="Tip: Pokud je váš editor nainstalován, ale není uveden v seznamu, možná budete muset přidat jeho příkaz do PATH."
     msg_hint2="Otevřete svůj editor, otevřete Paletu příkazů (Ctrl+Shift+P / Cmd+Shift+P) a najděte příkaz jako: \"Shell Command: Install 'cursor' command in PATH\" (nebo 'agy-ide' atd.)."
-    msg_all_editors="Všechny zjištěěné editory"
+    msg_all_editors="Všechny zjištěné editory"
     msg_quit="Ukončit"
     msg_select_install="Vyberte, kam nainstalovat CWC: "
     msg_cancelled="Instalace zrušena."
@@ -293,6 +306,7 @@ case "$LANGUAGE" in
     msg_vsix_error="Soubor VSIX nebyl vygenerován."
     msg_install_fail="Nepodařilo se nainstalovat do"
     msg_success="Úspěšně nainstalováno do"
+    msg_deps_retry="Instalace závislostí selhala. Probíhá čištění a nový pokus..."
     ;;
   hu*)
     msg_error="Hiba:"
@@ -313,6 +327,7 @@ case "$LANGUAGE" in
     msg_vsix_error="A VSIX fájl nem jött létre."
     msg_install_fail="Nem sikerült telepíteni ide:"
     msg_success="Sikeresen telepítve ide:"
+    msg_deps_retry="A függőségek telepítése sikertelen. Tisztítás és újrapróbálkozás..."
     ;;
   bg*)
     msg_error="Грешка:"
@@ -333,6 +348,7 @@ case "$LANGUAGE" in
     msg_vsix_error="VSIX файлът не бе създаден."
     msg_install_fail="Неуспешно инсталиране в"
     msg_success="Успешно инсталирано в"
+    msg_deps_retry="Инсталирането на зависимостите е неуспешно. Почистване и нов опит..."
     ;;
 esac
 
@@ -497,13 +513,17 @@ update_repo() {
 }
 
 clone_repo() {
-  git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git "$REPO_DIR" && \
+  if ! git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git "$REPO_DIR"; then
+    rm -rf "$REPO_DIR"
+    git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git "$REPO_DIR" || return 1
+  fi
+
   if [ -n "$TAG_NAME" ]; then
-    git -C "$REPO_DIR" checkout "$TAG_NAME" --quiet
+    git -C "$REPO_DIR" checkout "$TAG_NAME" --quiet || return 1
   else
     LATEST_TAG=$(git -C "$REPO_DIR" tag -l '*-vscode' --sort=-creatordate | head -n 1)
     if [ -n "$LATEST_TAG" ]; then
-      git -C "$REPO_DIR" checkout "$LATEST_TAG" --quiet
+      git -C "$REPO_DIR" checkout "$LATEST_TAG" --quiet || return 1
     fi
   fi
 }
@@ -535,7 +555,15 @@ for i in "${indices[@]}"; do
 
   cd "$REPO_DIR"
 
-  run_step "$msg_step_deps" npx --yes pnpm install
+  if ! run_step "$msg_step_deps" npx --yes pnpm install; then
+    echo -e "  \033[33m$msg_deps_retry\033[0m"
+    cd "$CWC_DIR"
+    rm -rf "$CWC_DIR"/repository-*
+    npx --yes pnpm store prune > /dev/null 2>&1 || true
+    run_step "$msg_step_cloning" clone_repo
+    cd "$REPO_DIR"
+    run_step "$msg_step_deps" npx --yes pnpm install
+  fi
 
   cd apps/editor
 
