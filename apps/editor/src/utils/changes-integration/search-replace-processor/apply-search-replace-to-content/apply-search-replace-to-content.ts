@@ -62,11 +62,70 @@ const find_sequence = (lines: IndexedLine[], pattern: string[]): number => {
   return -1
 }
 
+const compute_lcs = (a: string[], b: string[]): [number, number][] => {
+  const m = a.length
+  const n = b.length
+  const dp: number[][] = Array.from({ length: m + 1 }, () =>
+    Array(n + 1).fill(0)
+  )
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (a[i - 1] === b[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+      }
+    }
+  }
+
+  const lcs: [number, number][] = []
+  let i = m,
+    j = n
+  while (i > 0 && j > 0) {
+    if (a[i - 1] === b[j - 1]) {
+      lcs.push([i - 1, j - 1])
+      i--
+      j--
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--
+    } else {
+      j--
+    }
+  }
+  return lcs.reverse()
+}
+
+type UpdStructure = {
+  gaps: string[][]
+  non_blanks: { text: string; normalized: string }[]
+}
+
+const get_non_blank_structure = (
+  lines: string[],
+  normalize: Normalizer
+): UpdStructure => {
+  const gaps: string[][] = [[]]
+  const non_blanks: { text: string; normalized: string }[] = []
+
+  for (const line of lines) {
+    const norm = normalize(line)
+    if (norm === '') {
+      gaps[gaps.length - 1].push(line)
+    } else {
+      non_blanks.push({ text: line, normalized: norm })
+      gaps.push([])
+    }
+  }
+  return { gaps, non_blanks }
+}
+
 type BlockMatch = {
   match_start: number
   match_end: number
-  matched_before: string
-  matched_after: string
+  original_start: number
+  original_end: number
+  original_indexed_lines: IndexedLine[]
 }
 
 const find_block = (params: {
@@ -89,8 +148,9 @@ const find_block = (params: {
     return {
       match_start: params.from,
       match_end: params.from,
-      matched_before: '',
-      matched_after: ''
+      original_start: params.from,
+      original_end: params.from,
+      original_indexed_lines: []
     }
   }
 
@@ -105,23 +165,38 @@ const find_block = (params: {
   const match_start = lines[i].start
   const match_end = lines[i + pattern.length - 1].content_end
 
-  const matched_before =
-    before.length > 0
-      ? params.content.slice(
-          match_start,
-          lines[i + before.length - 1].content_end
-        )
-      : ''
+  const original_indexed_lines = lines.slice(
+    i + before.length,
+    i + before.length + original.length
+  )
 
-  const matched_after =
-    after.length > 0
-      ? params.content.slice(
-          lines[i + before.length + original.length].start,
-          match_end
-        )
-      : ''
+  let original_start: number
+  let original_end: number
 
-  return { match_start, match_end, matched_before, matched_after }
+  if (original.length > 0) {
+    if (before.length > 0) {
+      original_start = lines[i + before.length - 1].content_end
+    } else {
+      original_start = original_indexed_lines[0].start
+    }
+    original_end =
+      original_indexed_lines[original_indexed_lines.length - 1].content_end
+  } else {
+    if (before.length > 0) {
+      original_start = lines[i + before.length - 1].content_end
+    } else {
+      original_start = match_start
+    }
+    original_end = original_start
+  }
+
+  return {
+    match_start,
+    match_end,
+    original_start,
+    original_end,
+    original_indexed_lines
+  }
 }
 
 export const apply_search_replace_to_content = (params: {
@@ -178,35 +253,107 @@ export const apply_search_replace_to_content = (params: {
       )
     }
 
-    const match_index = match.match_start
-    const matched_length = match.match_end - match.match_start
-    const matched_before = match.matched_before
-    const matched_after = match.matched_after
+    const upd_structure = get_non_blank_structure(
+      segment.updated_lines,
+      normalize_loose
+    )
+    const orig_normalized = match.original_indexed_lines.map((l) =>
+      normalize_loose(current_content.slice(l.start, l.content_end))
+    )
+    const lcs_mapping = compute_lcs(
+      orig_normalized,
+      upd_structure.non_blanks.map((l) => l.normalized)
+    )
 
-    const updated_text = segment.updated_lines
-      .map((line) => strip_invisible(line))
-      .join(line_ending)
+    let replacement_text = ''
+    let last_matched_orig_idx = -1
 
-    const replacement_parts: string[] = []
-    if (matched_before) replacement_parts.push(matched_before)
-    if (segment.updated_lines.length > 0) {
-      replacement_parts.push(updated_text)
+    for (let j = 0; j < upd_structure.non_blanks.length; j++) {
+      const mapping = lcs_mapping.find((m) => m[1] === j)
+
+      if (mapping) {
+        const orig_idx = mapping[0]
+
+        let gap_start: number
+        if (orig_idx === 0) {
+          gap_start = match.original_start
+        } else {
+          gap_start = match.original_indexed_lines[orig_idx - 1].content_end
+        }
+        const gap_end = match.original_indexed_lines[orig_idx].start
+
+        replacement_text += current_content.slice(gap_start, gap_end)
+        replacement_text += upd_structure.non_blanks[j].text
+
+        last_matched_orig_idx = orig_idx
+      } else {
+        let next_matched_orig_idx = match.original_indexed_lines.length
+        for (let k = j + 1; k < upd_structure.non_blanks.length; k++) {
+          const m = lcs_mapping.find((m) => m[1] === k)
+          if (m) {
+            next_matched_orig_idx = m[0]
+            break
+          }
+        }
+
+        let gap_to_use: string | null = null
+        if (last_matched_orig_idx + 1 < next_matched_orig_idx) {
+          const deleted_idx = last_matched_orig_idx + 1
+          let g_start: number
+          if (deleted_idx === 0) {
+            g_start = match.original_start
+          } else {
+            g_start = match.original_indexed_lines[deleted_idx - 1].content_end
+          }
+          const g_end = match.original_indexed_lines[deleted_idx].start
+          gap_to_use = current_content.slice(g_start, g_end)
+          last_matched_orig_idx = deleted_idx
+        }
+
+        if (gap_to_use !== null) {
+          replacement_text += gap_to_use
+        } else {
+          if (replacement_text.length > 0 && !replacement_text.endsWith('\n')) {
+            replacement_text += line_ending
+          }
+          const upd_gap = upd_structure.gaps[j]
+          if (upd_gap.length > 0) {
+            replacement_text +=
+              upd_gap.map(strip_invisible).join(line_ending) + line_ending
+          }
+        }
+
+        replacement_text += upd_structure.non_blanks[j].text
+      }
     }
-    if (matched_after) replacement_parts.push(matched_after)
 
-    const replacement_text = replacement_parts.join(line_ending)
+    let final_gap_start: number
+    if (match.original_indexed_lines.length > 0) {
+      final_gap_start =
+        match.original_indexed_lines[match.original_indexed_lines.length - 1]
+          .content_end
+    } else {
+      final_gap_start = match.original_start
+    }
+    replacement_text += current_content.slice(
+      final_gap_start,
+      match.original_end
+    )
+
+    const last_upd_gap = upd_structure.gaps[upd_structure.gaps.length - 1]
+    if (last_upd_gap.length > 0) {
+      if (replacement_text.length > 0 && !replacement_text.endsWith('\n')) {
+        replacement_text += line_ending
+      }
+      replacement_text += last_upd_gap.map(strip_invisible).join(line_ending)
+    }
 
     current_content =
-      current_content.slice(0, match_index) +
+      current_content.slice(0, match.original_start) +
       replacement_text +
-      current_content.slice(match_index + matched_length)
+      current_content.slice(match.original_end)
 
-    const content_before_after_context = matched_before
-      ? matched_before + line_ending + updated_text
-      : updated_text
-    cursor = matched_after
-      ? match_index + content_before_after_context.length
-      : match_index + replacement_text.length
+    cursor = match.original_start + replacement_text.length
   }
 
   return current_content

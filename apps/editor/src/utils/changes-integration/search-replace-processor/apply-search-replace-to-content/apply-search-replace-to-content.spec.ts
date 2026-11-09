@@ -62,5 +62,9 @@ describe('search-replace-parser', () => {
     it('handles rst syntax correctly', () => {
       run_test_case('rst-syntax')
     })
+
+    it('handles generic-1 correctly', () => {
+      run_test_case('generic-1')
+    })
   })
 })
