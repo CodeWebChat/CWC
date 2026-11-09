@@ -1,12 +1,10 @@
 import * as crypto from 'crypto'
 import * as http from 'http'
-import * as path from 'path'
 import * as process from 'process'
-import * as dotenv from 'dotenv'
 const WebSocket = require('ws')
 import { DEFAULT_PORT, CLIENT_TYPE } from '@shared/constants/websocket'
 
-dotenv.config({ path: path.join(__dirname, '..', '.env') })
+declare const __DEV_CHROME_EXTENSION_ID__: string
 
 interface BrowserClient {
   ws: WebSocket
@@ -51,9 +49,8 @@ class WebSocketServer {
           }
 
           if (
-            process.env.DEV_CHROME_EXTENSION_ID &&
-            origin ==
-              `chrome-extension://${process.env.DEV_CHROME_EXTENSION_ID}`
+            __DEV_CHROME_EXTENSION_ID__ &&
+            origin == `chrome-extension://${__DEV_CHROME_EXTENSION_ID__}`
           ) {
             return cb(true)
           }

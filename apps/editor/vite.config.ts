@@ -1,6 +1,7 @@
 import * as crypto from 'crypto'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as dotenv from 'dotenv'
 import { defineConfig, type Plugin, type UserConfig } from 'vite'
 
 const node_targets: Record<string, string> = {
@@ -15,6 +16,19 @@ const view_targets: Record<string, string> = {
 }
 
 const root_dir = __dirname
+
+const get_env_placeholders = (name: string): Record<string, string> => {
+  if (name != 'websocket-server-process') return {}
+  const env_path = path.resolve(root_dir, '.env')
+  const parsed = fs.existsSync(env_path)
+    ? dotenv.parse(fs.readFileSync(env_path))
+    : {}
+  const value =
+    parsed.DEV_CHROME_EXTENSION_ID ?? process.env.DEV_CHROME_EXTENSION_ID ?? ''
+  return {
+    __DEV_CHROME_EXTENSION_ID__: JSON.stringify(value)
+  }
+}
 const src_dir = path.resolve(root_dir, 'src')
 const shared_dir = path.resolve(root_dir, '../../packages/shared/src')
 const ui_dir = path.resolve(root_dir, '../../packages/ui/src')
@@ -127,7 +141,8 @@ const create_node_config = (
     'process.env.NODE_ENV': JSON.stringify(
       is_production ? 'production' : 'development'
     ),
-    'require.resolve': 'undefined'
+    'require.resolve': 'undefined',
+    ...get_env_placeholders(name)
   },
   resolve: {
     alias: {
