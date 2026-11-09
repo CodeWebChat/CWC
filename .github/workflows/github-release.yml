@@ -61,7 +61,7 @@ jobs:
       - name: Test
         run: pnpm test
 
-  release:
+  release-vscode:
     needs: [check, changes]
     if: needs.changes.outputs.editor == 'true'
     runs-on: ubuntu-24.04
