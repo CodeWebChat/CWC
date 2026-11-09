@@ -50,15 +50,14 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Run checks concurrently
-        run: |
-          pnpm lint & PID1=$!
-          pnpm typecheck & PID2=$!
-          pnpm test & PID3=$!
-          
-          wait $PID1 || exit 1
-          wait $PID2 || exit 1
-          wait $PID3 || exit 1
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
 
   release-vscode:
     needs: [check, changes]
