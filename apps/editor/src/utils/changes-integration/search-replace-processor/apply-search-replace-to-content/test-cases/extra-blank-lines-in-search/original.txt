@@ -1,0 +1,10 @@
+# Guide
+
+Build the project
+npm install
+npm run build
+
+Start the project
+
+npm run serve
+npm run watch

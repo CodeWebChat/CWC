@@ -63,8 +63,28 @@ describe('search-replace-parser', () => {
       run_test_case('rst-syntax')
     })
 
-    it('handles generic-1 correctly', () => {
-      run_test_case('generic-1')
+    it('keeps the original blank lines when the search block has extra or missing ones', () => {
+      run_test_case('extra-blank-lines-in-search')
+    })
+
+    it('applies several blocks to similar code with repeated lines', () => {
+      run_test_case('similar-code-multiple-blocks')
+    })
+
+    it('inserts a line between preceding context and a matched line', () => {
+      run_test_case('insert-after-context')
+    })
+
+    it('inserts lines before following context when the search block is empty', () => {
+      run_test_case('insert-before-context')
+    })
+
+    it('deletes the first line without leaving a stray newline', () => {
+      run_test_case('delete-first-line')
+    })
+
+    it('does not prepend a newline when the first kept line moves without context', () => {
+      run_test_case('reorder-without-context')
     })
   })
 })

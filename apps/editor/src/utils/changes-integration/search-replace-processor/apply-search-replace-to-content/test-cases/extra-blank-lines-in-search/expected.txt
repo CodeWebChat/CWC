@@ -1,0 +1,10 @@
+# Guide
+
+Build the project
+pnpm install
+pnpm run build
+
+Start the project
+
+pnpm run serve
+pnpm run watch

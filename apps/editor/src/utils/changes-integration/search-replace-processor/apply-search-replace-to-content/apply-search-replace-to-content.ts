@@ -124,6 +124,8 @@ type BlockMatch = {
   original_start: number
   original_end: number
   original_indexed_lines: IndexedLine[]
+  leading_newline_needed: boolean
+  trailing_newline_needed: boolean
 }
 
 const find_block = (params: {
@@ -148,7 +150,9 @@ const find_block = (params: {
       match_end: params.from,
       original_start: params.from,
       original_end: params.from,
-      original_indexed_lines: []
+      original_indexed_lines: [],
+      leading_newline_needed: false,
+      trailing_newline_needed: false
     }
   }
 
@@ -193,7 +197,10 @@ const find_block = (params: {
     match_end,
     original_start,
     original_end,
-    original_indexed_lines
+    original_indexed_lines,
+    leading_newline_needed: before.length > 0,
+    trailing_newline_needed:
+      original.length == 0 && before.length == 0 && after.length > 0
   }
 }
 
@@ -277,7 +284,25 @@ export const apply_search_replace_to_content = (params: {
         }
         const gap_end = match.original_indexed_lines[orig_idx].start
 
-        replacement_text += current_content.slice(gap_start, gap_end)
+        let gap_text = current_content.slice(gap_start, gap_end)
+
+        if (replacement_text.length === 0 && !match.leading_newline_needed) {
+          gap_text = ''
+        }
+
+        if (replacement_text.length > 0 && !gap_text.includes('\n')) {
+          if (!replacement_text.endsWith('\n')) {
+            replacement_text += line_ending
+          }
+          const upd_gap = upd_structure.gaps[j]
+          if (upd_gap.length > 0) {
+            replacement_text +=
+              upd_gap.map(strip_invisible).join(line_ending) + line_ending
+          }
+          gap_text = ''
+        }
+
+        replacement_text += gap_text
         replacement_text += upd_structure.non_blanks[j].text
 
         last_matched_orig_idx = orig_idx
@@ -308,7 +333,9 @@ export const apply_search_replace_to_content = (params: {
         if (gap_to_use !== null) {
           replacement_text += gap_to_use
         } else {
-          if (replacement_text.length > 0 && !replacement_text.endsWith('\n')) {
+          const needs_line_break =
+            replacement_text.length > 0 || match.leading_newline_needed
+          if (needs_line_break && !replacement_text.endsWith('\n')) {
             replacement_text += line_ending
           }
           const upd_gap = upd_structure.gaps[j]
@@ -343,10 +370,25 @@ export const apply_search_replace_to_content = (params: {
       replacement_text += last_upd_gap.map(strip_invisible).join(line_ending)
     }
 
+    if (match.trailing_newline_needed && replacement_text.length > 0) {
+      replacement_text += line_ending
+    }
+
+    // Deleting whole lines with no preceding context: the region starts at a
+    // line start, so the line break after the last deleted line has to go too.
+    let original_end = match.original_end
+    if (
+      replacement_text.length === 0 &&
+      !match.leading_newline_needed &&
+      match.original_indexed_lines.length > 0
+    ) {
+      const next_line_break = current_content.indexOf('\n', original_end)
+      if (next_line_break !== -1) original_end = next_line_break + 1
+    }
     current_content =
       current_content.slice(0, match.original_start) +
       replacement_text +
-      current_content.slice(match.original_end)
+      current_content.slice(original_end)
 
     cursor = match.original_start + replacement_text.length
   }

@@ -1,0 +1,30 @@
+import {
+  alpha,
+  beta
+} from './lib'
+
+const run = () => {
+  for (const item of items) {
+    const out = alpha(item)
+    print(out)
+  }
+
+  for (const item of items) {
+    const out = beta(item)
+    print(out)
+  }
+
+  const first = render({
+    mode: 'a'
+  })
+  save(first)
+
+  const second = render({
+    mode: 'b'
+  })
+  save(second)
+
+  finish()
+
+  log('done')
+}

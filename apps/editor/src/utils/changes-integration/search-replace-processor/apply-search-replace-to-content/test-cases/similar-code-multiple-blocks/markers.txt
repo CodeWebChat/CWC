@@ -1,0 +1,56 @@
+<<<<<<< SEARCH
+import {
+  alpha,
+  beta
+} from './lib'
+=======
+import {
+  alpha,
+  beta,
+  gamma
+} from './lib'
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+  for (const item of items) {
+    const out = beta(item)
+=======
+  const results = []
+
+  for (const item of items) {
+    const out = beta(item)
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+  const first = render({
+    mode: 'a'
+  })
+  save(first)
+=======
+  const first_res = render({
+    mode: 'a'
+  })
+  save(first_res.content)
+  results.push(first_res.meta)
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+  const second = render({
+    mode: 'b'
+  })
+  save(second)
+=======
+  const second_res = render({
+    mode: 'b'
+  })
+  save(second_res.content)
+  results.push(second_res.meta)
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+  finish()
+
+  log('done')
+=======
+  finish()
+
+  publish(results)
+
+  log('done')
+>>>>>>> REPLACE

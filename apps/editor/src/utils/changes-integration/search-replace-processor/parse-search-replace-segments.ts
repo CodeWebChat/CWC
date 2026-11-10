@@ -1,10 +1,5 @@
-export type Segment =
-  | { type: 'common'; lines: string[] }
-  | {
-      type: 'search_replace'
-      original_lines: string[]
-      updated_lines: string[]
-    }
+import { Segment } from './types'
+export type { Segment }
 
 export const parse_search_replace_segments = (content: string): Segment[] => {
   const lines = content.replace(/\r/g, '').split('\n')

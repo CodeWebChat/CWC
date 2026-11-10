@@ -1,0 +1,22 @@
+<<<<<<< SEARCH
+Build the project
+
+npm install
+
+npm run build
+=======
+Build the project
+
+pnpm install
+
+pnpm run build
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+Start the project
+npm run serve
+npm run watch
+=======
+Start the project
+pnpm run serve
+pnpm run watch
+>>>>>>> REPLACE

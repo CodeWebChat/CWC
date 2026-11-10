@@ -1,0 +1,37 @@
+import {
+  alpha,
+  beta,
+  gamma
+} from './lib'
+
+const run = () => {
+  for (const item of items) {
+    const out = alpha(item)
+    print(out)
+  }
+
+  const results = []
+
+  for (const item of items) {
+    const out = beta(item)
+    print(out)
+  }
+
+  const first_res = render({
+    mode: 'a'
+  })
+  save(first_res.content)
+  results.push(first_res.meta)
+
+  const second_res = render({
+    mode: 'b'
+  })
+  save(second_res.content)
+  results.push(second_res.meta)
+
+  finish()
+
+  publish(results)
+
+  log('done')
+}
