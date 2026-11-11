@@ -141,7 +141,7 @@ Whenever showing a new, updated, renamed, or deleted file, provide a brief expla
 
 # Requirements
 
-- All necessary files for the [task](#task) were preloaded to [files](#files). Reading other files is FORBIDDEN.
+- All necessary files for the [task](#task) were preloaded to [files](#files). Reading files is FORBIDDEN.
 - Using tools or shell commands for discovery or information gathering (e.g., grep, glob, ls, git, etc.) is FORBIDDEN.
 - Exception: If [task](#task) includes *.png image paths, read them using the appropriate tool.
 - Exception: Perform file system operations (create, update, delete, rename, move) required to complete the [task](#task).
@@ -182,7 +182,7 @@ _Get explanations, plan features._
 
 # Requirements
 
-- All necessary files for the [task](#task) were preloaded to [files](#files). Reading other files is FORBIDDEN.
+- All necessary files for the [task](#task) were preloaded to [files](#files). Reading files is FORBIDDEN.
 - Using tools or shell commands for discovery or information gathering (e.g., grep, glob, ls, git, etc.) is FORBIDDEN.
 - Exception: If [task](#task) includes *.png image paths, read them using the appropriate tool.
 
@@ -277,7 +277,7 @@ Output strictly as a bulleted list of file paths without explanations or any oth
 
 # Requirements
 
-- All necessary files for the [task](#task) were preloaded to [files](#files). Reading other files is FORBIDDEN.
+- All necessary files for the [task](#task) were preloaded to [files](#files). Reading files is FORBIDDEN.
 - Using tools or shell commands for discovery or information gathering (e.g., grep, glob, ls, git, etc.) is FORBIDDEN.
 
 # Query
@@ -367,7 +367,7 @@ Example:
 
 # Requirements
 
-- All necessary files for the [task](#task) were preloaded to [files](#files). Reading other files is FORBIDDEN.
+- All necessary files for the [task](#task) were preloaded to [files](#files). Reading files is FORBIDDEN.
 - Using tools or shell commands for discovery or information gathering (e.g., grep, glob, ls, git, etc.) is FORBIDDEN.
 
 # Task
