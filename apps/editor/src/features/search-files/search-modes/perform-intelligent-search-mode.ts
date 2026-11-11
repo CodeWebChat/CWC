@@ -494,7 +494,7 @@ export const perform_intelligent_search_mode = async (params: {
               selected_api_configuration
             )
 
-            if (api_result === 'error') {
+            if (api_result === 'error' || api_result === 'cancel') {
               show_quick_pick = true
               continue
             }
@@ -505,15 +505,13 @@ export const perform_intelligent_search_mode = async (params: {
         if (go_back_to_action) {
           continue
         }
-
-        if (api_result === 'cancel') return undefined
         if (api_result === 'error_no_files') {
           vscode.window.showWarningMessage(t('common.info.no-files-found'))
           go_back_to_term = true
           break
         }
 
-        if (api_result && api_result !== 'error') {
+        if (Array.isArray(api_result)) {
           let go_back_to_term_from_results = false
           let restored_selected_paths: string[] | undefined = undefined
           let restored_unmatched_paths: string[] | undefined = undefined
