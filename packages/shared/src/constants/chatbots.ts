@@ -31,6 +31,10 @@ export const CHATBOTS = {
       'url-context': 'URL context'
     },
     models: {
+      'gemini-4-carbon': {
+        label: 'Gemini 4 Carbon',
+        supported_reasoning_efforts: ['Low', 'Medium', 'High']
+      },
       'gemini-4-argon': {
         label: 'Gemini 4 Argon',
         supported_reasoning_efforts: ['Low', 'Medium', 'High']
