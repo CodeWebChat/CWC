@@ -4,7 +4,7 @@
     "build": "tsc --noEmit && node scripts/build.mjs && node scripts/create-firefox-build.ts && node scripts/create-zip-archives.ts",
     "watch": "node scripts/build.mjs --watch",
     "typecheck": "tsc --noEmit",
-    "bump": "node scripts/bump.js"
+    "bump": "node scripts/bump.cjs"
   },
   "devDependencies": {
     "@types/archiver": "6.0.4",
