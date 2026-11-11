@@ -21,7 +21,8 @@ export const opencode_agent: CodingAgent = {
     '--auto',
     params.cwd
   ],
-  get_integrated_terminal_args: (params) => ['run', '--auto', params.cwd],
+  get_edit_integrated_terminal_args: (params) => ['run', '--auto', params.cwd],
+  get_ask_integrated_terminal_args: (params) => ['run', '--auto', params.cwd],
   get_post_integrated_terminal_args: () => ['--continue'],
   parse_stream_line: (parsed, report_progress) => {
     let action_name = ''

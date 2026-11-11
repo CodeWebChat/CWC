@@ -374,6 +374,7 @@ export const perform_code_at_cursor = async (params: {
       extension_context: params.extension_context,
       build_prompt: async () => cli_prompt,
       notification_title: t('command.code-at-cursor-command.progress.title'),
+      execution_mode: 'headless',
       last_selected_workspace_state_key:
         LAST_SELECTED_WORKSPACE_FOR_CODE_AT_CURSOR_STATE_KEY,
       agent_state_key: LAST_USED_AGENT_FOR_CODE_AT_CURSOR_STATE_KEY,

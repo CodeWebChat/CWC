@@ -40,7 +40,8 @@ export const invoke_agentic_cli = async (params: {
   isolate_in_temp_dir?: boolean
   copy_selected_files?: boolean
   generate_diff_for_temp_dir?: boolean
-  execution_mode?: 'headless' | 'interactive-terminal'
+  execution_mode: 'headless' | 'interactive-terminal'
+  cli_prompt_type?: 'edit' | 'ask'
   cli_configuration_name?: string
   use_quick_pick?: boolean
   default_agent_key?: keyof ConfigAgentConfigurationFormat
@@ -67,7 +68,7 @@ export const invoke_agentic_cli = async (params: {
 
   let current_agent_config_name = params.cli_configuration_name
   let show_quick_pick = params.use_quick_pick
-  const execution_mode = params.execution_mode ?? 'headless'
+  const execution_mode = params.execution_mode
 
   while (true) {
     const config = vscode.workspace.getConfiguration('codeWebChat')
@@ -560,9 +561,19 @@ export const invoke_agentic_cli = async (params: {
       })
 
       if (execution_mode === 'interactive-terminal') {
-        const base_args = agent_info.get_integrated_terminal_args
-          ? agent_info.get_integrated_terminal_args({ cwd: selected_root })
-          : []
+        const prompt_type = params.cli_prompt_type || 'edit'
+        const base_args =
+          prompt_type === 'edit'
+            ? agent_info.get_edit_integrated_terminal_args
+              ? agent_info.get_edit_integrated_terminal_args({
+                  cwd: selected_root!
+                })
+              : []
+            : agent_info.get_ask_integrated_terminal_args
+              ? agent_info.get_ask_integrated_terminal_args({
+                  cwd: selected_root!
+                })
+              : []
 
         let args = [...base_args, ...custom_args]
 
@@ -592,6 +603,17 @@ export const invoke_agentic_cli = async (params: {
           name: agent_info.label,
           cwd: selected_root
         })
+
+        const terminal_closed = new Promise<
+          vscode.TerminalExitStatus | undefined
+        >((resolve) => {
+          const disposable = vscode.window.onDidCloseTerminal((t) => {
+            if (t === terminal) {
+              disposable.dispose()
+              resolve(t.exitStatus)
+            }
+          })
+        })
         terminal.show()
         terminal.sendText(command)
 
@@ -604,14 +626,33 @@ export const invoke_agentic_cli = async (params: {
           terminal.sendText(post_command_args)
         }
 
-        setTimeout(() => {
-          fs.promises
-            .rm(temp_prompt_dir, { recursive: true, force: true })
-            .catch(() => {})
-        }, 10000)
+        await terminal_closed
+        let current_agent_output = ''
+        if (params.generate_diff_for_temp_dir && temp_dir_path) {
+          try {
+            const diff_markdown = await generate_diff_markdown(
+              temp_dir_path,
+              file_mappings
+            )
+            current_agent_output = diff_markdown.trim()
+          } catch (e) {
+            Logger.error({
+              function_name: 'invoke_agentic_cli',
+              message: 'Failed to generate diff',
+              data: e
+            })
+          }
+        }
+
+        try {
+          await fs.promises.rm(temp_prompt_dir, {
+            recursive: true,
+            force: true
+          })
+        } catch {}
 
         return {
-          agent_output: '',
+          agent_output: current_agent_output,
           selected_root: selected_root!,
           cli_configuration_details: selected_agent_info
             ? {

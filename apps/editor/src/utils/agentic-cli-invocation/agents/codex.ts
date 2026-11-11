@@ -21,7 +21,13 @@ export const codex_agent: CodingAgent = {
     'workspace-write',
     '--skip-git-repo-check'
   ],
-  get_integrated_terminal_args: () => [
+  get_edit_integrated_terminal_args: () => [
+    'exec',
+    '--skip-git-repo-check',
+    '--sandbox',
+    'workspace-write'
+  ],
+  get_ask_integrated_terminal_args: () => [
     'exec',
     '--skip-git-repo-check',
     '--sandbox',

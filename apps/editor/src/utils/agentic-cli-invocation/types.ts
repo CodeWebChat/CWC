@@ -5,7 +5,8 @@ export type CodingAgent = {
   is_installed: () => boolean
   get_documentation_url: () => string
   get_isolated_dir_args: (params: { cwd: string }) => string[]
-  get_integrated_terminal_args?: (params: { cwd: string }) => string[]
+  get_edit_integrated_terminal_args?: (params: { cwd: string }) => string[]
+  get_ask_integrated_terminal_args?: (params: { cwd: string }) => string[]
   get_post_integrated_terminal_args?: () => string[]
   get_prompt_file_args?: (temp_prompt_path: string) => string[]
   parse_stream_line?: (

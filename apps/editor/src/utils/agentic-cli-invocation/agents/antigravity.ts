@@ -19,7 +19,8 @@ export const antigravity_agent: CodingAgent = {
     'stream-json',
     '--dangerously-skip-permissions'
   ],
-  get_integrated_terminal_args: () => [],
+  get_edit_integrated_terminal_args: () => [],
+  get_ask_integrated_terminal_args: () => [],
   get_post_integrated_terminal_args: () => ['--continue'],
   parse_stream_line: (parsed, report_progress) => {
     if (parsed.event === 'step_update' && parsed.step_update) {

@@ -267,6 +267,7 @@ export const handle_patch_repair = async (params: {
       extension_context: params.prompt_view_provider.extension_context,
       build_prompt: async () => cli_prompt,
       notification_title: 'Patch Repair',
+      execution_mode: 'headless',
       last_selected_workspace_state_key:
         LAST_SELECTED_WORKSPACE_FOR_PATCH_REPAIR_STATE_KEY,
       agent_state_key: LAST_USED_AGENT_FOR_PATCH_REPAIR_STATE_KEY,

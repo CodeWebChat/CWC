@@ -191,9 +191,7 @@ export const run_generate_action = async (params: {
                   if (additional_tokens > 0) {
                     items.push({
                       label: include_files_and_context_label,
-                      description: `+${display_token_count(
-                        additional_tokens
-                      )}`,
+                      description: `+${display_token_count(additional_tokens)}`,
                       id: 'attach'
                     })
                   }
@@ -353,11 +351,15 @@ export const run_generate_action = async (params: {
                   prompt_without_context.api_prompt.length / 4
                 )
                 const additional_tokens = prompt_with_context
-                  ? Math.ceil(prompt_with_context.api_prompt.length / 4) - skip_tokens
+                  ? Math.ceil(prompt_with_context.api_prompt.length / 4) -
+                    skip_tokens
                   : 0
-                const can_go_back_to_context = setting === 'ask' && (additional_tokens > 0 || diffs_only_tokens < skip_tokens)
-                
-                const show_back_btn_here = show_back_button || can_go_back_to_context
+                const can_go_back_to_context =
+                  setting === 'ask' &&
+                  (additional_tokens > 0 || diffs_only_tokens < skip_tokens)
+
+                const show_back_btn_here =
+                  show_back_button || can_go_back_to_context
 
                 quick_pick.ignoreFocusOut = show_back_btn_here
 
@@ -367,7 +369,9 @@ export const run_generate_action = async (params: {
                 }
 
                 quick_pick.buttons = [
-                  ...(show_back_btn_here ? [vscode.QuickInputButtons.Back] : []),
+                  ...(show_back_btn_here
+                    ? [vscode.QuickInputButtons.Back]
+                    : []),
                   close_button
                 ]
 
@@ -411,7 +415,8 @@ export const run_generate_action = async (params: {
                 prompt_without_context.api_prompt.length / 4
               )
               const additional_tokens = prompt_with_context
-                ? Math.ceil(prompt_with_context.api_prompt.length / 4) - skip_tokens
+                ? Math.ceil(prompt_with_context.api_prompt.length / 4) -
+                  skip_tokens
                 : 0
               if (
                 setting === 'ask' &&
@@ -516,7 +521,8 @@ export const run_generate_action = async (params: {
               const last_selected_name =
                 params.extension_context.workspaceState.get<string>(
                   recents_key
-                ) ?? params.extension_context.globalState.get<string>(recents_key)
+                ) ??
+                params.extension_context.globalState.get<string>(recents_key)
 
               const result = await show_configurations_quick_pick({
                 items: valid_web_configurations,
@@ -580,6 +586,7 @@ export const run_generate_action = async (params: {
               notification_title: t(
                 'command.generate-commit-message-command.progress.title'
               ),
+              execution_mode: 'headless',
               last_selected_workspace_state_key:
                 LAST_SELECTED_WORKSPACE_FOR_COMMIT_MESSAGE_STATE_KEY,
               agent_state_key: LAST_USED_AGENT_FOR_COMMIT_MESSAGE_STATE_KEY,
@@ -596,7 +603,10 @@ export const run_generate_action = async (params: {
 
             if (!invoke_cli_result) {
               if (was_empty_stage) {
-                await vscode.commands.executeCommand('git.unstageAll', repository)
+                await vscode.commands.executeCommand(
+                  'git.unstageAll',
+                  repository
+                )
               }
               return
             }
@@ -613,7 +623,9 @@ export const run_generate_action = async (params: {
 
             if (!response_text.trim()) {
               vscode.window.showErrorMessage(
-                t('command.generate-commit-message-command.error.empty-response')
+                t(
+                  'command.generate-commit-message-command.error.empty-response'
+                )
               )
               current_action = undefined
               step = 'action'
@@ -623,10 +635,11 @@ export const run_generate_action = async (params: {
             commit_message = response_text
             action_completed = true
           } else if (action === 'manual') {
-            commit_message = params.extension_context.workspaceState.get<string>(
-              LAST_ACCEPTED_COMMIT_MESSAGE_STATE_KEY,
-              ''
-            )
+            commit_message =
+              params.extension_context.workspaceState.get<string>(
+                LAST_ACCEPTED_COMMIT_MESSAGE_STATE_KEY,
+                ''
+              )
             action_completed = true
           } else {
             const api_configuration_data =
@@ -646,7 +659,10 @@ export const run_generate_action = async (params: {
 
             if (!api_configuration_data) {
               if (was_empty_stage) {
-                await vscode.commands.executeCommand('git.unstageAll', repository)
+                await vscode.commands.executeCommand(
+                  'git.unstageAll',
+                  repository
+                )
               }
               return
             }

@@ -15,7 +15,8 @@ export const devin_agent: CodingAgent = {
     '--respect-workspace-trust',
     'false'
   ],
-  get_integrated_terminal_args: () => [],
+  get_edit_integrated_terminal_args: () => [],
+  get_ask_integrated_terminal_args: () => [],
   get_prompt_file_args: (temp_prompt_path: string) => [
     '--prompt-file',
     temp_prompt_path

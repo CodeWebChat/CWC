@@ -426,6 +426,7 @@ export const perform_intelligent_search_mode = async (params: {
             extension_context: params.extension_context,
             build_prompt: async () => cli_prompt,
             notification_title: t('common.title.intelligent-search'),
+            execution_mode: 'headless',
             last_selected_workspace_state_key:
               LAST_SELECTED_WORKSPACE_FOR_INTELLIGENT_SEARCH_STATE_KEY,
             agent_state_key: LAST_USED_AGENT_FOR_INTELLIGENT_SEARCH_STATE_KEY,

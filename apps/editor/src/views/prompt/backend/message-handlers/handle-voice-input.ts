@@ -313,6 +313,7 @@ const stop_recording = async (prompt_view_provider: PromptViewProvider) => {
           notification_title: t(
             'views.prompt.handlers.handle-voice-input.title'
           ),
+          execution_mode: 'headless',
           last_selected_workspace_state_key:
             LAST_SELECTED_WORKSPACE_FOR_VOICE_INPUT_STATE_KEY,
           agent_state_key: LAST_USED_AGENT_FOR_VOICE_INPUT_STATE_KEY,

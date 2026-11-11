@@ -34,12 +34,12 @@ export const claude_agent: CodingAgent = {
     '--print',
     '--output-format',
     'stream-json',
-    '--verbose',
     '--include-partial-messages',
     '--permission-mode',
-    'auto'
+    'dontAsk'
   ],
-  get_integrated_terminal_args: () => ['--permission-mode', 'auto'],
+  get_edit_integrated_terminal_args: () => ['--permission-mode', 'acceptEdits'],
+  get_ask_integrated_terminal_args: () => ['--permission-mode', 'dontAsk'],
   parse_stream_line: (parsed, report_progress) => {
     if (parsed.type === 'stream_event' && parsed.event) {
       if (
