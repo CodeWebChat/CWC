@@ -34,7 +34,7 @@ powershell -c "irm https://github.com/CodeWebChat/CWC/raw/refs/heads/main/instal
 
 ## Security and privacy
 
-**Building the extension locally from this public repository is the only supported installation method.** This mitigates commonly exploited supply chain attacks.
+**Building the extension locally from this public repository is the only supported installation method.** Compiling directly from human-readable source code protects against compromised pre-built packages.
 
 No code, prompts, or usage data are collected.
 
