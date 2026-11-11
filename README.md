@@ -32,10 +32,9 @@ powershell -c "irm https://github.com/CodeWebChat/CWC/raw/refs/heads/main/instal
 
 <a href="https://github.com/CodeWebChat/CWC/blob/main/install.ps1">View install script</a>
 
-> [!IMPORTANT]
-> To mitigate commonly exploited supply chain vulnerabilities, the extension is not available in the Marketplace. Instead, the installation script compiles it on your machine, directly from this public repository.
+## Security and privacy
 
-## Privacy-first
+**Building the extension locally from this public repository is the only supported installation method.** This mitigates commonly exploited supply chain attacks.
 
 No code, prompts, or usage data are collected.
 
