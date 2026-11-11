@@ -60,13 +60,22 @@ export const gemini: Chatbot = {
         return
       }
       const model_options = Array.from(
-        menu_content.querySelectorAll('gem-menu-item')
+        document.querySelectorAll('gem-menu-item')
       )
       let found = false
       for (const option of model_options) {
+        if (option.getAttribute('value') === 'thinking_level') continue
         const label_element = option.querySelector('.label')
-        const text = label_element?.textContent?.trim().toLowerCase()
-        if (text && text.endsWith(target_label_lower)) {
+        const sublabel_element = option.querySelector('.sublabel')
+        const text =
+          `${label_element?.textContent || ''} ${sublabel_element?.textContent || ''}`
+            .trim()
+            .toLowerCase()
+
+        if (
+          text.includes(target_label_lower) &&
+          !(target_label_lower === 'flash' && text.includes('flash-lite'))
+        ) {
           ;(option as HTMLElement).click()
           found = true
           break
@@ -108,8 +117,19 @@ export const gemini: Chatbot = {
       return
     }
 
+    const thinking_level_trigger = document.querySelector(
+      'gem-menu-item[value="thinking_level"]'
+    ) as HTMLElement
+    if (thinking_level_trigger) {
+      thinking_level_trigger.dispatchEvent(
+        new MouseEvent('mouseenter', { bubbles: true })
+      )
+      thinking_level_trigger.click()
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+
     const all_menu_items = Array.from(
-      menu_content.querySelectorAll('gem-menu-item')
+      document.querySelectorAll('gem-menu-item')
     )
 
     const target_item = all_menu_items.find(
@@ -118,12 +138,17 @@ export const gemini: Chatbot = {
         reasoning_effort.toLowerCase()
     ) as HTMLElement
 
-    if (!target_item) return
+    if (!target_item) {
+      document.body.click()
+      return
+    }
 
     const is_selected = target_item.classList.contains('selected')
 
     if (!is_selected) {
       target_item.click()
+    } else {
+      document.body.click()
     }
 
     await new Promise((resolve) => requestAnimationFrame(resolve))

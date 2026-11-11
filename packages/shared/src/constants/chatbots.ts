@@ -101,7 +101,8 @@ export const CHATBOTS = {
       'flash-lite': { label: 'Flash-Lite' },
       flash: { label: 'Flash' },
       pro: { label: 'Pro' },
-      argon: { label: 'Argon' }
+      argon: { label: 'Argon' },
+      carbon: { label: 'Carbon' }
     }
   } as Chatbot,
   'GitHub Copilot': {
