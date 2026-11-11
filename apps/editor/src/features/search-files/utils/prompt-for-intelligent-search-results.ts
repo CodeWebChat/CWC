@@ -63,7 +63,7 @@ export const prompt_for_intelligent_search_results = async (params: {
   const base_title = t('feature.search-files.results.intelligent')
 
   return (await show_search_results_quick_pick({
-    matched_items: unique_paths.map((path) => ({ path })),
+    matched_items: unique_paths.map((path) => ({ path, checked: true })),
     unmatched_selected_paths: unmatched_selected_files,
     workspace_provider: params.workspace_provider,
     title: base_title,
