@@ -61,11 +61,16 @@ export const AGENTS = {
   Codex: {
     docs_url: 'https://learn.chatgpt.com/docs/non-interactive-mode',
     homepage_url: 'https://learn.chatgpt.com/docs/codex/cli',
-    flags_placeholder: '--model gpt-6.1-sol -c model_reasoning_effort=high',
+    flags_placeholder: '--model gpt-6.1-sol -c model_reasoning_effort=medium',
     example_flags: [
+      '--model gpt-6.1-sol -c model_reasoning_effort=ultra',
+      '--model gpt-6.1-sol -c model_reasoning_effort=max',
+      '--model gpt-6.1-sol -c model_reasoning_effort=xhigh',
       '--model gpt-6.1-sol -c model_reasoning_effort=high',
       '--model gpt-6.1-sol -c model_reasoning_effort=medium',
       '--model gpt-6.1-sol -c model_reasoning_effort=low',
+      '--model gpt-6-luna -c model_reasoning_effort=max',
+      '--model gpt-6-luna -c model_reasoning_effort=xhigh',
       '--model gpt-6-luna -c model_reasoning_effort=high',
       '--model gpt-6-luna -c model_reasoning_effort=medium',
       '--model gpt-6-luna -c model_reasoning_effort=low'
