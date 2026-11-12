@@ -233,6 +233,10 @@ export interface ShowTemplateQuickPickMessage extends BaseMessage {
   command: 'SHOW_TEMPLATE_QUICK_PICK'
 }
 
+export interface ShowApplyFromQuickPickMessage extends BaseMessage {
+  command: 'SHOW_APPLY_FROM_QUICK_PICK'
+}
+
 export interface PreviewWebConfigurationMessage extends BaseMessage {
   command: 'PREVIEW_WEB_CONFIGURATION'
   web_configuration: WebConfiguration
@@ -712,6 +716,7 @@ export type FrontendMessage =
   | DeleteWebConfigurationMessage
   | ExecuteCommandMessage
   | ShowTemplateQuickPickMessage
+  | ShowApplyFromQuickPickMessage
   | PreviewWebConfigurationMessage
   | CaretPositionChangedWebviewMessage
   | PickModelMessage

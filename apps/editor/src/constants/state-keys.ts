@@ -7,6 +7,7 @@ export const LAST_APPLIED_RAW_INSTRUCTIONS_STATE_KEY =
   'last-applied-raw-instructions'
 export const LAST_RANGES_SAVE_LOCATION_STATE_KEY = 'last-ranges-save-location'
 export const LAST_APPLY_CONTEXT_OPTION_STATE_KEY = 'last-apply-context-option'
+export const LAST_APPLY_FROM_STATE_KEY = 'last-apply-from'
 export const CONTEXT_SELECTED_PATHS_STATE_KEY = 'context-selected-paths'
 export const LAST_SELECTED_SYMBOL_STATE_KEY = 'last-selected-symbol'
 export const LAST_SELECTED_CONTEXT_SOURCE_IN_SYMBOLS_QUICK_PICK_STATE_KEY =

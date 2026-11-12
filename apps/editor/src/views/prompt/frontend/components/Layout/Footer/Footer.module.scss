@@ -20,3 +20,24 @@
     display: flex;
   }
 }
+
+.apply-button {
+  --button-size: 24px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: var(--button-size);
+  padding: 0 6px;
+  border-radius: 4px;
+  color: inherit;
+  font-size: 12px;
+
+  &:hover:not(:disabled) {
+    background-color: var(--vscode-toolbar-hoverBackground);
+  }
+
+  &:disabled {
+    opacity: var(--disabled-opacity);
+    cursor: default;
+  }
+}

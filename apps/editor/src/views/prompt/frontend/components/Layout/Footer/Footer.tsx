@@ -21,7 +21,7 @@ export const Footer: React.FC<Props> = (props) => {
 
   const history_label = t('footer.action.history')
   const undo_label = t('footer.action.undo')
-  const apply_label = t('footer.action.apply-from-clipboard')
+  const apply_label = t('footer.action.apply-from')
 
   const [is_apply_disabled_temporarily, set_is_apply_disabled_temporarily] =
     useState(false)
@@ -66,14 +66,14 @@ export const Footer: React.FC<Props> = (props) => {
       </div>
 
       <div>
-        <CompactableActionButton
-          is_compact={compact_step >= 3}
-          on_click={handle_apply_click}
+        <button
+          className={styles['apply-button']}
+          onClick={handle_apply_click}
           title={t('footer.apply-title')}
           disabled={is_apply_disabled_temporarily}
-          codicon="clippy"
-          label={apply_label}
-        />
+        >
+          {apply_label}
+        </button>
       </div>
     </div>
   )

@@ -13,6 +13,7 @@ import { translations as handle_save_completed_tasks } from './handle-save-compl
 import { translations as handle_clear_completed_tasks } from './handle-clear-completed-tasks'
 import { translations as handle_show_accuracy_boost_info } from './handle-show-accuracy-boost-info'
 import { translations as handle_select_terminal_interactivity } from './handle-select-terminal-interactivity'
+import { translations as handle_apply_from } from './handle-apply-from'
 export const translations = {
   ...handle_delete_task,
   ...handle_make_api_call,
@@ -28,5 +29,6 @@ export const translations = {
   ...handle_save_completed_tasks,
   ...handle_clear_completed_tasks,
   ...handle_show_accuracy_boost_info,
-  ...handle_select_terminal_interactivity
+  ...handle_select_terminal_interactivity,
+  ...handle_apply_from
 }

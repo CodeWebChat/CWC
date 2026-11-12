@@ -655,6 +655,8 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
             this.send_token_count()
           } else if (message.command === 'EXECUTE_COMMAND') {
             await vscode.commands.executeCommand(message.command_id)
+          } else if (message.command === 'SHOW_APPLY_FROM_QUICK_PICK') {
+            await handlers.handle_apply_from(this, message)
           } else if (message.command === 'MAKE_API_CALL') {
             await handlers.handle_make_api_call(this, message)
           } else if (message.command === 'SHOW_TEMPLATE_QUICK_PICK') {
