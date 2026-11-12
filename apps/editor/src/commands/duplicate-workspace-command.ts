@@ -36,7 +36,6 @@ export const duplicate_workspace_command = (
 
       const context_to_save: DuplicateWorkspaceContext = {
         selected_files: export_state.selected_files,
-        selected_files_timestamps: export_state.selected_timestamps,
         workspace_root_folders,
         timestamp: Date.now(),
         open_editors

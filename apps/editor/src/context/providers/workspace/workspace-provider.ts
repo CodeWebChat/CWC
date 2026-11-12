@@ -2,10 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import ignore, { Ignore } from 'ignore'
-import {
-  CONTEXT_SELECTED_PATHS_STATE_KEY,
-  CONTEXT_SELECTED_TIMESTAMPS_STATE_KEY
-} from '@/constants/state-keys'
+import { CONTEXT_SELECTED_PATHS_STATE_KEY } from '@/constants/state-keys'
 import { IGNORED_LOCK_FILES } from '@/constants/ignored-lock-files'
 import { natural_sort } from '@/utils/natural-sort'
 import { Logger } from '@shared/utils/logger'
@@ -25,10 +22,8 @@ export interface IWorkspaceProvider {
   get_checkbox_state(path: string): vscode.TreeItemCheckboxState
   is_partially_selected(path: string): boolean
   get_selected_files(): string[]
-  get_selection_timestamp(path: string): number | undefined
   get_export_state(): {
     selected_files: string[]
-    selected_timestamps: Record<string, number>
   }
   get_all_files_for_uri(uri: vscode.Uri): Promise<vscode.Uri[]>
   pause_file_watcher(): void
@@ -53,7 +48,6 @@ export class WorkspaceProvider
   private _workspace_names: string[] = []
 
   private _checked_items = new Map<string, vscode.TreeItemCheckboxState>()
-  private _selected_timestamps = new Map<string, number>()
   private _partially_selected_dirs = new Set<string>()
 
   private _combined_gitignore = ignore()
@@ -171,10 +165,6 @@ export class WorkspaceProvider
       CONTEXT_SELECTED_PATHS_STATE_KEY,
       this.get_all_selected_paths()
     )
-    await this._extension_context.workspaceState.update(
-      CONTEXT_SELECTED_TIMESTAMPS_STATE_KEY,
-      Object.fromEntries(this._selected_timestamps)
-    )
   }
 
   load_selected_files_state() {
@@ -182,17 +172,11 @@ export class WorkspaceProvider
       const reg_paths = this._extension_context.workspaceState.get<string[]>(
         CONTEXT_SELECTED_PATHS_STATE_KEY
       )
-      const reg_times = this._extension_context.workspaceState.get<
-        Record<string, number>
-      >(CONTEXT_SELECTED_TIMESTAMPS_STATE_KEY)
 
       await this.gitignore_initialization
 
       if (reg_paths && reg_paths.length > 0) {
-        await this.set_selected_files(
-          reg_paths,
-          reg_times ? new Map(Object.entries(reg_times)) : undefined
-        )
+        await this.set_selected_files(reg_paths)
       }
     }
     load()
@@ -202,13 +186,8 @@ export class WorkspaceProvider
     return {
       selected_files: Array.from(this._checked_items.entries())
         .filter(([, state]) => state === vscode.TreeItemCheckboxState.Checked)
-        .map(([path]) => path),
-      selected_timestamps: Object.fromEntries(this._selected_timestamps)
+        .map(([path]) => path)
     }
-  }
-
-  get_selection_timestamp(path: string): number | undefined {
-    return this._selected_timestamps.get(path)
   }
 
   get_workspace_root_for_file(file_path: string): string | undefined {
@@ -257,7 +236,6 @@ export class WorkspaceProvider
 
     for (const file_path of files_to_uncheck) {
       this._checked_items.set(file_path, vscode.TreeItemCheckboxState.Unchecked)
-      this._selected_timestamps.delete(file_path)
 
       let dir_path = path.dirname(file_path)
       const workspace_root = this.get_workspace_root_for_file(file_path)
@@ -450,7 +428,6 @@ export class WorkspaceProvider
     if (!fs.existsSync(changed_file_path)) {
       this._file_workspace_map.delete(changed_file_path)
       this._checked_items.delete(changed_file_path)
-      this._selected_timestamps.delete(changed_file_path)
       this._partially_selected_dirs.delete(changed_file_path)
 
       let parent_dir = path.dirname(changed_file_path)
@@ -579,7 +556,6 @@ export class WorkspaceProvider
       } else {
         this._file_workspace_map.delete(file_path)
         this._checked_items.delete(file_path)
-        this._selected_timestamps.delete(file_path)
         this._partially_selected_dirs.delete(file_path)
       }
 
@@ -602,7 +578,6 @@ export class WorkspaceProvider
 
   async clear_selected_files(): Promise<void> {
     this._checked_items.clear()
-    this._selected_timestamps.clear()
     this._partially_selected_dirs.clear()
     this._token_calculator.clear_selected_counts()
 
@@ -1043,13 +1018,6 @@ export class WorkspaceProvider
     }
 
     this._checked_items.set(key, state)
-    if (state === vscode.TreeItemCheckboxState.Checked) {
-      if (!this._selected_timestamps.has(key)) {
-        this._selected_timestamps.set(key, Math.floor(Date.now() / 1000))
-      }
-    } else {
-      this._selected_timestamps.delete(key)
-    }
     this._token_calculator.invalidate_directory_selected_count(key)
 
     if (item.isDirectory) {
@@ -1240,16 +1208,6 @@ export class WorkspaceProvider
         }
 
         this._checked_items.set(full_path, state)
-        if (state === vscode.TreeItemCheckboxState.Checked) {
-          if (!this._selected_timestamps.has(full_path)) {
-            this._selected_timestamps.set(
-              full_path,
-              Math.floor(Date.now() / 1000)
-            )
-          }
-        } else {
-          this._selected_timestamps.delete(full_path)
-        }
 
         if (entry.isDirectory()) {
           await this._update_directory_checkbox_state(full_path, state, false)
@@ -1293,14 +1251,9 @@ export class WorkspaceProvider
       .map(([path]) => path)
   }
 
-  async set_selected_files(
-    file_paths: string[],
-    timestamps?: Map<string, number>
-  ): Promise<void> {
+  async set_selected_files(file_paths: string[]): Promise<void> {
     await this.gitignore_initialization
-    const old_timestamps = new Map(this._selected_timestamps)
     this._checked_items.clear()
-    this._selected_timestamps.clear()
     this._partially_selected_dirs.clear()
     this._token_calculator.clear_selected_counts()
 
@@ -1345,12 +1298,6 @@ export class WorkspaceProvider
 
     for (const file_path of all_files_to_check) {
       this._checked_items.set(file_path, vscode.TreeItemCheckboxState.Checked)
-
-      const timestamp =
-        timestamps?.get(file_path) ??
-        old_timestamps.get(file_path) ??
-        Math.floor(Date.now() / 1000)
-      this._selected_timestamps.set(file_path, timestamp)
     }
 
     for (const file_path of [...file_paths, ...all_files_to_check]) {

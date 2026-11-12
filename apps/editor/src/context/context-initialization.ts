@@ -8,7 +8,6 @@ import { SharedContextState } from './shared-context-state'
 import { EventEmitter } from 'events'
 import {
   CONTEXT_SELECTED_PATHS_STATE_KEY,
-  CONTEXT_SELECTED_TIMESTAMPS_STATE_KEY,
   DUPLICATE_WORKSPACE_CONTEXT_STATE_KEY,
   type DuplicateWorkspaceContext
 } from '../constants/state-keys'
@@ -54,11 +53,6 @@ const restore_duplicated_workspace_context = async (
         await extension_context.workspaceState.update(
           CONTEXT_SELECTED_PATHS_STATE_KEY,
           duplicated_context.selected_files
-        )
-
-        await extension_context.workspaceState.update(
-          CONTEXT_SELECTED_TIMESTAMPS_STATE_KEY,
-          duplicated_context.selected_files_timestamps
         )
 
         if (duplicated_context.open_editors) {

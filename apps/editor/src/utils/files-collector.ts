@@ -112,7 +112,7 @@ export namespace FilesCollector {
     recent_files: string[]
   } => {
     const recently_modified: Array<{ path: string; mtime: number }> = []
-    const older_files: Array<{ path: string; timestamp: number }> = []
+    const older_files: Array<{ path: string }> = []
     const now = Date.now()
     const ONE_AND_HALF_HOURS = 1.5 * 60 * 60 * 1000
 
@@ -123,31 +123,19 @@ export namespace FilesCollector {
         if (stats.isDirectory()) continue
 
         const mtime = stats.mtimeMs
-        const selection_timestamp =
-          params.workspace_provider.get_selection_timestamp(file_path) ?? now
 
         if (now - mtime < ONE_AND_HALF_HOURS) {
           recently_modified.push({ path: file_path, mtime })
         } else {
-          older_files.push({ path: file_path, timestamp: selection_timestamp })
+          older_files.push({ path: file_path })
         }
       } catch (error) {
         console.error(`Error getting file stats for ${file_path}:`, error)
       }
     }
 
-    // Sort older files by selection timestamp (ascending), with natural sort as tiebreaker
-    // Files selected within 20 seconds of each other are grouped and sorted naturally
-    older_files.sort((a, b) => {
-      const timestamp_bucket_a = Math.floor(a.timestamp / 20)
-      const timestamp_bucket_b = Math.floor(b.timestamp / 20)
-      const bucket_diff = timestamp_bucket_a - timestamp_bucket_b
-      if (bucket_diff !== 0) {
-        return bucket_diff
-      }
-      // If timestamps are within the same 20-second bucket, use natural sort on paths
-      return natural_sort(a.path, b.path)
-    })
+    // Sort older files naturally by path
+    older_files.sort((a, b) => natural_sort(a.path, b.path))
 
     recently_modified.sort((a, b) => a.mtime - b.mtime)
 
