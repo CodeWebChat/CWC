@@ -14,13 +14,13 @@ export const antigravity_agent: CodingAgent = {
   cmd: 'agy',
   is_installed: () => check_command_exists('agy'),
   get_documentation_url: () => AGENTS[agent_name].docs_url,
-  get_isolated_dir_args: () => [
+  get_headless_args: () => [
     '--output-format',
     'stream-json',
     '--dangerously-skip-permissions'
   ],
-  get_edit_integrated_terminal_args: () => [],
-  get_ask_integrated_terminal_args: () => [],
+  get_integrated_terminal_edit_args: () => [],
+  get_integrated_terminal_ask_args: () => [],
   get_post_integrated_terminal_args: () => ['--continue'],
   parse_stream_line: (parsed, report_progress) => {
     if (parsed.event === 'step_update' && parsed.step_update) {

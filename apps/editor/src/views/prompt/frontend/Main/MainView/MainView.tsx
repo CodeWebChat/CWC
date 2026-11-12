@@ -11,6 +11,7 @@ import { StatusBar as UiStatusBar } from '@ui/components/editor/prompt-view/Stat
 import { ResponseHistoryItem } from '@shared/types/response-history-item'
 import { EditFormat } from '@shared/types/edit-format'
 import { Target } from '@shared/types/target'
+import { TerminalInteractivity } from '@shared/types/terminal-interactivity'
 import {
   ApiPromptType,
   WebPromptType,
@@ -87,6 +88,10 @@ type Props = {
   on_cli_prompt_type_change: (prompt_type: CliPromptType) => void
   edit_format: EditFormat
   on_edit_format_change: (format?: EditFormat) => void
+  terminal_interactivity: TerminalInteractivity
+  on_terminal_interactivity_change: (
+    interactivity?: TerminalInteractivity
+  ) => void
   on_web_configurations_reorder: (
     reordered_web_configurations: WebConfiguration[]
   ) => void
@@ -198,6 +203,8 @@ export const MainView: React.FC<Props> = (props) => {
   const show_edit_format_selector =
     (props.target === 'WEB' && props.web_prompt_type === 'edit') ||
     (props.target === 'API' && props.api_prompt_type === 'edit')
+
+  const show_terminal_interactivity_selector = props.target === 'CLI'
 
   const handle_input_change = (value: string) => {
     props.set_instructions(value)
@@ -484,6 +491,16 @@ export const MainView: React.FC<Props> = (props) => {
           show_edit_format_selector={show_edit_format_selector}
           edit_format={props.edit_format}
           on_edit_format_change={props.on_edit_format_change}
+          show_terminal_interactivity_selector={
+            show_terminal_interactivity_selector
+          }
+          terminal_interactivity={
+            !is_edit_prompt_type ? 'interactive' : props.terminal_interactivity
+          }
+          is_terminal_interactivity_disabled={!is_edit_prompt_type}
+          on_terminal_interactivity_change={
+            props.on_terminal_interactivity_change
+          }
           selected_files={props.selected_files}
           on_go_to_file={props.on_go_to_file}
           on_pasted_lines_click={props.on_pasted_lines_click}
@@ -551,6 +568,13 @@ export const MainView: React.FC<Props> = (props) => {
             ),
             edit_format_diff: t('prompt-field.edit-format.diff'),
             edit_format_truncated: t('prompt-field.edit-format.truncated'),
+            terminal_interactivity: t('prompt-field.terminal-interactivity'),
+            terminal_interactivity_interactive: t(
+              'prompt-field.terminal-interactivity.interactive'
+            ),
+            terminal_interactivity_non_interactive: t(
+              'prompt-field.terminal-interactivity.non-interactive'
+            ),
             placeholder_code_history: t(
               'prompt-field.placeholder.code-history'
             ),

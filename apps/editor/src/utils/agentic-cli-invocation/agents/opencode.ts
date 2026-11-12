@@ -14,15 +14,15 @@ export const opencode_agent: CodingAgent = {
   cmd: 'opencode',
   is_installed: () => check_command_exists('opencode'),
   get_documentation_url: () => AGENTS[agent_name].docs_url,
-  get_isolated_dir_args: (params) => [
+  get_headless_args: (params) => [
     'run',
     '--format',
     'json',
     '--auto',
     params.cwd
   ],
-  get_edit_integrated_terminal_args: (params) => ['run', '--auto', params.cwd],
-  get_ask_integrated_terminal_args: (params) => ['run', '--auto', params.cwd],
+  get_integrated_terminal_edit_args: (params) => ['run', '--auto', params.cwd],
+  get_integrated_terminal_ask_args: (params) => ['run', '--auto', params.cwd],
   get_post_integrated_terminal_args: () => ['--continue'],
   parse_stream_line: (parsed, report_progress) => {
     let action_name = ''

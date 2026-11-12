@@ -33,6 +33,7 @@ export const DUPLICATE_WORKSPACE_CONTEXT_STATE_KEY =
   'duplicate-workspace-context'
 
 export const EDIT_FORMAT_STATE_KEY = 'edit-format'
+export const TERMINAL_INTERACTIVITY_STATE_KEY = 'terminal-interactivity'
 export const WEB_TARGET_STATE_KEY = 'web-target'
 export const API_TARGET_STATE_KEY = 'api-target'
 export const CLI_TARGET_STATE_KEY = 'cli-target'

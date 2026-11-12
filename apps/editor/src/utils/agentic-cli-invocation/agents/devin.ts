@@ -10,13 +10,9 @@ export const devin_agent: CodingAgent = {
   cmd: 'devin',
   is_installed: () => check_command_exists('devin'),
   get_documentation_url: () => AGENTS[agent_name].docs_url,
-  get_isolated_dir_args: () => [
-    '--print',
-    '--respect-workspace-trust',
-    'false'
-  ],
-  get_edit_integrated_terminal_args: () => [],
-  get_ask_integrated_terminal_args: () => [],
+  get_headless_args: () => ['--print', '--respect-workspace-trust', 'false'],
+  get_integrated_terminal_edit_args: () => [],
+  get_integrated_terminal_ask_args: () => [],
   get_prompt_file_args: (temp_prompt_path: string) => [
     '--prompt-file',
     temp_prompt_path

@@ -23,6 +23,7 @@ import { KeycapWrapper } from '../../../prompt-view/KeycapWrapper'
 import { Tooltip } from '../../Tooltip'
 
 export type EditFormat = 'whole' | 'search-replace' | 'diff' | 'truncated'
+export type TerminalInteractivity = 'non-interactive' | 'interactive'
 
 export type SelectionState = {
   text: string
@@ -56,6 +57,12 @@ export namespace PromptField {
     show_edit_format_selector?: boolean
     edit_format?: EditFormat
     on_edit_format_change?: (format?: EditFormat) => void
+    show_terminal_interactivity_selector?: boolean
+    terminal_interactivity?: TerminalInteractivity
+    on_terminal_interactivity_change?: (
+      interactivity?: TerminalInteractivity
+    ) => void
+    is_terminal_interactivity_disabled?: boolean
     selected_files?: string[]
     currently_open_file_path?: string
     currently_open_file_text?: string
@@ -114,6 +121,9 @@ export namespace PromptField {
       edit_format_search_replace: string
       edit_format_diff: string
       edit_format_truncated: string
+      terminal_interactivity: string
+      terminal_interactivity_interactive: string
+      terminal_interactivity_non_interactive: string
       placeholder_code_history: string
       placeholder_code: string
       placeholder_history: string

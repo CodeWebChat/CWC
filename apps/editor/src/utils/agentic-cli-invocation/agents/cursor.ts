@@ -14,9 +14,9 @@ export const cursor_agent: CodingAgent = {
   cmd: 'agent',
   is_installed: () => check_command_exists('agent'),
   get_documentation_url: () => AGENTS[agent_name].docs_url,
-  get_isolated_dir_args: () => ['--force', '--output-format', 'stream-json'],
-  get_edit_integrated_terminal_args: () => ['--force'],
-  get_ask_integrated_terminal_args: () => ['--force'],
+  get_headless_args: () => ['--force', '--output-format', 'stream-json'],
+  get_integrated_terminal_edit_args: () => ['--force'],
+  get_integrated_terminal_ask_args: () => ['--force'],
   get_post_integrated_terminal_args: () => ['--continue', '--trust'],
   parse_stream_line: (parsed, report_progress) => {
     if (parsed.type === 'tool_call') {

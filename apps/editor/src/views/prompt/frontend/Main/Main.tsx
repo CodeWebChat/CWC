@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { MainView } from './MainView'
 import { WebConfiguration } from '@/types/web-configuration'
 import { EditFormat } from '@shared/types/edit-format'
+import { TerminalInteractivity } from '@shared/types/terminal-interactivity'
 import { CliConfiguration } from '@/types/cli-configuration'
 import { Target } from '@shared/types/target'
 import {
@@ -116,6 +117,8 @@ export const Main: React.FC<Props> = (props) => {
     useState<string[]>()
   const [edit_files_history, set_edit_files_history] = useState<string[]>()
   const [edit_format, set_edit_format] = useState<EditFormat>()
+  const [terminal_interactivity, set_terminal_interactivity] =
+    useState<TerminalInteractivity>()
   const [caret_position_to_set, set_caret_position_to_set] = useState<
     number | undefined
   >()
@@ -161,6 +164,9 @@ export const Main: React.FC<Props> = (props) => {
         case 'EDIT_FORMAT':
           set_edit_format(message.edit_format)
           break
+        case 'TERMINAL_INTERACTIVITY':
+          set_terminal_interactivity((message as any).terminal_interactivity)
+          break
         case 'COMPLETED_TASKS':
           set_completed_tasks((message as any).completed_tasks)
           break
@@ -193,7 +199,8 @@ export const Main: React.FC<Props> = (props) => {
       { command: 'GET_HISTORY' },
       { command: 'GET_INSTRUCTIONS' },
       { command: 'GET_EDIT_FORMAT' },
-      { command: 'GET_COMPLETED_TASKS' }
+      { command: 'GET_COMPLETED_TASKS' },
+      { command: 'GET_TERMINAL_INTERACTIVITY' }
     ]
     initial_messages.forEach((message) => post_message(props.vscode, message))
 
@@ -479,6 +486,22 @@ export const Main: React.FC<Props> = (props) => {
     }
   }
 
+  const handle_terminal_interactivity_change = (
+    interactivity?: TerminalInteractivity
+  ) => {
+    if (interactivity) {
+      set_terminal_interactivity(interactivity)
+      post_message(props.vscode, {
+        command: 'SAVE_TERMINAL_INTERACTIVITY',
+        terminal_interactivity: interactivity
+      })
+    } else {
+      post_message(props.vscode, {
+        command: 'SELECT_TERMINAL_INTERACTIVITY'
+      })
+    }
+  }
+
   const handle_caret_position_change = (caret_position: number) => {
     post_message(props.vscode, {
       command: 'CARET_POSITION_CHANGED',
@@ -624,7 +647,8 @@ export const Main: React.FC<Props> = (props) => {
     ask_about_files_history === undefined ||
     edit_files_history === undefined ||
     instructions === undefined ||
-    edit_format === undefined
+    edit_format === undefined ||
+    terminal_interactivity === undefined
   ) {
     return <></>
   }
@@ -679,6 +703,8 @@ export const Main: React.FC<Props> = (props) => {
       on_cli_prompt_type_change={props.on_cli_prompt_type_change}
       edit_format={edit_format}
       on_edit_format_change={handle_edit_format_change}
+      terminal_interactivity={terminal_interactivity}
+      on_terminal_interactivity_change={handle_terminal_interactivity_change}
       on_web_configurations_reorder={handle_web_configurations_reorder}
       on_web_configuration_edit={handle_web_configuration_edit}
       on_delete_web_configuration={handle_delete_web_configuration}

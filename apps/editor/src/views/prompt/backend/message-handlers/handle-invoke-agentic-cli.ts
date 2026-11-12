@@ -48,7 +48,11 @@ export const handle_invoke_agentic_cli = async (
     isolate_in_temp_dir: true,
     copy_selected_files: prompt_type === 'edit',
     generate_diff_for_temp_dir: prompt_type === 'edit',
-    execution_mode: 'interactive-terminal',
+    execution_mode:
+      prompt_view_provider.cli_prompt_type === 'ask' ||
+      prompt_view_provider.terminal_interactivity === 'interactive'
+        ? 'interactive-terminal'
+        : 'headless',
     cli_prompt_type: prompt_type,
     cli_configuration_name: message.cli_configuration_name,
     use_quick_pick: message.use_quick_pick,

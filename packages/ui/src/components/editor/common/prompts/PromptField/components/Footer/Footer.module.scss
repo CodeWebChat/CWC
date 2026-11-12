@@ -41,17 +41,12 @@
     pointer-events: none;
     min-width: 0;
 
-    &__edit-format {
+    &__setting {
       position: relative;
       display: flex;
       align-items: center;
       min-width: 0;
       font-size: 11px;
-
-      &__plus {
-        color: var(--cwc-text-color-dimmed);
-        padding-right: 1px;
-      }
 
       &__button {
         pointer-events: all;
@@ -63,8 +58,13 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
-        &:hover {
+        &:hover:not(:disabled) {
           color: var(--cwc-text-color);
+        }
+
+        &:disabled {
+          opacity: var(--dimmed-opacity);
+          cursor: default;
         }
 
         &--alt-pressed {

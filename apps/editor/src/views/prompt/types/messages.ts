@@ -15,6 +15,7 @@ import {
   CliPromptType
 } from '@shared/types/prompt-types'
 import { Target } from '@shared/types/target'
+import { TerminalInteractivity } from '@shared/types/terminal-interactivity'
 
 type BaseMessage = {
   command: string
@@ -86,6 +87,19 @@ export interface GetEditFormat extends BaseMessage {
 export interface SaveEditFormatMessage extends BaseMessage {
   command: 'SAVE_EDIT_FORMAT'
   edit_format: EditFormat
+}
+
+export interface GetTerminalInteractivityMessage extends BaseMessage {
+  command: 'GET_TERMINAL_INTERACTIVITY'
+}
+
+export interface SaveTerminalInteractivityMessage extends BaseMessage {
+  command: 'SAVE_TERMINAL_INTERACTIVITY'
+  terminal_interactivity: TerminalInteractivity
+}
+
+export interface SelectTerminalInteractivityMessage extends BaseMessage {
+  command: 'SELECT_TERMINAL_INTERACTIVITY'
 }
 
 export interface GetEditFormatInstructionsMessage extends BaseMessage {
@@ -679,6 +693,9 @@ export type FrontendMessage =
   | SaveEditFormatMessage
   | GetEditFormatInstructionsMessage
   | SelectEditFormatInstructionsMessage
+  | GetTerminalInteractivityMessage
+  | SaveTerminalInteractivityMessage
+  | SelectTerminalInteractivityMessage
   | GetConnectionStatusMessage
   | GetWebConfigurationsMessage
   | ReorderWebConfigurationsMessage
@@ -802,6 +819,11 @@ export interface ConnectionStatusMessage extends BaseMessage {
 export interface EditFormatMessage extends BaseMessage {
   command: 'EDIT_FORMAT'
   edit_format: EditFormat
+}
+
+export interface TerminalInteractivityMessage extends BaseMessage {
+  command: 'TERMINAL_INTERACTIVITY'
+  terminal_interactivity: TerminalInteractivity
 }
 
 export interface EditFormatInstructionsMessage extends BaseMessage {
@@ -1068,6 +1090,7 @@ export type BackendMessage =
   | ConnectionStatusMessage
   | EditFormatMessage
   | EditFormatInstructionsMessage
+  | TerminalInteractivityMessage
   | ApiConfigurationsMessage
   | WebConfigurationsMessage
   | EditorStateChangedMessage

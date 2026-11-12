@@ -11,6 +11,7 @@ import { OpenEditorsProvider } from '@/context/providers/open-editors/open-edito
 import { WorkspaceProvider } from '@/context/providers/workspace/workspace-provider'
 import { token_count_emitter } from '@/context/context-initialization'
 import { EditFormat } from '@shared/types/edit-format'
+import { TerminalInteractivity } from '@shared/types/terminal-interactivity'
 import * as handlers from './message-handlers'
 import { handle_agentic_search } from './message-handlers/handle-agentic-search'
 import { handle_preview_saved_context_symbol } from './message-handlers/handle-preview-saved-context-symbol'
@@ -72,6 +73,7 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
   }
   public web_prompt_type: WebPromptType
   public edit_format: EditFormat
+  public terminal_interactivity: TerminalInteractivity
   public api_prompt_type: ApiPromptType
   public cli_prompt_type: CliPromptType
   public target: Target = 'WEB'
@@ -255,6 +257,15 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
         state_keys.EDIT_FORMAT_STATE_KEY
       ) ??
       'whole'
+
+    this.terminal_interactivity =
+      this.extension_context.workspaceState.get<TerminalInteractivity>(
+        state_keys.TERMINAL_INTERACTIVITY_STATE_KEY
+      ) ??
+      this.extension_context.globalState.get<TerminalInteractivity>(
+        state_keys.TERMINAL_INTERACTIVITY_STATE_KEY
+      ) ??
+      'non-interactive'
 
     this.target =
       this.extension_context.workspaceState.get<Target>(
@@ -688,6 +699,12 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
             handlers.handle_get_edit_format(this)
           } else if (message.command === 'SAVE_EDIT_FORMAT') {
             handlers.handle_save_edit_format(this, message)
+          } else if (message.command === 'GET_TERMINAL_INTERACTIVITY') {
+            handlers.handle_get_terminal_interactivity(this)
+          } else if (message.command === 'SAVE_TERMINAL_INTERACTIVITY') {
+            handlers.handle_save_terminal_interactivity(this, message)
+          } else if (message.command === 'SELECT_TERMINAL_INTERACTIVITY') {
+            await handlers.handle_select_terminal_interactivity(this, message)
           } else if (message.command === 'SELECT_EDIT_FORMAT_INSTRUCTIONS') {
             await handlers.handle_select_edit_format_instructions(this, message)
           } else if (message.command === 'CARET_POSITION_CHANGED') {

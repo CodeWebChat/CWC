@@ -71,7 +71,10 @@ export const Empty = () => (
       mark_as_complete: 'Mark as complete',
       new_tab: 'New tab',
       clear_tab: 'Clear tab',
-      close_tab: 'Close tab'
+      close_tab: 'Close tab',
+      terminal_interactivity: 'Terminal interactivity',
+      terminal_interactivity_interactive: 'Interactive',
+      terminal_interactivity_non_interactive: 'Non-interactive'
     }}
   />
 )
@@ -142,7 +145,10 @@ export const WithText = () => (
       mark_as_complete: 'Mark as complete',
       new_tab: 'New tab',
       clear_tab: 'Clear tab',
-      close_tab: 'Close tab'
+      close_tab: 'Close tab',
+      terminal_interactivity: 'Terminal interactivity',
+      terminal_interactivity_interactive: 'Interactive',
+      terminal_interactivity_non_interactive: 'Non-interactive'
     }}
   />
 )
@@ -213,7 +219,10 @@ export const LongText = () => (
       mark_as_complete: 'Mark as complete',
       new_tab: 'New tab',
       clear_tab: 'Clear tab',
-      close_tab: 'Close tab'
+      close_tab: 'Close tab',
+      terminal_interactivity: 'Terminal interactivity',
+      terminal_interactivity_interactive: 'Interactive',
+      terminal_interactivity_non_interactive: 'Non-interactive'
     }}
   />
 )
@@ -284,7 +293,10 @@ export const WithPlaceholderSavedContext = () => (
       mark_as_complete: 'Mark as complete',
       new_tab: 'New tab',
       clear_tab: 'Clear tab',
-      close_tab: 'Close tab'
+      close_tab: 'Close tab',
+      terminal_interactivity: 'Terminal interactivity',
+      terminal_interactivity_interactive: 'Interactive',
+      terminal_interactivity_non_interactive: 'Non-interactive'
     }}
   />
 )
@@ -355,7 +367,10 @@ export const WithCommit = () => (
       mark_as_complete: 'Mark as complete',
       new_tab: 'New tab',
       clear_tab: 'Clear tab',
-      close_tab: 'Close tab'
+      close_tab: 'Close tab',
+      terminal_interactivity: 'Terminal interactivity',
+      terminal_interactivity_interactive: 'Interactive',
+      terminal_interactivity_non_interactive: 'Non-interactive'
     }}
   />
 )
@@ -425,7 +440,10 @@ export const WithCommitWithQuotes = () => (
       mark_as_complete: 'Mark as complete',
       new_tab: 'New tab',
       clear_tab: 'Clear tab',
-      close_tab: 'Close tab'
+      close_tab: 'Close tab',
+      terminal_interactivity: 'Terminal interactivity',
+      terminal_interactivity_interactive: 'Interactive',
+      terminal_interactivity_non_interactive: 'Non-interactive'
     }}
   />
 )
@@ -503,7 +521,10 @@ export const WithEditFormatSelector = () => {
         mark_as_complete: 'Mark as complete',
         new_tab: 'New tab',
         clear_tab: 'Clear tab',
-        close_tab: 'Close tab'
+        close_tab: 'Close tab',
+        terminal_interactivity: 'Terminal interactivity',
+        terminal_interactivity_interactive: 'Interactive',
+        terminal_interactivity_non_interactive: 'Non-interactive'
       }}
     />
   )
@@ -573,7 +594,10 @@ export const WithWarning = () => (
       mark_as_complete: 'Mark as complete',
       new_tab: 'New tab',
       clear_tab: 'Clear tab',
-      close_tab: 'Close tab'
+      close_tab: 'Close tab',
+      terminal_interactivity: 'Terminal interactivity',
+      terminal_interactivity_interactive: 'Interactive',
+      terminal_interactivity_non_interactive: 'Non-interactive'
     }}
   />
 )
@@ -644,7 +668,10 @@ export const WithFilePaths = () => (
       mark_as_complete: 'Mark as complete',
       new_tab: 'New tab',
       clear_tab: 'Clear tab',
-      close_tab: 'Close tab'
+      close_tab: 'Close tab',
+      terminal_interactivity: 'Terminal interactivity',
+      terminal_interactivity_interactive: 'Interactive',
+      terminal_interactivity_non_interactive: 'Non-interactive'
     }}
   />
 )
@@ -743,7 +770,10 @@ export const WithTabs = () => {
         mark_as_complete: 'Mark as complete',
         new_tab: 'New tab',
         clear_tab: 'Clear tab',
-        close_tab: 'Close tab'
+        close_tab: 'Close tab',
+        terminal_interactivity: 'Terminal interactivity',
+        terminal_interactivity_interactive: 'Interactive',
+        terminal_interactivity_non_interactive: 'Non-interactive'
       }}
     />
   )

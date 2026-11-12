@@ -26,6 +26,10 @@ export const Footer: React.FC<Props> = (props) => {
   const [show_submit_tooltip, set_show_submit_tooltip] = useState(false)
   const [is_recording_hovered, set_is_recording_hovered] = useState(false)
   const [is_edit_format_hovered, set_is_edit_format_hovered] = useState(false)
+  const [
+    is_terminal_interactivity_hovered,
+    set_is_terminal_interactivity_hovered
+  ] = useState(false)
   const [is_target_dropdown_open, set_is_target_dropdown_open] = useState(false)
   const [hovered_left_action, set_hovered_left_action] = useState<
     'at' | 'hash' | 'slash' | null
@@ -282,7 +286,7 @@ export const Footer: React.FC<Props> = (props) => {
         }}
       >
         {props.props.show_edit_format_selector && props.props.edit_format && (
-          <div className={styles['footer__right__edit-format']}>
+          <div className={styles['footer__right__setting']}>
             {is_edit_format_hovered && (
               <Tooltip
                 message={props.props.translations.edit_format}
@@ -290,14 +294,10 @@ export const Footer: React.FC<Props> = (props) => {
                 translate={{ y: -6 }}
               />
             )}
-            {!props.is_alt_pressed && (
-              <span className={styles['footer__right__edit-format__plus']}>
-                +{' '}
-              </span>
-            )}
+
             <button
-              className={cn(styles['footer__right__edit-format__button'], {
-                [styles['footer__right__edit-format__button--alt-pressed']]:
+              className={cn(styles['footer__right__setting__button'], {
+                [styles['footer__right__setting__button--alt-pressed']]:
                   props.is_alt_pressed
               })}
               onClick={() => props.props.on_edit_format_change?.()}
@@ -305,19 +305,15 @@ export const Footer: React.FC<Props> = (props) => {
               onMouseLeave={() => set_is_edit_format_hovered(false)}
             >
               {props.is_alt_pressed ? (
-                <span className={styles['footer__right__edit-format__keycaps']}>
+                <span className={styles['footer__right__setting__keycaps']}>
                   <KeycapWrapper
                     char={props.props.edit_format !== 'whole' ? 'W' : undefined}
                   >
                     <span
-                      className={cn(
-                        styles['footer__right__edit-format__keycap'],
-                        {
-                          [styles[
-                            'footer__right__edit-format__keycap--active'
-                          ]]: props.props.edit_format === 'whole'
-                        }
-                      )}
+                      className={cn(styles['footer__right__setting__keycap'], {
+                        [styles['footer__right__setting__keycap--active']]:
+                          props.props.edit_format === 'whole'
+                      })}
                       style={{
                         visibility:
                           props.props.edit_format !== 'whole'
@@ -336,14 +332,10 @@ export const Footer: React.FC<Props> = (props) => {
                     }
                   >
                     <span
-                      className={cn(
-                        styles['footer__right__edit-format__keycap'],
-                        {
-                          [styles[
-                            'footer__right__edit-format__keycap--active'
-                          ]]: props.props.edit_format === 'search-replace'
-                        }
-                      )}
+                      className={cn(styles['footer__right__setting__keycap'], {
+                        [styles['footer__right__setting__keycap--active']]:
+                          props.props.edit_format === 'search-replace'
+                      })}
                       style={{
                         visibility:
                           props.props.edit_format !== 'search-replace'
@@ -358,14 +350,10 @@ export const Footer: React.FC<Props> = (props) => {
                     char={props.props.edit_format !== 'diff' ? 'D' : undefined}
                   >
                     <span
-                      className={cn(
-                        styles['footer__right__edit-format__keycap'],
-                        {
-                          [styles[
-                            'footer__right__edit-format__keycap--active'
-                          ]]: props.props.edit_format === 'diff'
-                        }
-                      )}
+                      className={cn(styles['footer__right__setting__keycap'], {
+                        [styles['footer__right__setting__keycap--active']]:
+                          props.props.edit_format === 'diff'
+                      })}
                       style={{
                         visibility:
                           props.props.edit_format !== 'diff'
@@ -382,14 +370,10 @@ export const Footer: React.FC<Props> = (props) => {
                     }
                   >
                     <span
-                      className={cn(
-                        styles['footer__right__edit-format__keycap'],
-                        {
-                          [styles[
-                            'footer__right__edit-format__keycap--active'
-                          ]]: props.props.edit_format === 'truncated'
-                        }
-                      )}
+                      className={cn(styles['footer__right__setting__keycap'], {
+                        [styles['footer__right__setting__keycap--active']]:
+                          props.props.edit_format === 'truncated'
+                      })}
                       style={{
                         visibility:
                           props.props.edit_format !== 'truncated'
@@ -402,7 +386,7 @@ export const Footer: React.FC<Props> = (props) => {
                   </KeycapWrapper>
                 </span>
               ) : (
-                <span className={styles['footer__right__edit-format__text']}>
+                <span className={styles['footer__right__setting__text']}>
                   {
                     {
                       whole: props.props.translations.edit_format_whole,
@@ -417,6 +401,103 @@ export const Footer: React.FC<Props> = (props) => {
             </button>
           </div>
         )}
+
+        {props.props.show_terminal_interactivity_selector &&
+          props.props.terminal_interactivity && (
+            <div className={styles['footer__right__setting']}>
+              {is_terminal_interactivity_hovered && (
+                <Tooltip
+                  message={props.props.translations.terminal_interactivity}
+                  align="center"
+                  translate={{ y: -6 }}
+                />
+              )}
+              <button
+                className={cn(styles['footer__right__setting__button'], {
+                  [styles['footer__right__setting__button--alt-pressed']]:
+                    props.is_alt_pressed &&
+                    !props.props.is_terminal_interactivity_disabled
+                })}
+                onClick={() => {
+                  if (!props.props.is_terminal_interactivity_disabled) {
+                    props.props.on_terminal_interactivity_change?.()
+                  }
+                }}
+                onMouseEnter={() => set_is_terminal_interactivity_hovered(true)}
+                onMouseLeave={() =>
+                  set_is_terminal_interactivity_hovered(false)
+                }
+                disabled={props.props.is_terminal_interactivity_disabled}
+              >
+                {props.is_alt_pressed &&
+                !props.props.is_terminal_interactivity_disabled ? (
+                  <span className={styles['footer__right__setting__keycaps']}>
+                    <KeycapWrapper
+                      char={
+                        props.props.terminal_interactivity !== 'interactive'
+                          ? 'I'
+                          : undefined
+                      }
+                    >
+                      <span
+                        className={cn(
+                          styles['footer__right__setting__keycap'],
+                          {
+                            [styles['footer__right__setting__keycap--active']]:
+                              props.props.terminal_interactivity ===
+                              'interactive'
+                          }
+                        )}
+                        style={{
+                          visibility:
+                            props.props.terminal_interactivity !== 'interactive'
+                              ? 'hidden'
+                              : undefined
+                        }}
+                      >
+                        I
+                      </span>
+                    </KeycapWrapper>
+                    <KeycapWrapper
+                      char={
+                        props.props.terminal_interactivity !== 'non-interactive'
+                          ? 'N'
+                          : undefined
+                      }
+                    >
+                      <span
+                        className={cn(
+                          styles['footer__right__setting__keycap'],
+                          {
+                            [styles['footer__right__setting__keycap--active']]:
+                              props.props.terminal_interactivity ===
+                              'non-interactive'
+                          }
+                        )}
+                        style={{
+                          visibility:
+                            props.props.terminal_interactivity !==
+                            'non-interactive'
+                              ? 'hidden'
+                              : undefined
+                        }}
+                      >
+                        N
+                      </span>
+                    </KeycapWrapper>
+                  </span>
+                ) : (
+                  <span className={styles['footer__right__setting__text']}>
+                    {props.props.terminal_interactivity === 'interactive'
+                      ? props.props.translations
+                          .terminal_interactivity_interactive
+                      : props.props.translations
+                          .terminal_interactivity_non_interactive}
+                  </span>
+                )}
+              </button>
+            </div>
+          )}
 
         <div
           className={styles['footer__right__submit']}

@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import type { PromptField, EditFormat } from '../PromptField'
+import type {
+  PromptField,
+  EditFormat,
+  TerminalInteractivity
+} from '../PromptField'
 
 export const use_keyboard_shortcuts = (props: PromptField.Props) => {
   const [is_alt_pressed, set_is_alt_pressed] = useState(false)
@@ -7,10 +11,15 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
   const is_alt_pressed_raw_ref = useRef(false)
   const is_alt_consumed_ref = useRef(false)
   const pending_edit_format_ref = useRef<EditFormat | null>(null)
+  const pending_terminal_interactivity_ref =
+    useRef<TerminalInteractivity | null>(null)
 
   const update_alt_pressed = (val: boolean) => {
     is_alt_pressed_raw_ref.current = val
-    if (pending_edit_format_ref.current) {
+    if (
+      pending_edit_format_ref.current ||
+      pending_terminal_interactivity_ref.current
+    ) {
       if (val) set_is_alt_pressed(true)
     } else {
       set_is_alt_pressed(val)
@@ -25,6 +34,16 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
   }, [props.edit_format])
 
   useEffect(() => {
+    if (
+      pending_terminal_interactivity_ref.current ===
+      props.terminal_interactivity
+    ) {
+      pending_terminal_interactivity_ref.current = null
+      set_is_alt_pressed(is_alt_pressed_raw_ref.current)
+    }
+  }, [props.terminal_interactivity])
+
+  useEffect(() => {
     const handle_key_down = (e: KeyboardEvent) => {
       if (props.are_keyboard_shortcuts_disabled) return
 
@@ -34,6 +53,7 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
       }
 
       let format: EditFormat | undefined
+      let interactivity: TerminalInteractivity | undefined
       if (
         e.altKey &&
         pressed_keys_ref.current.has('AltLeft') &&
@@ -78,11 +98,29 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
               break
           }
         }
+
+        if (
+          props.show_terminal_interactivity_selector &&
+          props.on_terminal_interactivity_change &&
+          !props.is_terminal_interactivity_disabled
+        ) {
+          switch (e.code) {
+            case 'KeyI':
+              interactivity = 'interactive'
+              break
+            case 'KeyN':
+              interactivity = 'non-interactive'
+              break
+          }
+        }
       }
 
       if (pressed_keys_ref.current.size > 1) {
         if (format && props.edit_format !== format) {
           pending_edit_format_ref.current = format
+        }
+        if (interactivity && props.terminal_interactivity !== interactivity) {
+          pending_terminal_interactivity_ref.current = interactivity
         }
         update_alt_pressed(false)
       } else if (e.code === 'AltLeft') {
@@ -93,6 +131,12 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
       if (format) {
         e.preventDefault()
         props.on_edit_format_change!(format)
+        return
+      }
+
+      if (interactivity) {
+        e.preventDefault()
+        props.on_terminal_interactivity_change!(interactivity)
         return
       }
     }

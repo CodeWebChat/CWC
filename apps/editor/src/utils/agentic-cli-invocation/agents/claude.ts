@@ -30,16 +30,17 @@ export const claude_agent: CodingAgent = {
   cmd: 'claude',
   is_installed: () => check_command_exists('claude'),
   get_documentation_url: () => AGENTS[agent_name].docs_url,
-  get_isolated_dir_args: () => [
+  get_headless_args: () => [
     '--print',
     '--output-format',
     'stream-json',
+    '--verbose',
     '--include-partial-messages',
     '--permission-mode',
-    'dontAsk'
+    'acceptEdits'
   ],
-  get_edit_integrated_terminal_args: () => ['--permission-mode', 'acceptEdits'],
-  get_ask_integrated_terminal_args: () => ['--permission-mode', 'dontAsk'],
+  get_integrated_terminal_edit_args: () => ['--permission-mode', 'acceptEdits'],
+  get_integrated_terminal_ask_args: () => ['--permission-mode', 'dontAsk'],
   parse_stream_line: (parsed, report_progress) => {
     if (parsed.type === 'stream_event' && parsed.event) {
       if (

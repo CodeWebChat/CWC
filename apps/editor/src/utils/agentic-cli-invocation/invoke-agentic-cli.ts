@@ -564,13 +564,13 @@ export const invoke_agentic_cli = async (params: {
         const prompt_type = params.cli_prompt_type || 'edit'
         const base_args =
           prompt_type === 'edit'
-            ? agent_info.get_edit_integrated_terminal_args
-              ? agent_info.get_edit_integrated_terminal_args({
+            ? agent_info.get_integrated_terminal_edit_args
+              ? agent_info.get_integrated_terminal_edit_args({
                   cwd: selected_root!
                 })
               : []
-            : agent_info.get_ask_integrated_terminal_args
-              ? agent_info.get_ask_integrated_terminal_args({
+            : agent_info.get_integrated_terminal_ask_args
+              ? agent_info.get_integrated_terminal_ask_args({
                   cwd: selected_root!
                 })
               : []
@@ -692,7 +692,7 @@ export const invoke_agentic_cli = async (params: {
                 return
               }
 
-              const base_args = agent_info.get_isolated_dir_args({
+              const base_args = agent_info.get_headless_args({
                 cwd: selected_root
               })
 
