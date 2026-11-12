@@ -20,10 +20,6 @@ export const use_prompt = (vscode: any) => {
   const [main_view_scroll_reset_key, set_main_view_scroll_reset_key] =
     useState(0)
   const [version, set_version] = useState<string>('')
-  const [
-    apply_button_enabling_trigger_count,
-    set_apply_button_enabling_trigger_count
-  ] = useState(0)
   const [is_connected, set_is_connected] = useState<boolean>()
   const [target, set_target] = useState<Target>()
   const [web_prompt_type, set_web_mode] = useState<WebPromptType>()
@@ -186,10 +182,6 @@ export const use_prompt = (vscode: any) => {
         set_send_with_shift_enter(message.enabled)
       } else if (message.command === 'FOCUS_PROMPT_FIELD') {
         set_chat_input_focus_key((k) => k + 1)
-      } else if (
-        message.command === 'RESET_APPLY_BUTTON_TEMPORARY_DISABLED_STATE'
-      ) {
-        set_apply_button_enabling_trigger_count((c) => c + 1)
       } else if (message.command === 'CAN_UNDO_CHANGED') {
         set_can_undo(message.can_undo)
       } else if (message.command === 'RECORDING_STATE') {
@@ -327,7 +319,6 @@ export const use_prompt = (vscode: any) => {
     main_view_scroll_reset_key,
     set_main_view_scroll_reset_key,
     version,
-    apply_button_enabling_trigger_count,
     is_connected,
     ask_about_context_instructions,
     edit_files_instructions,

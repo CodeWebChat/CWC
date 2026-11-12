@@ -42,7 +42,6 @@ export const Prompt = () => {
     main_view_scroll_reset_key,
     set_main_view_scroll_reset_key,
     version,
-    apply_button_enabling_trigger_count,
     is_connected,
     ask_about_context_instructions,
     edit_files_instructions,
@@ -263,8 +262,7 @@ export const Prompt = () => {
   const layout_context_value = {
     can_undo,
     on_apply_click: handle_apply_click,
-    on_undo_click: handle_undo_click,
-    apply_button_enabling_trigger_count
+    on_undo_click: handle_undo_click
   }
 
   const current_state = get_current_instructions_state()

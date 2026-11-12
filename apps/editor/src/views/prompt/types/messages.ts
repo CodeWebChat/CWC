@@ -957,10 +957,6 @@ export interface CanUndoChangedMessage extends BaseMessage {
   can_undo: boolean
 }
 
-export interface ResetApplyButtonTemporaryDisabledStateMessage extends BaseMessage {
-  command: 'RESET_APPLY_BUTTON_TEMPORARY_DISABLED_STATE'
-}
-
 export interface SendWithShiftEnterMessage extends BaseMessage {
   command: 'SEND_WITH_SHIFT_ENTER'
   enabled: boolean
@@ -1114,7 +1110,6 @@ export type BackendMessage =
   | VersionMessage
   | SendWithShiftEnterMessage
   | CanUndoChangedMessage
-  | ResetApplyButtonTemporaryDisabledStateMessage
   | ResponsePreviewStartedMessage
   | ResponsePreviewFinishedMessage
   | WorkspaceStateMessage

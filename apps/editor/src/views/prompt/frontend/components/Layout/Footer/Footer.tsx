@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import styles from './Footer.module.scss'
 import { use_compacting } from '@shared/hooks'
 import { LayoutContext } from '../../../contexts/LayoutContext'
@@ -10,12 +10,7 @@ type Props = {
 }
 
 export const Footer: React.FC<Props> = (props) => {
-  const {
-    can_undo,
-    on_apply_click,
-    on_undo_click,
-    apply_button_enabling_trigger_count
-  } = useContext(LayoutContext)
+  const { can_undo, on_apply_click, on_undo_click } = useContext(LayoutContext)
 
   const { t } = use_translation()
 
@@ -23,26 +18,10 @@ export const Footer: React.FC<Props> = (props) => {
   const undo_label = t('footer.action.undo')
   const apply_label = t('footer.action.apply-from')
 
-  const [is_apply_disabled_temporarily, set_is_apply_disabled_temporarily] =
-    useState(false)
-
   const { container_ref, compact_step } = use_compacting()
 
-  useEffect(() => {
-    set_is_apply_disabled_temporarily(false)
-  }, [apply_button_enabling_trigger_count])
-
-  useEffect(() => {
-    // Timeout prevents jitter of non disabled state caused by order of updates.
-    setTimeout(() => {
-      set_is_apply_disabled_temporarily(false)
-    }, 500)
-  }, [can_undo])
-
   const handle_apply_click = () => {
-    set_is_apply_disabled_temporarily(true)
     on_apply_click()
-    setTimeout(() => set_is_apply_disabled_temporarily(false), 3000)
   }
 
   return (
@@ -70,7 +49,6 @@ export const Footer: React.FC<Props> = (props) => {
           className={styles['apply-button']}
           onClick={handle_apply_click}
           title={t('footer.apply-title')}
-          disabled={is_apply_disabled_temporarily}
         >
           {apply_label}
         </button>

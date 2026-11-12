@@ -292,16 +292,6 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
         'edit'
       )
 
-    this.extension_context.subscriptions.push(
-      vscode.window.onDidChangeWindowState(async (e) => {
-        if (e.focused) {
-          this.send_message({
-            command: 'RESET_APPLY_BUTTON_TEMPORARY_DISABLED_STATE'
-          })
-        }
-      })
-    )
-
     const tasks_file_path = TasksStorage.get_file_path(this.extension_context)
     const tasks_watcher = vscode.workspace.createFileSystemWatcher(
       new vscode.RelativePattern(
