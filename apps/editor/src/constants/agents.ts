@@ -34,7 +34,7 @@ export const AGENTS = {
   'Claude Code': {
     docs_url: 'https://code.claude.com/docs/en/headless',
     homepage_url: 'https://code.claude.com/docs/en/quickstart',
-    flags_placeholder: '--model claude-sonnet-5-5 --effort high',
+    flags_placeholder: '--model claude-sonnet-5-5 --effort medium',
     example_flags: [
       '--model claude-fable-5-1 --effort max',
       '--model claude-fable-5-1 --effort xhigh',
