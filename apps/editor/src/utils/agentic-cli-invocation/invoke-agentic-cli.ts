@@ -367,7 +367,7 @@ export const invoke_agentic_cli = async (params: {
       let temp_dir_path: string | undefined
       const file_mappings = new Map<
         string,
-        { original: string; dest_rel: string; initial_content?: string }
+        { original: string; dest_rel: string }
       >()
 
       if (params.isolate_in_temp_dir) {
@@ -397,14 +397,9 @@ export const invoke_agentic_cli = async (params: {
             })
             await fs.promises.copyFile(file_path, dest_path)
 
-            const initial_content = await fs.promises
-              .readFile(file_path, 'utf-8')
-              .catch(() => undefined)
-
             file_mappings.set(dest_path, {
               original: file_path,
-              dest_rel: dest_rel.replace(/\\/g, '/'),
-              initial_content
+              dest_rel: dest_rel.replace(/\\/g, '/')
             })
           }
         }
