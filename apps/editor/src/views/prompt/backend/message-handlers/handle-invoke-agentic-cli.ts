@@ -9,6 +9,7 @@ import {
   LAST_SELECTED_WORKSPACE_IN_AGENTIC_CLI_STATE_KEY
 } from '@/constants/state-keys'
 import { InvokeAgenticCliMessage } from '@/views/prompt/types/messages'
+import { apply_response } from '@/features/apply-response/apply-response'
 
 export const handle_invoke_agentic_cli = async (
   prompt_view_provider: PromptViewProvider,
@@ -87,15 +88,12 @@ export const handle_invoke_agentic_cli = async (
       return
     }
 
-    const has_results = await vscode.commands.executeCommand(
-      'codeWebChat.applyResponse',
-      {
-        response: agent_output,
-        raw_instructions: current_instructions,
-        is_from_agentic_cli: true,
-        cli_configuration_details
-      }
-    )
+    const has_results = await apply_response({
+      response: agent_output,
+      raw_instructions: current_instructions,
+      is_from_agentic_cli: true,
+      cli_configuration_details
+    })
 
     if (!has_results) {
       show_agentic_cli_output_channel()

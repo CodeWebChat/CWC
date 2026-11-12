@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { t } from '@/i18n'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
-import { OriginalFileState } from '@/commands/apply-response-command/types/original-file-state'
+import { OriginalFileState } from '@/features/apply-response/types/original-file-state'
 import {
   ApiConfigurationDetails,
   CliConfigurationDetails,

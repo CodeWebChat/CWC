@@ -17,8 +17,9 @@ import { get_checkpoint_path } from '@/features/checkpoints/utils'
 import { restore_workspace_snapshot } from '@/utils/workspace-snapshot'
 import { Logger } from '@shared/utils/logger'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
-import { response_preview_promise_resolve } from '@/commands/apply-response-command/utils/preview'
-import { ongoing_preview_cleanup_promise } from '@/commands/apply-response-command/utils/preview-handler'
+import { response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
+import { ongoing_preview_cleanup_promise } from '@/features/apply-response/utils/preview-handler'
+import { apply_response } from '@/features/apply-response/apply-response'
 import { CommitMessageDetails } from '@/utils/commit-message-details'
 import { t } from '@/i18n'
 import { get_error_message } from '@/utils/get-error-message'
@@ -272,7 +273,7 @@ export const restore_checkpoint = async (params: {
               params.checkpoint.response_preview_item_created_at
           )
           if (item_to_preview) {
-            vscode.commands.executeCommand('codeWebChat.applyResponse', {
+            apply_response({
               response: item_to_preview.response,
               raw_instructions: item_to_preview.raw_instructions,
               files_with_content: item_to_preview.files,

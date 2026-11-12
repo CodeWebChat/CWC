@@ -210,7 +210,7 @@ export const Prompt = () => {
   const handle_apply_click = () => {
     post_message(vscode, {
       command: 'EXECUTE_COMMAND',
-      command_id: 'codeWebChat.applyResponse'
+      command_id: 'codeWebChat.applyFromClipboard'
     })
   }
 

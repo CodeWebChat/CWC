@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Salvar Contexto...",
   "codeWebChat.restoreContext.title": "Restaurar Contexto...",
-  "codeWebChat.applyResponse.title": "Aplicar da Área de Transferência",
+  "codeWebChat.applyFromClipboard.title": "Aplicar da Área de Transferência",
   "codeWebChat.copyMarkdown.title": "Copiar Markdown",
   "codeWebChat.history.title": "Histórico",
   "codeWebChat.undoSelection.title": "Desfazer Seleção",

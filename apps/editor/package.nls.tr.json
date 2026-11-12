@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Bağlamı Kaydet...",
   "codeWebChat.restoreContext.title": "Bağlamı Geri Yükle...",
-  "codeWebChat.applyResponse.title": "Panodan Uygula",
+  "codeWebChat.applyFromClipboard.title": "Panodan Uygula",
   "codeWebChat.copyMarkdown.title": "Markdown Kopyala",
   "codeWebChat.history.title": "Geçmiş",
   "codeWebChat.undoSelection.title": "Seçimi Geri Al",

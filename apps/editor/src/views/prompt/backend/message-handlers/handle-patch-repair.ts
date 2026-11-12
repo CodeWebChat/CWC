@@ -8,8 +8,8 @@ import {
   LAST_SELECTED_WORKSPACE_FOR_PATCH_REPAIR_STATE_KEY,
   LAST_USED_AGENT_FOR_PATCH_REPAIR_STATE_KEY
 } from '@/constants/state-keys'
-import { OriginalFileState } from '@/commands/apply-response-command/types/original-file-state'
-import { parse_response } from '@/commands/apply-response-command/utils/response-parser'
+import { OriginalFileState } from '@/features/apply-response/types/original-file-state'
+import { parse_response } from '@/features/apply-response/utils/response-parser'
 import { ProvidersManager } from '@/services/providers-manager'
 import {
   get_patch_repair_config,
@@ -18,7 +18,8 @@ import {
 import { create_safe_path } from '@/utils/path-sanitizer'
 import { Logger } from '@shared/utils/logger'
 import { get_error_message } from '@/utils/get-error-message'
-import { set_file_applied_with_patch_repair } from '@/commands/apply-response-command/utils/preview'
+import { set_file_applied_with_patch_repair } from '@/features/apply-response/utils/preview'
+import { apply_response } from '@/features/apply-response/apply-response'
 import { t } from '@/i18n'
 import { show_incomplete_setup_warning } from '@/utils/show-missing-configuration-notification'
 import { show_configurations_quick_pick } from '@/utils/show-configurations-quick-pick'
@@ -243,7 +244,7 @@ export const handle_patch_repair = async (params: {
   }
 
   if (action === 'apply-from-clipboard') {
-    await vscode.commands.executeCommand('codeWebChat.applyResponse')
+    await vscode.commands.executeCommand('codeWebChat.applyFromClipboard')
     return
   }
 
@@ -284,7 +285,7 @@ export const handle_patch_repair = async (params: {
       return
     }
 
-    await vscode.commands.executeCommand('codeWebChat.applyResponse', {
+    await apply_response({
       response: invoke_cli_result.agent_output
     })
     return

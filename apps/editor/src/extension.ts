@@ -17,7 +17,7 @@ import {
 } from './migrations'
 import {
   agentic_search_command,
-  apply_response_command,
+  apply_from_clipboard_command,
   copy_markdown_commands,
   copy_paths_commands,
   save_context_command,
@@ -56,6 +56,7 @@ import { SettingsViewProvider } from './views/settings/backend/settings-view-pro
 import { get_current_preview_url } from './views/prompt/backend/message-handlers/handle-open-website'
 import { AgenticSearchState } from './features/agentic-search'
 import { checkpoints_cleanup } from './features/checkpoints/utils'
+import { setup_apply_response } from './features/apply-response/apply-response'
 import { t } from '@/i18n'
 
 let websocket_server_instance: WebSocketManager | null = null
@@ -119,6 +120,14 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
     prompt_view_api_calls_manager
   )
 
+  setup_apply_response({
+    extension_context,
+    prompt_view_provider,
+    workspace_provider,
+    prompt_view_api_calls_manager,
+    websocket_manager: websocket_server_instance
+  })
+
   extension_context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       'promptView',
@@ -139,13 +148,7 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
       }
     ),
     reference_in_prompt_command({ prompt_view_provider, workspace_provider }),
-    apply_response_command({
-      extension_context,
-      prompt_view_provider,
-      workspace_provider,
-      prompt_view_api_calls_manager,
-      websocket_manager: websocket_server_instance
-    }),
+    apply_from_clipboard_command(),
     ...code_at_cursor_commands({
       workspace_provider,
       open_editors_provider,

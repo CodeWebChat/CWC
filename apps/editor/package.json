@@ -238,8 +238,8 @@
         "icon": "$(files)"
       },
       {
-        "command": "codeWebChat.applyResponse",
-        "title": "%codeWebChat.applyResponse.title%",
+        "command": "codeWebChat.applyFromClipboard",
+        "title": "%codeWebChat.applyFromClipboard.title%",
         "category": "%codeWebChat.category%"
       },
       {

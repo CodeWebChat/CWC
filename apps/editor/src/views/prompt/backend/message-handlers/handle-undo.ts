@@ -7,8 +7,8 @@ import {
 } from '@/constants/state-keys'
 import { t } from '@/i18n'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
-import { OriginalFileState } from '@/commands/apply-response-command/types/original-file-state'
-import { undo_files } from '@/commands/apply-response-command/utils/file-operations'
+import { OriginalFileState } from '@/features/apply-response/types/original-file-state'
+import { undo_files } from '@/features/apply-response/utils/file-operations'
 import { CommitMessageDetails } from '@/utils/commit-message-details'
 import { Logger } from '@shared/utils/logger'
 

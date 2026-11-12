@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
 import { FileInPreview } from '@shared/types/file-in-preview'
-import { OriginalFileState } from '@/commands/apply-response-command/types/original-file-state'
+import { OriginalFileState } from '@/features/apply-response/types/original-file-state'
 import {
   get_workspace_map_and_default,
   resolve_workspace_root

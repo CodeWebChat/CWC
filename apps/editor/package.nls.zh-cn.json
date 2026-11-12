@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "保存上下文...",
   "codeWebChat.restoreContext.title": "恢复上下文...",
-  "codeWebChat.applyResponse.title": "从剪贴板应用",
+  "codeWebChat.applyFromClipboard.title": "从剪贴板应用",
   "codeWebChat.copyMarkdown.title": "复制 Markdown",
   "codeWebChat.history.title": "历史记录",
   "codeWebChat.undoSelection.title": "撤销选择",

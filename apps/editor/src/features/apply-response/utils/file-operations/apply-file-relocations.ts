@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { OriginalFileState } from '@/commands/apply-response-command/types/original-file-state'
+import { OriginalFileState } from '@/features/apply-response/types/original-file-state'
 import { create_safe_path } from '@/utils/path-sanitizer'
 import { uri_exists } from './uri-exists'
 import { relocate_file } from './relocate-file'

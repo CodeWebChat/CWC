@@ -1,4 +1,4 @@
-import { response_preview_promise_resolve } from '@/commands/apply-response-command/utils/preview'
+import { response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
 import { FocusOnFileInPreviewMessage } from '@/views/prompt/types/messages'
 
 export const handle_focus_on_file_in_preview = (

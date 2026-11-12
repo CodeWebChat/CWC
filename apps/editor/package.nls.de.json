@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Kontext speichern...",
   "codeWebChat.restoreContext.title": "Kontext wiederherstellen...",
-  "codeWebChat.applyResponse.title": "Aus der Zwischenablage anwenden",
+  "codeWebChat.applyFromClipboard.title": "Aus der Zwischenablage anwenden",
   "codeWebChat.copyMarkdown.title": "Markdown kopieren",
   "codeWebChat.history.title": "Verlauf",
   "codeWebChat.undoSelection.title": "Auswahl rückgängig machen",

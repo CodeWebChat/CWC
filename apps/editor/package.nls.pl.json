@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Zapisz kontekst...",
   "codeWebChat.restoreContext.title": "Przywróć kontekst...",
-  "codeWebChat.applyResponse.title": "Zastosuj ze schowka",
+  "codeWebChat.applyFromClipboard.title": "Zastosuj ze schowka",
   "codeWebChat.copyMarkdown.title": "Kopiuj Markdown",
   "codeWebChat.history.title": "Historia",
   "codeWebChat.undoSelection.title": "Cofnij wybór",

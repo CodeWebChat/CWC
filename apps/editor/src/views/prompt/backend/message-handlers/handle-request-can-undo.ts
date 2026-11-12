@@ -1,6 +1,6 @@
 import { PromptViewProvider } from '../prompt-view-provider'
 import { LAST_APPLIED_CHANGES_STATE_KEY } from '@/constants/state-keys'
-import { OriginalFileState } from '@/commands/apply-response-command/types/original-file-state'
+import { OriginalFileState } from '@/features/apply-response/types/original-file-state'
 
 export const handle_request_can_undo = (
   prompt_view_provider: PromptViewProvider

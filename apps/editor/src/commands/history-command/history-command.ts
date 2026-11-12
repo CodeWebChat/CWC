@@ -20,7 +20,7 @@ import {
 } from './actions/delete-checkpoint-with-undo'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { get_checkpoint_path } from '@/features/checkpoints/utils'
-import { get_response_preview_promise_resolve } from '@/commands/apply-response-command/utils/preview'
+import { get_response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
 import { simplify_prompt_symbols } from '@shared/utils/simplify-prompt-symbols'
 
 dayjs.extend(relativeTime)

@@ -53,7 +53,7 @@ export type PreviewData = {
   response: string
 }
 
-export type ApplyResponseCommandArgs = {
+export type ApplyResponseArgs = {
   response?: string
   raw_instructions?: string
   original_editor_state?: {
@@ -66,10 +66,11 @@ export type ApplyResponseCommandArgs = {
   cli_configuration_details?: CliConfigurationDetails
   web_configuration_details?: WebConfigurationDetails
   is_from_agentic_cli?: boolean
+  edit_format?: string
 }
 
 export const process_response = async (params: {
-  args: ApplyResponseCommandArgs | undefined
+  args: ApplyResponseArgs | undefined
   response: string
   response_items: ResponseItem[]
   extension_context: vscode.ExtensionContext

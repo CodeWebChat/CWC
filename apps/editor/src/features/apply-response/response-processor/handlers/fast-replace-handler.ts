@@ -4,7 +4,7 @@ import { Logger } from '@shared/utils/logger'
 import { create_safe_path, sanitize_file_name } from '@/utils/path-sanitizer'
 import { t } from '@/i18n'
 import { FileItem } from '../../utils/response-parser'
-import { OriginalFileState } from '@/commands/apply-response-command/types/original-file-state'
+import { OriginalFileState } from '@/features/apply-response/types/original-file-state'
 import {
   get_workspace_map_and_default,
   resolve_workspace_root

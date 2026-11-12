@@ -1,4 +1,4 @@
-export * from './apply-response-command'
+export * from './apply-from-clipboard-command'
 export * from './copy-markdown-command'
 export * from './copy-paths-command'
 export * from './select-workspace-file-command'

@@ -1,4 +1,22 @@
 export const translations = {
+  'command.apply-from-clipboard-command.info.clipboard-empty': {
+    en: 'Clipboard is empty.',
+    pl: 'Schowek jest pusty.',
+    'zh-cn': '剪贴板为空。',
+    ja: 'クリップボードが空です。',
+    'zh-tw': '剪貼簿為空。',
+    de: 'Zwischenablage ist leer.',
+    es: 'El portapapeles está vacío.',
+    fr: 'Le presse-papiers est vide.',
+    'pt-br': 'A área de transferência está vazia.',
+    ru: 'Буфер обмена пуст.',
+    ko: '클립보드가 비어 있습니다.',
+    it: 'Gli appunti sono vuoti.',
+    tr: 'Pano boş.',
+    cs: 'Schránka je prázdná.',
+    hu: 'A vágólap üres.',
+    bg: 'Клипбордът е празен.'
+  },
   'command.apply-response-command.intelligent-search-results.title': {
     en: 'Intelligent File Search Results',
     pl: 'Pasujące pliki',

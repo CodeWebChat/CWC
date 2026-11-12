@@ -2,7 +2,8 @@ import * as vscode from 'vscode'
 import * as os from 'os'
 import * as fs from 'fs'
 import * as path from 'path'
-import { get_response_preview_promise_resolve } from '../apply-response-command/utils/preview'
+import { get_response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
+import { apply_response } from '@/features/apply-response/apply-response'
 import { t } from '@/i18n'
 import {
   generate_diff_markdown,
@@ -118,7 +119,7 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
             }
           } catch {}
 
-          await vscode.commands.executeCommand('codeWebChat.applyResponse', {
+          await apply_response({
             response: diff_markdown,
             is_from_agentic_cli: true,
             cli_configuration_details

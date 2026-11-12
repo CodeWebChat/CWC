@@ -17,7 +17,7 @@ import { Logger } from '@shared/utils/logger'
 import { WebConfiguration } from '@/types/web-configuration'
 import { ConfigWebConfigurationFormat } from '@/utils/web-configuration-format-converters'
 import { LAST_SELECTED_BROWSER_ID_STATE_KEY } from '@/constants/state-keys'
-import { ApplyResponseCommandArgs } from '@/commands/apply-response-command/response-processor'
+import { ApplyResponseArgs } from '@/features/apply-response/response-processor'
 import { t } from '@/i18n'
 import { get_or_create_shared_token } from '../utils/shared-token'
 
@@ -277,10 +277,10 @@ export class WebSocketManager {
           this.send_forwarded_ports(forwarded_ports)
         } else if (message.action === 'apply-response') {
           const apply_msg = message as ApplyResponseMessage
-          vscode.commands.executeCommand('codeWebChat.applyResponse', {
+          vscode.commands.executeCommand('codeWebChat.applyFromClipboard', {
             raw_instructions: apply_msg.raw_instructions,
             web_configuration_details: apply_msg.web_configuration_details
-          } as ApplyResponseCommandArgs)
+          })
         }
       } catch (error) {
         Logger.error({

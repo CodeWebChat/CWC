@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Save Context...",
   "codeWebChat.restoreContext.title": "Restore Context...",
-  "codeWebChat.applyResponse.title": "Apply from Clipboard",
+  "codeWebChat.applyFromClipboard.title": "Apply from Clipboard",
   "codeWebChat.copyMarkdown.title": "Copy Markdown",
   "codeWebChat.history.title": "History",
   "codeWebChat.undoSelection.title": "Undo Selection",

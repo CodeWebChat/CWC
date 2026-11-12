@@ -21,6 +21,7 @@ import {
 import { PROVIDERS } from '@/constants/providers'
 import { get_api_configuration } from '@/utils/get-api-configuration'
 import { show_incomplete_setup_warning } from '@/utils/show-missing-configuration-notification'
+import { apply_response } from '@/features/apply-response/apply-response'
 
 export const handle_make_api_call = async (
   prompt_view_provider: PromptViewProvider,
@@ -180,10 +181,10 @@ export const handle_make_api_call = async (
         }
 
         if (prompt_type === 'edit') {
-          vscode.commands.executeCommand('codeWebChat.applyResponse', {
+          apply_response({
             response: result.response,
             raw_instructions: current_instructions,
-            edit_format,
+            edit_format: edit_format as any,
             api_configuration_details
           })
         }
