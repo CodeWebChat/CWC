@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Guardar contexto...",
   "codeWebChat.restoreContext.title": "Restaurar contexto...",
-  "codeWebChat.applyResponse.title": "Aplicar respuesta del chat",
+  "codeWebChat.applyResponse.title": "Aplicar desde el portapapeles",
   "codeWebChat.copyMarkdown.title": "Copiar Markdown",
   "codeWebChat.history.title": "Historial",
   "codeWebChat.undoSelection.title": "Deshacer selección",

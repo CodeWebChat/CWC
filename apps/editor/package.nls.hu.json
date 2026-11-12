@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Kontextus mentése...",
   "codeWebChat.restoreContext.title": "Kontextus visszaállítása...",
-  "codeWebChat.applyResponse.title": "Csevegési válasz alkalmazása",
+  "codeWebChat.applyResponse.title": "Alkalmazás a vágólapról",
   "codeWebChat.copyMarkdown.title": "Markdown másolása",
   "codeWebChat.history.title": "Előzmények",
   "codeWebChat.undoSelection.title": "Kiválasztás visszavonása",

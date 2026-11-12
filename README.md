@@ -578,7 +578,8 @@ Respond with the audio transcription or the word INAUDIBLE, without explanations
 
 ### Actions
 
-- `CWC: Apply Chat Response` - Integrate LLM response.
+​- `CWC: Apply from Clipboard` - Integrate edits from clipboard.
+​- `CWC: Apply from Terminal` - Integrate edits from active terminal session.
 
 ### Misc
 

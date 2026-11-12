@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Сохранить контекст...",
   "codeWebChat.restoreContext.title": "Восстановить контекст...",
-  "codeWebChat.applyResponse.title": "Применить ответ чата",
+  "codeWebChat.applyResponse.title": "Применить из буфера обмена",
   "codeWebChat.copyMarkdown.title": "Копировать Markdown",
   "codeWebChat.history.title": "История",
   "codeWebChat.undoSelection.title": "Отменить выбор",

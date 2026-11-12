@@ -1,7 +1,7 @@
 {
   "codeWebChat.saveContext.title": "Запазване на контекста...",
   "codeWebChat.restoreContext.title": "Възстановяване на контекста...",
-  "codeWebChat.applyResponse.title": "Приложи отговор от чата",
+  "codeWebChat.applyResponse.title": "Приложи от клипборда",
   "codeWebChat.copyMarkdown.title": "Копирай Markdown",
   "codeWebChat.history.title": "История",
   "codeWebChat.undoSelection.title": "Отмени избора",
