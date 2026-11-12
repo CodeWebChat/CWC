@@ -8,7 +8,7 @@ import { t } from '@/i18n'
 import {
   generate_diff_markdown,
   get_all_files
-} from '../../utils/agentic-cli-invocation/utils/generate-diff-markdown'
+} from '../utils/agentic-cli-invocation/utils/generate-diff-markdown'
 import { Logger } from '@shared/utils/logger'
 
 const build_diff_from_sandbox = async (
@@ -119,11 +119,15 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
             }
           } catch {}
 
-          await apply_response({
+          const accepted = await apply_response({
             response: diff_markdown,
             is_from_agentic_cli: true,
             cli_configuration_details
           })
+
+          if (accepted) {
+            active_terminal.dispose()
+          }
         } catch (error) {
           Logger.error({
             function_name: 'apply_from_terminal_command',
@@ -135,8 +139,8 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
           )
         }
       } else {
-        vscode.window.showErrorMessage(
-          t('command.apply-from-terminal-command.error.not-cwc-cli')
+        vscode.window.showInformationMessage(
+          t('command.apply-from-terminal-command.info.not-cwc-cli')
         )
       }
     }
