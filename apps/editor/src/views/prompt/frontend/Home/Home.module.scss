@@ -68,12 +68,11 @@
   &__links {
     display: flex;
     align-items: center;
-    gap: 4px;
 
     @include landscape {
       flex-direction: column;
       align-items: flex-start;
-      margin: auto 0 auto -2px;
+      margin: auto 0;
     }
   }
 
