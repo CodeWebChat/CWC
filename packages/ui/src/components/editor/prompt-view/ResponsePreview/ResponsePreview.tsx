@@ -10,6 +10,7 @@ import cn from 'classnames'
 import styles from './ResponsePreview.module.scss'
 import { TextItem, InlineFileItem, FileItem } from './components'
 import { Scrollable } from '../../common/Scrollable'
+import { StatusBar } from '../StatusBar'
 
 type Props = {
   items: ItemInPreview[]
@@ -289,63 +290,51 @@ export const ResponsePreview: FC<Props> = (props) => {
         )}
 
         {error_count > 0 && (
-          <div
-            className={cn(styles.info, styles['info--error'])}
-            title={
+          <StatusBar
+            theme="error"
+            icon="codicon-error"
+            label={
               files_in_preview.length > 1
                 ? `${error_count} of ${files_in_preview.length} files failed to apply changes`
                 : 'Failed to apply changes to the file'
             }
-          >
-            <div className={styles.info__content}>
-              <span className="codicon codicon-error" />
-              <span>
-                {files_in_preview.length > 1
-                  ? `${error_count} of ${files_in_preview.length} files failed to apply changes`
-                  : 'Failed to apply changes to the file'}
-              </span>
-            </div>
-            {!props.is_from_agentic_cli && (
-              <div
-                className={styles.info__action}
-                onClick={() => {
-                  set_is_fixing_all(true)
-                  const files_to_fix = files_in_preview
-                    .filter(
-                      (f) =>
-                        f.type === 'file' &&
-                        f.apply_failed &&
-                        !f.applied_with_patch_repair &&
-                        !f.is_applying
-                    )
-                    .map((f) => ({
-                      file_path: f.file_path,
-                      workspace_name: f.workspace_name
-                    }))
-                  props.on_fix_all_failed(files_to_fix, false)
-                }}
-              >
-                <span className="codicon codicon-sparkle" />
-                <span>{error_count > 1 ? 'Fix all' : 'Fix'}</span>
-              </div>
-            )}
-          </div>
+            actions={
+              !props.is_from_agentic_cli
+                ? [
+                    {
+                      id: 'fix',
+                      icon: 'codicon-sparkle',
+                      label: error_count > 1 ? 'Fix all' : 'Fix',
+                      on_click: () => {
+                        set_is_fixing_all(true)
+                        const files_to_fix = files_in_preview
+                          .filter(
+                            (f) =>
+                              f.type === 'file' &&
+                              f.apply_failed &&
+                              !f.applied_with_patch_repair &&
+                              !f.is_applying
+                          )
+                          .map((f) => ({
+                            file_path: f.file_path,
+                            workspace_name: f.workspace_name
+                          }))
+                        props.on_fix_all_failed(files_to_fix, false)
+                      }
+                    }
+                  ]
+                : undefined
+            }
+          />
         )}
 
         {aggressive_fallback_count > 1 && (
-          <div
-            className={cn(styles.info, styles['info--warning'])}
-            title={`${aggressive_fallback_count} of ${files_in_preview.length} files applied with fallback method`}
-          >
-            <div
-              className={cn(
-                styles.info__content,
-                styles['info__content--without-button']
-              )}
-            >
-              <span className="codicon codicon-warning" />
-              {`${aggressive_fallback_count} of ${files_in_preview.length} files applied with fallback method`}
-            </div>
+          <div className={styles.status}>
+            <StatusBar
+              theme="warning"
+              icon="codicon-warning"
+              label={`${aggressive_fallback_count} of ${files_in_preview.length} files applied with fallback method`}
+            />
           </div>
         )}
 

@@ -149,6 +149,7 @@ export const handle_patch_repair = async (params: {
           'views.prompt.handlers.handle-patch-repair.some-changes-unable-to-apply'
         )
       )
+      return
     }
   }
 
@@ -210,8 +211,15 @@ export const handle_patch_repair = async (params: {
       quick_pick.placeholder = t(
         'common.action-quick-pick.placeholder.no-tokens'
       )
+      quick_pick.buttons = [
+        { iconPath: new vscode.ThemeIcon('close'), tooltip: t('common.close') }
+      ]
 
       let is_resolved = false
+
+      quick_pick.onDidTriggerButton(() => {
+        quick_pick.hide()
+      })
 
       quick_pick.onDidAccept(() => {
         is_resolved = true
@@ -278,7 +286,11 @@ export const handle_patch_repair = async (params: {
     })
 
     if (invoke_cli_result === 'back') {
-      return handle_patch_repair({ ...params, show_quick_pick: true })
+      return handle_patch_repair({
+        ...params,
+        show_quick_pick: false,
+        is_auto_run: false
+      })
     }
 
     if (!invoke_cli_result) {
@@ -351,10 +363,18 @@ export const handle_patch_repair = async (params: {
         items: valid_web_configurations,
         type: 'web',
         last_selected_id: last_selected_name,
-        show_back_button: false
+        show_back_button: true
       })
 
-      if (!result || result === 'back') {
+      if (result === 'back') {
+        return handle_patch_repair({
+          ...params,
+          show_quick_pick: false,
+          is_auto_run: false
+        })
+      }
+
+      if (!result) {
         return
       }
       selected_web_configuration_name = result.item.name
@@ -407,8 +427,18 @@ export const handle_patch_repair = async (params: {
   const api_configuration_result = await get_patch_repair_config({
     providers_manager,
     show_quick_pick: params.show_quick_pick ?? false,
-    extension_context: params.prompt_view_provider.extension_context
+    extension_context: params.prompt_view_provider.extension_context,
+    show_back_button: !skip_action_quick_pick
   })
+
+  if (api_configuration_result === 'back') {
+    return handle_patch_repair({
+      ...params,
+      show_quick_pick: false,
+      is_auto_run: false
+    })
+  }
+
   if (!api_configuration_result) return
 
   const {

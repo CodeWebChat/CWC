@@ -17,8 +17,11 @@ export const get_patch_repair_config = async (params: {
   providers_manager: ProvidersManager
   show_quick_pick?: boolean
   extension_context: vscode.ExtensionContext
+  show_back_button?: boolean
 }): Promise<
-  { provider: Provider; api_configuration: ApiConfiguration } | undefined
+  | { provider: Provider; api_configuration: ApiConfiguration }
+  | 'back'
+  | undefined
 > => {
   const result = await get_api_configuration({
     providers_manager: params.providers_manager,
@@ -28,11 +31,12 @@ export const get_patch_repair_config = async (params: {
     default_api_configuration:
       await params.providers_manager.get_default_patch_repair_api_configuration(),
     caller_name: 'get_patch_repair_config',
-    auto_select_last_used: false
+    auto_select_last_used: false,
+    show_back_button: params.show_back_button
   })
 
   if (!result || result === 'back') {
-    return undefined
+    return result
   }
 
   return {
