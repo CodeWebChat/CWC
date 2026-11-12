@@ -13,12 +13,22 @@ export const AGENTS = {
     homepage_url: 'https://antigravity.google/product/antigravity-cli/',
     flags_placeholder: "--model 'Gemini 3.8 Flash (High)'",
     example_flags: [
+      "--model 'Gemini 4 Carbon (High)'",
+      "--model 'Gemini 4 Carbon (Medium)'",
+      "--model 'Gemini 4 Carbon (Low)'",
       "--model 'Gemini 4 Argon (High)'",
       "--model 'Gemini 4 Argon (Medium)'",
       "--model 'Gemini 4 Argon (Low)'",
-      "--model 'Gemini 3.8 Flash (High)'",
-      "--model 'Gemini 3.8 Flash (Medium)'",
-      "--model 'Gemini 3.8 Flash (Low)'"
+      "--model 'Gemini 4 Hydrogen (XHigh)'",
+      "--model 'Gemini 4 Hydrogen (High)'",
+      "--model 'Gemini 4 Hydrogen (Medium)'",
+      "--model 'Gemini 4 Hydrogen (Low)'",
+      '--model Claude Opus 5.5 (High)',
+      '--model Claude Opus 5.5 (Medium)',
+      '--model Claude Opus 5.5 (Low)',
+      '--model Claude Sonnet 5.5 (High)',
+      '--model Claude Sonnet 5.5 (Medium)',
+      '--model Claude Sonnet 5.5 (Low)'
     ]
   },
   'Claude Code': {
