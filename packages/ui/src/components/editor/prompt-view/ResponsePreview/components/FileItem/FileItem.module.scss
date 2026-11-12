@@ -40,7 +40,7 @@
     margin: 0 10px;
   }
 
-  &:not(.file--deleted):hover {
+  &:not(.file--deleted):not(.file--selected):hover {
     background-color: var(--vscode-list-hoverBackground);
     border-color: var(--cwc-border-color);
 
