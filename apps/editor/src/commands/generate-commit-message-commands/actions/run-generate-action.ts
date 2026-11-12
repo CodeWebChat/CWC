@@ -622,10 +622,8 @@ export const run_generate_action = async (params: {
             response_text = response_text.replace(/[<>`$()]/g, '')
 
             if (!response_text.trim()) {
-              vscode.window.showErrorMessage(
-                t(
-                  'command.generate-commit-message-command.error.empty-response'
-                )
+              vscode.window.showInformationMessage(
+                t('command.generate-commit-message-command.info.empty-response')
               )
               current_action = undefined
               step = 'action'
@@ -685,9 +683,9 @@ export const run_generate_action = async (params: {
                 continue
               } else {
                 if (error_msg === 'API request returned an empty response') {
-                  vscode.window.showErrorMessage(
+                  vscode.window.showInformationMessage(
                     t(
-                      'command.generate-commit-message-command.error.empty-response'
+                      'command.generate-commit-message-command.info.empty-response'
                     )
                   )
                 }

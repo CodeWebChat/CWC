@@ -271,7 +271,7 @@ export const translations = {
     hu: 'A commit üzenet generálása a válasz előnézete alatt le van tiltva.',
     bg: 'Генерирането на commit съобщение е деактивирано по време на преглед на отговора.'
   },
-  'command.generate-commit-message-command.error.empty-response': {
+  'command.generate-commit-message-command.info.empty-response': {
     en: 'API request returned an empty response.',
     pl: 'Żądanie API zwróciło pustą odpowiedź.',
     'zh-cn': 'API 请求返回了空响应。',
