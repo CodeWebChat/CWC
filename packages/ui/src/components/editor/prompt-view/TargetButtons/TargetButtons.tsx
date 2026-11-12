@@ -38,18 +38,15 @@ export const TargetButtons = <T extends string>(
       animation={150}
     >
       {props.items.map((item) => (
-        <div key={item.id} className={styles.item}>
-          <div className={styles.gripper}>
-            <span className="codicon codicon-gripper" />
-          </div>
-          <TargetButton
-            label={item.label}
-            description={item.description}
-            on_click={item.on_click}
-            hover_color={item.hover_color}
-            keycap_char={item.keycap_char}
-          />
-        </div>
+        <TargetButton
+          key={item.id}
+          label={item.label}
+          description={item.description}
+          on_click={item.on_click}
+          hover_color={item.hover_color}
+          keycap_char={item.keycap_char}
+          has_gripper
+        />
       ))}
     </ReactSortable>
   )

@@ -11,6 +11,7 @@ type Props = {
   disabled?: boolean
   hover_color?: 'blue' | 'purple'
   keycap_char?: string
+  has_gripper?: boolean
 }
 
 export const TargetButton: React.FC<Props> = (props) => {
@@ -29,6 +30,11 @@ export const TargetButton: React.FC<Props> = (props) => {
         disabled={!!props.disabled}
       >
         <AsciiArtEffect />
+        {props.has_gripper && (
+          <div className={styles['button__grabber']}>
+            <span className="codicon codicon-grabber" />
+          </div>
+        )}
         <KeycapWrapper
           char={props.keycap_char}
           className={styles['button__keycap-wrapper']}

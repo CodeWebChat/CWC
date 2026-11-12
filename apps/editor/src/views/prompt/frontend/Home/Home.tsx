@@ -244,7 +244,7 @@ export const Home: React.FC<Props> = (props) => {
   ) : null
 
   const targets_section = (
-    <div className={styles.inner__target} ref={target_ref}>
+    <div className={styles.inner__targets} ref={target_ref}>
       <UiTargetButtons
         items={ordered_target_items}
         on_reorder={props.on_targets_reorder}

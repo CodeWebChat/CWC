@@ -120,18 +120,10 @@
   display: flex;
   flex-direction: column;
 
-  &__target {
+  &__targets {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    margin-right: 12px;
-    overflow: hidden;
-    border-radius: 10px;
-    position: relative;
-
-    @include modern-ui {
-      margin-right: 10px;
-    }
 
     > button {
       flex: 1;
