@@ -43,6 +43,10 @@ export const CHATBOTS = {
         label: 'Gemini Pro Latest',
         supported_reasoning_efforts: ['Low', 'Medium', 'High']
       },
+      'gemini-4-hydrogen': {
+        label: 'Gemini 4 Hydrogen',
+        supported_reasoning_efforts: ['Low', 'Medium', 'High', 'Extra High']
+      },
       'gemini-flash-latest': {
         label: 'Gemini Flash Latest',
         supported_reasoning_efforts: ['Low', 'Medium', 'High']
@@ -103,7 +107,7 @@ export const CHATBOTS = {
     supported_reasoning_efforts: ['Low', 'Medium', 'High'],
     models: {
       'flash-lite': { label: 'Flash-Lite' },
-      flash: { label: 'Flash' },
+      hydrogen: { label: 'Hydrogen' },
       pro: { label: 'Pro' },
       argon: { label: 'Argon' },
       carbon: { label: 'Carbon' }
