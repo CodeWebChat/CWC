@@ -126,6 +126,15 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
           })
 
           if (accepted) {
+            try {
+              await fs.promises.rm(cwd_path, { recursive: true, force: true })
+            } catch (error) {
+              Logger.error({
+                function_name: 'apply_from_terminal_command',
+                message: 'Failed to clean up sandbox directory',
+                data: error
+              })
+            }
             active_terminal.dispose()
           }
         } catch (error) {

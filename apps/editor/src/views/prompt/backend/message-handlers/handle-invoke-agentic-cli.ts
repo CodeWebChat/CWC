@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import * as vscode from 'vscode'
 import { t } from '@/i18n'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
@@ -77,12 +78,15 @@ export const handle_invoke_agentic_cli = async (
     return
   }
 
-  const { agent_output, cli_configuration_details } = result
+  const { agent_output, cli_configuration_details, selected_root } = result
 
   if (
     agent_output !== undefined &&
     prompt_view_provider.cli_prompt_type === 'edit'
   ) {
+    if (!fs.existsSync(selected_root)) {
+      return
+    }
     if (!agent_output.trim()) {
       show_agentic_cli_output_channel()
       return

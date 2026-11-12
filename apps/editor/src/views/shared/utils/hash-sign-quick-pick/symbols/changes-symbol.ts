@@ -234,7 +234,6 @@ export const handle_changes_item = async (
               }
             }
           } catch {
-            // ignore
           } finally {
             if (is_active) {
               quick_pick.busy = false

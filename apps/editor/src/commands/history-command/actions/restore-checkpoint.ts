@@ -166,9 +166,7 @@ export const restore_checkpoint = async (params: {
           const history_data =
             await vscode.workspace.fs.readFile(history_file_path)
           loaded_history = JSON.parse(new TextDecoder().decode(history_data))
-        } catch {
-          // Ignore if file doesn't exist
-        }
+        } catch {}
 
         if (loaded_history.length > 0) {
           params.prompt_view_provider.response_history = loaded_history

@@ -150,9 +150,7 @@ export class WebSocketManager {
                     resolve()
                     return
                   }
-                } catch {
-                  // Ignore parse errors and fall through to retry
-                }
+                } catch {}
               }
               retry()
             })

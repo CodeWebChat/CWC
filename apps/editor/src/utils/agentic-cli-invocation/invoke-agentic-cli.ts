@@ -766,9 +766,7 @@ export const invoke_agentic_cli = async (params: {
                         if (result?.output !== undefined) {
                           current_agent_output = result.output
                         }
-                      } catch {
-                        // Ignore parse errors for partial chunks
-                      }
+                      } catch {}
                     }
                   } else {
                     current_agent_output += chunk
@@ -800,9 +798,7 @@ export const invoke_agentic_cli = async (params: {
                           parsed,
                           current_agent_output
                         ) ?? current_agent_output
-                    } catch {
-                      // Ignore
-                    }
+                    } catch {}
                   }
 
                   if (
