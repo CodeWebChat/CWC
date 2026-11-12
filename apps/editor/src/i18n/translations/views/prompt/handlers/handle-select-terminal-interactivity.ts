@@ -20,23 +20,23 @@ export const translations = {
     },
   'views.prompt.handlers.handle-select-terminal-interactivity.items.interactive.description':
     {
-      en: "Agent session runs in the terminal and edits are applied once it's closed.",
-      pl: 'Sesja agenta działa w terminalu, a edycje są stosowane po jego zamknięciu.',
-      'zh-cn': '代理会话在终端中运行，关闭后应用编辑。',
-      ja: 'エージェントセッションはターミナルで実行され、閉じられると編集が適用されます。',
-      'zh-tw': '代理會話在終端機中運行，關閉後套用編輯。',
-      de: 'Die Agent-Sitzung läuft im Terminal und Bearbeitungen werden angewendet, sobald sie geschlossen wird.',
-      es: 'La sesión del agente se ejecuta en la terminal y las ediciones se aplican una vez que se cierra.',
-      fr: "La session de l'agent s'exécute dans le terminal et les modifications sont appliquées une fois fermée.",
+      en: 'Agent session runs in the terminal, until it\'s closed or "Apply from Terminal" called.',
+      pl: 'Sesja agenta działa w terminalu do momentu jego zamknięcia lub wywołania "Zastosuj z terminala".',
+      'zh-cn': '代理会话在终端中运行，直到其关闭或调用“从终端应用”。',
+      ja: 'エージェントセッションは、閉じられるか「ターミナルから適用」が呼び出されるまで、ターミナル内で実行されます。',
+      'zh-tw': '代理會話在終端機中執行，直到其關閉或呼叫「從終端機套用」。',
+      de: 'Die Agentensitzung läuft im Terminal, bis sie geschlossen wird oder "Vom Terminal anwenden" aufgerufen wird.',
+      es: 'La sesión del agente se ejecuta en la terminal, hasta que se cierra o se llama a "Aplicar desde la terminal".',
+      fr: "La session de l'agent s'exécute dans le terminal, jusqu'à ce qu'elle soit fermée ou que \"Appliquer depuis le terminal\" soit appelé.",
       'pt-br':
-        'A sessão do agente é executada no terminal e as edições são aplicadas assim que é fechada.',
-      ru: 'Сеанс агента выполняется в терминале, и правки применяются после его закрытия.',
-      ko: '에이전트 세션은 터미널에서 실행되며 닫힌 후 편집 사항이 적용됩니다.',
-      it: "La sessione dell'agente viene eseguita nel terminale e le modifiche vengono applicate una volta chiusa.",
-      tr: 'Aracı oturumu terminalde çalışır ve düzenlemeler kapatıldığında uygulanır.',
-      cs: 'Relace agenta běží v terminálu a úpravy se aplikují po jejím uzavření.',
-      hu: 'Az ügynök munkamenete a terminálban fut, és a szerkesztések a bezárás után kerülnek alkalmazásra.',
-      bg: 'Сесията на агента се изпълнява в терминала и редакциите се прилагат след затварянето й.'
+        'A sessão do agente é executada no terminal, até ser fechada ou "Aplicar do Terminal" ser chamado.',
+      ru: 'Сеанс агента выполняется в терминале, пока он не будет закрыт или не будет вызвано "Применить из терминала".',
+      ko: '에이전트 세션은 닫히거나 "터미널에서 적용"이 호출될 때까지 터미널에서 실행됩니다.',
+      it: 'La sessione dell\'agente viene eseguita nel terminale, finché non viene chiusa o non viene chiamato "Applica dal terminale".',
+      tr: 'Aracı oturumu, kapatılana veya "Terminalden Uygula" çağrılana kadar terminalde çalışır.',
+      cs: 'Relace agenta běží v terminálu, dokud není uzavřena nebo není zavoláno "Použít z terminálu".',
+      hu: 'Az ügynök munkamenete a terminálban fut, amíg be nem zárják, vagy meg nem hívják az "Alkalmazás terminálból" parancsot.',
+      bg: 'Сесията на агента работи в терминала, докато не бъде затворена или не бъде извикано "Приложи от терминала".'
     },
   'views.prompt.handlers.handle-select-terminal-interactivity.items.non-interactive':
     {
