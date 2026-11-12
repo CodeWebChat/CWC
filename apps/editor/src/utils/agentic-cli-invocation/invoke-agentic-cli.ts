@@ -371,9 +371,29 @@ export const invoke_agentic_cli = async (params: {
       >()
 
       if (params.isolate_in_temp_dir) {
+        const prefix = `cwc-cli-${params.cli_prompt_type || 'edit'}-`
         temp_dir_path = await fs.promises.mkdtemp(
-          path.join(os.tmpdir(), 'cwc-cli-')
+          path.join(os.tmpdir(), prefix)
         )
+
+        try {
+          const metadata_dir = path.join(temp_dir_path, '.cwc')
+          await fs.promises.mkdir(metadata_dir, { recursive: true })
+          await fs.promises.writeFile(
+            path.join(metadata_dir, 'metadata.json'),
+            JSON.stringify({
+              agent: selected_agent_info?.label,
+              flags: flags_string
+            }),
+            'utf-8'
+          )
+        } catch (e) {
+          Logger.warn({
+            function_name: 'invoke_agentic_cli',
+            message: 'Failed to write metadata',
+            data: e
+          })
+        }
 
         if (params.copy_selected_files) {
           const selected_files = params.workspace_provider.get_selected_files()

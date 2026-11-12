@@ -61,5 +61,6 @@
   "codeWebChat.copyMergeCommitDetails.title": "Копиране на детайлите на обединените къмити",
   "codeWebChat.checkForUpdates.title": "Проверка за актуализации",
   "codeWebChat.installSpecificVersion.title": "Инсталирай специфична версия...",
+  "codeWebChat.applyFromTerminal.title": "Приложи от терминала",
   "codeWebChat.category": "CWC"
 }

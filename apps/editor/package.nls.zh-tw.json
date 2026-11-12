@@ -61,5 +61,6 @@
   "codeWebChat.copyMergeCommitDetails.title": "複製合併的提交詳細資訊",
   "codeWebChat.checkForUpdates.title": "檢查更新",
   "codeWebChat.installSpecificVersion.title": "安裝指定版本...",
+  "codeWebChat.applyFromTerminal.title": "從終端機套用",
   "codeWebChat.category": "CWC"
 }

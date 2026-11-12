@@ -38,7 +38,7 @@ export const history_command = (params: {
     'codeWebChat.createNewCheckpoint',
     async () => {
       if (get_response_preview_promise_resolve()) {
-        vscode.window.showWarningMessage(
+        vscode.window.showInformationMessage(
           t('command.history-command.disabled-during-preview')
         )
         return

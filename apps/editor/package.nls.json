@@ -61,5 +61,6 @@
   "codeWebChat.copyMergeCommitDetails.title": "Copy Merge Commit Details",
   "codeWebChat.checkForUpdates.title": "Check for Updates",
   "codeWebChat.installSpecificVersion.title": "Install Specific Version...",
+  "codeWebChat.applyFromTerminal.title": "Apply from Terminal",
   "codeWebChat.category": "CWC"
 }

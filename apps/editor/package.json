@@ -425,6 +425,12 @@
         "command": "codeWebChat.installSpecificVersion",
         "title": "%codeWebChat.installSpecificVersion.title%",
         "category": "%codeWebChat.category%"
+      },
+      {
+        "command": "codeWebChat.applyFromTerminal",
+        "title": "%codeWebChat.applyFromTerminal.title%",
+        "category": "%codeWebChat.category%",
+        "icon": "$(terminal)"
       }
     ],
     "submenus": [

@@ -61,5 +61,6 @@
   "codeWebChat.copyMergeCommitDetails.title": "Egyesített commit részletek másolása",
   "codeWebChat.checkForUpdates.title": "Frissítések keresése",
   "codeWebChat.installSpecificVersion.title": "Konkrét verzió telepítése...",
+  "codeWebChat.applyFromTerminal.title": "Alkalmazás terminálból",
   "codeWebChat.category": "CWC"
 }

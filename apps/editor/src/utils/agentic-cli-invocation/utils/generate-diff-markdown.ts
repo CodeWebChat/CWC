@@ -5,7 +5,7 @@ import { execFile } from 'child_process'
 
 const execFileAsync = promisify(execFile)
 
-async function get_all_files(dir: string): Promise<string[]> {
+export async function get_all_files(dir: string): Promise<string[]> {
   const dirents = await fs.promises.readdir(dir, { withFileTypes: true })
   const files = await Promise.all(
     dirents.map(async (dirent) => {

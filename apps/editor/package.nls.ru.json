@@ -61,5 +61,6 @@
   "codeWebChat.copyMergeCommitDetails.title": "Копировать сведения об объединенных коммитах",
   "codeWebChat.checkForUpdates.title": "Проверить обновления",
   "codeWebChat.installSpecificVersion.title": "Установить конкретную версию...",
+  "codeWebChat.applyFromTerminal.title": "Применить из терминала",
   "codeWebChat.category": "CWC"
 }

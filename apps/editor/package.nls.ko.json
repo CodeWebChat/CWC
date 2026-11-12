@@ -61,5 +61,6 @@
   "codeWebChat.copyMergeCommitDetails.title": "병합된 커밋 세부 정보 복사",
   "codeWebChat.checkForUpdates.title": "업데이트 확인",
   "codeWebChat.installSpecificVersion.title": "특정 버전 설치...",
+  "codeWebChat.applyFromTerminal.title": "터미널에서 적용",
   "codeWebChat.category": "CWC"
 }
