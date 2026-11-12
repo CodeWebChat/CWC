@@ -11,7 +11,7 @@ export const AGENTS = {
   Antigravity: {
     docs_url: 'https://antigravity.google/docs/cli/headless/',
     homepage_url: 'https://antigravity.google/product/antigravity-cli/',
-    flags_placeholder: "--model 'Gemini 3.8 Flash (High)'",
+    flags_placeholder: "--model 'Gemini 4 Hydrogen (Medium)'",
     example_flags: [
       "--model 'Gemini 4 Carbon (High)'",
       "--model 'Gemini 4 Carbon (Medium)'",
@@ -36,12 +36,23 @@ export const AGENTS = {
     homepage_url: 'https://code.claude.com/docs/en/quickstart',
     flags_placeholder: '--model claude-sonnet-5-5 --effort high',
     example_flags: [
+      '--model claude-fable-5-1 --effort max',
+      '--model claude-fable-5-1 --effort xhigh',
+      '--model claude-fable-5-1 --effort high',
+      '--model claude-fable-5-1 --effort medium',
+      '--model claude-fable-5-1 --effort low',
+      '--model claude-opus-5-5 --effort max',
+      '--model claude-opus-5-5 --effort xhigh',
       '--model claude-opus-5-5 --effort high',
       '--model claude-opus-5-5 --effort medium',
       '--model claude-opus-5-5 --effort low',
+      '--model claude-sonnet-5-5 --effort max',
+      '--model claude-sonnet-5-5 --effort xhigh',
       '--model claude-sonnet-5-5 --effort high',
       '--model claude-sonnet-5-5 --effort medium',
       '--model claude-sonnet-5-5 --effort low',
+      '--model claude-haiku-5-5 --effort max',
+      '--model claude-haiku-5-5 --effort xhigh',
       '--model claude-haiku-5-5 --effort high',
       '--model claude-haiku-5-5 --effort medium',
       '--model claude-haiku-5-5 --effort low'
