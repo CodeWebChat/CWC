@@ -68,6 +68,7 @@ export const setup_apply_response = (params: {
     let response_items: ReturnType<typeof parse_response> = []
     let is_intelligent_file_search_results = false
     let is_code_at_cursor = false
+    let changes_accepted_result = true
 
     try {
       if (!vscode.workspace.workspaceFolders?.length) {
@@ -441,6 +442,8 @@ export const setup_apply_response = (params: {
         } else if (saved_tab_groups) {
           await restore_tab_groups(saved_tab_groups)
         }
+
+        changes_accepted_result = changes_accepted
       }
     } catch (err: any) {
       params.prompt_view_provider.send_message({
@@ -468,7 +471,7 @@ export const setup_apply_response = (params: {
       }
     }
 
-    return true
+    return changes_accepted_result
   }
 }
 
