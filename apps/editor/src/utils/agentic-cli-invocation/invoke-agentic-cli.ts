@@ -605,6 +605,11 @@ export const invoke_agentic_cli = async (params: {
           args = [...args, ...agent_info.get_prompt_file_args(temp_prompt_path)]
           const command_args = [executable, ...args.map(quote_arg)].join(' ')
           command = command_args
+        } else if (agent_info.get_integrated_terminal_prompt_args) {
+          const command_args = [executable, ...args.map(quote_arg)].join(' ')
+          const prompt_args =
+            agent_info.get_integrated_terminal_prompt_args(temp_prompt_path)
+          command = `${command_args} ${prompt_args}`
         } else {
           const command_args = [executable, ...args.map(quote_arg)].join(' ')
           if (os.platform() === 'win32') {

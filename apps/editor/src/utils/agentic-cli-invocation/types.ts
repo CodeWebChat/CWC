@@ -9,6 +9,7 @@ export type CodingAgent = {
   get_integrated_terminal_ask_args?: (params: { cwd: string }) => string[]
   get_post_integrated_terminal_args?: () => string[]
   get_prompt_file_args?: (temp_prompt_path: string) => string[]
+  get_integrated_terminal_prompt_args?: (temp_prompt_path: string) => string
   parse_stream_line?: (
     parsed: any,
     report_progress: (msg: string) => void

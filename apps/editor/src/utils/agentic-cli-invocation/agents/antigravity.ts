@@ -1,3 +1,4 @@
+import * as os from 'os'
 import { CodingAgent } from '../types'
 import { check_command_exists } from '../utils/check-command-exists'
 import { get_progress_dots } from '../utils/get-progress-dots'
@@ -21,7 +22,12 @@ export const antigravity_agent: CodingAgent = {
   ],
   get_integrated_terminal_edit_args: () => [],
   get_integrated_terminal_ask_args: () => [],
-  get_post_integrated_terminal_args: () => ['--continue'],
+  get_integrated_terminal_prompt_args: (temp_prompt_path: string) => {
+    if (os.platform() === 'win32') {
+      return `"--prompt-interactive" "$(Get-Content -Raw '${temp_prompt_path.replace(/'/g, "''")}')"`
+    }
+    return `'--prompt-interactive' "$(cat '${temp_prompt_path.replace(/'/g, "'\\''")}')"`
+  },
   parse_stream_line: (parsed, report_progress) => {
     if (parsed.event === 'step_update' && parsed.step_update) {
       const step = parsed.step_update
