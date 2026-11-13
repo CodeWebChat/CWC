@@ -7,11 +7,12 @@ import cn from 'classnames'
 import { CompactableActionButton } from '@ui/components/editor/prompt-view/CompactableActionButton'
 import { Icon as UiIcon } from '@ui/components/editor/common/Icon'
 
-const DIMMED_ICONS_TIMEOUT = 10000
+const DIMMED_ICONS_TIMEOUT = 1000
 
 type Props = {
   on_history_click?: () => void
   on_donate_click?: () => void
+  is_home_active?: boolean
 }
 
 export const Footer: React.FC<Props> = (props) => {
@@ -53,18 +54,19 @@ export const Footer: React.FC<Props> = (props) => {
     on_apply_click()
   }
 
+  const is_alt_style = is_alt && !props.is_home_active
+
   return (
-    <div
-      className={styles.footer}
-      ref={container_ref}
-      onMouseEnter={handle_mouse_enter}
-      onMouseLeave={handle_mouse_leave}
-    >
-      <div className={styles.footer__left}>
+    <div className={styles.footer} ref={container_ref}>
+      <div
+        className={styles.footer__left}
+        onMouseEnter={handle_mouse_enter}
+        onMouseLeave={handle_mouse_leave}
+      >
         <a
           href="https://discord.gg/KJySXsrSX5"
           className={cn(styles['footer__discord-button'], {
-            [styles['footer__discord-button--alt']]: is_alt
+            [styles['footer__discord-button--alt']]: is_alt_style
           })}
           title="Discord"
           target="_blank"
@@ -75,7 +77,7 @@ export const Footer: React.FC<Props> = (props) => {
         <button
           type="button"
           className={cn(styles['footer__donate-button'], {
-            [styles['footer__donate-button--alt']]: is_alt
+            [styles['footer__donate-button--alt']]: is_alt_style
           })}
           onClick={props.on_donate_click}
           title={t('header.buy-me-a-coffee')}

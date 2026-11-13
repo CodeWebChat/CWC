@@ -285,6 +285,7 @@ export const Prompt = () => {
           <Layout
             on_history_click={handle_history_click}
             on_donate_click={() => set_viewing_donations(true)}
+            is_home_active={active_view === 'home'}
           >
             <div
               className={cn(styles.content, {

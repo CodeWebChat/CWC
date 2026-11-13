@@ -5,6 +5,7 @@ type Props = {
   children: React.ReactNode
   on_history_click?: () => void
   on_donate_click?: () => void
+  is_home_active?: boolean
 }
 
 export const Layout: React.FC<Props> = (props) => {
@@ -14,6 +15,7 @@ export const Layout: React.FC<Props> = (props) => {
       <Footer
         on_history_click={props.on_history_click}
         on_donate_click={props.on_donate_click}
+        is_home_active={props.is_home_active}
       />
     </div>
   )
