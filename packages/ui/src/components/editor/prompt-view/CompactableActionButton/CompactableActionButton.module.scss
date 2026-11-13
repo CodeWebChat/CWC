@@ -7,10 +7,12 @@
   height: var(--button-size);
   padding: 0 6px 0 4px;
   border-radius: 4px;
+  border: 1px solid var(--cwc-border-color-dimmed);
   color: inherit;
 
   &:hover:not(:disabled) {
     background-color: var(--vscode-toolbar-hoverBackground);
+    border-color: var(--cwc-border-color);
     text-decoration: none;
   }
 

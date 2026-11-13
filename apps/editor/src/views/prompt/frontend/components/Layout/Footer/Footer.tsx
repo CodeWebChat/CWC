@@ -45,10 +45,7 @@ export const Footer: React.FC<Props> = (props) => {
       onMouseEnter={clear_leave_timeout}
       onMouseLeave={handle_footer_mouse_leave}
     >
-      <div
-        className={styles.footer__left}
-        onMouseEnter={handle_left_mouse_enter}
-      >
+      <div onMouseEnter={handle_left_mouse_enter}>
         <a
           href="https://discord.gg/KJySXsrSX5"
           className={get_icon_button_class(
@@ -72,7 +69,7 @@ export const Footer: React.FC<Props> = (props) => {
         </button>
       </div>
 
-      <div className={styles.footer__right}>
+      <div>
         <CompactableActionButton
           is_compact={compact_step >= 2}
           on_click={props.on_history_click}
@@ -90,7 +87,7 @@ export const Footer: React.FC<Props> = (props) => {
           is_compact={compact_step >= 3}
           on_click={on_commit_click}
           disabled={!has_changes_to_commit}
-          codicon="git-commit"
+          codicon="source-control"
           label={t('footer.action.commit')}
         />
         <CompactableActionButton

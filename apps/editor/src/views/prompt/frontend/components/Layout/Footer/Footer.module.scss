@@ -11,9 +11,8 @@
     padding: 6px 4px;
   }
 
-  &__left {
+  > div {
     display: flex;
-    align-items: center;
     gap: 4px;
   }
 
@@ -33,18 +32,13 @@
       background-color 0.25s ease,
       color 0.25s ease;
 
-    &:focus {
-      outline: none;
-    }
-
     &:hover {
-      filter: brightness(1.08);
-      text-decoration: none;
+      filter: brightness(0.85);
     }
 
     &--discord {
       background-color: #5865f2;
-      color: #ffffff;
+      color: white;
 
       > svg {
         width: 16px;
@@ -54,11 +48,7 @@
 
     &--donate {
       background-color: #ffdd00;
-      color: #000000;
-
-      &:hover {
-        filter: brightness(0.95);
-      }
+      color: black;
     }
 
     &--alt {
@@ -70,9 +60,5 @@
         border-color 0.5s ease,
         color 0.5s ease;
     }
-  }
-
-  &__right {
-    display: flex;
   }
 }
