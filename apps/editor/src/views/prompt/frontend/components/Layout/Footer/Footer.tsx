@@ -15,7 +15,13 @@ type Props = {
 }
 
 export const Footer: React.FC<Props> = (props) => {
-  const { can_undo, on_apply_click, on_undo_click } = useContext(LayoutContext)
+  const {
+    can_undo,
+    has_changes_to_commit,
+    on_apply_click,
+    on_undo_click,
+    on_commit_click
+  } = useContext(LayoutContext)
   const { t } = use_translation()
   const { container_ref, compact_step } = use_compacting()
   const {
@@ -84,6 +90,14 @@ export const Footer: React.FC<Props> = (props) => {
         />
         <CompactableActionButton
           is_compact={compact_step >= 3}
+          on_click={on_commit_click}
+          title={t('footer.commit-title')}
+          disabled={!has_changes_to_commit}
+          codicon="git-commit"
+          label={t('footer.action.commit')}
+        />
+        <CompactableActionButton
+          is_compact={compact_step >= 4}
           on_click={on_apply_click}
           title={t('footer.apply-title')}
           codicon="check-all"

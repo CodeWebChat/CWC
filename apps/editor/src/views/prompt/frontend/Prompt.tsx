@@ -96,7 +96,8 @@ export const Prompt = () => {
     current_selection,
     currently_open_file_text,
     selected_files,
-    workspace_folder_count
+    workspace_folder_count,
+    has_changes_to_commit
   } = use_editor_sync(vscode)
 
   const {
@@ -259,10 +260,19 @@ export const Prompt = () => {
     })
   }
 
+  const handle_commit_action_click = () => {
+    post_message(vscode, {
+      command: 'EXECUTE_COMMAND',
+      command_id: 'codeWebChat.generateCommitMessage'
+    })
+  }
+
   const layout_context_value = {
     can_undo,
+    has_changes_to_commit,
     on_apply_click: handle_apply_click,
-    on_undo_click: handle_undo_click
+    on_undo_click: handle_undo_click,
+    on_commit_click: handle_commit_action_click
   }
 
   const current_state = get_current_instructions_state()

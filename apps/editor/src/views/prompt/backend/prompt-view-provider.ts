@@ -313,6 +313,51 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
       })
     )
 
+    const git_extension = vscode.extensions.getExtension('vscode.git')
+    if (git_extension) {
+      const setup_git_listeners = () => {
+        try {
+          const git_api = git_extension.exports.getAPI(1)
+
+          const watch_repo = (repo: any) => {
+            this.extension_context.subscriptions.push(
+              repo.state.onDidChange(() => {
+                handlers.handle_get_workspace_state(this)
+              })
+            )
+          }
+
+          if (git_api.repositories) {
+            git_api.repositories.forEach(watch_repo)
+          }
+
+          this.extension_context.subscriptions.push(
+            git_api.onDidOpenRepository((repo: any) => {
+              handlers.handle_get_workspace_state(this)
+              watch_repo(repo)
+            })
+          )
+
+          this.extension_context.subscriptions.push(
+            git_api.onDidCloseRepository(() => {
+              handlers.handle_get_workspace_state(this)
+            })
+          )
+        } catch {
+          // Ignore
+        }
+      }
+
+      if (git_extension.isActive) {
+        setup_git_listeners()
+      } else {
+        git_extension.activate().then(() => {
+          setup_git_listeners()
+          handlers.handle_get_workspace_state(this)
+        })
+      }
+    }
+
     this._config_listener = vscode.workspace.onDidChangeConfiguration(
       (event) => {
         if (!this.webview_view) return

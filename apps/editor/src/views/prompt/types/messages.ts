@@ -980,6 +980,7 @@ export interface ResponsePreviewFinishedMessage extends BaseMessage {
 export interface WorkspaceStateMessage extends BaseMessage {
   command: 'WORKSPACE_STATE'
   folder_count: number
+  has_changes_to_commit?: boolean
 }
 
 export interface SelectedWebConfigurationChangedMessage extends BaseMessage {

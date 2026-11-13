@@ -18,6 +18,8 @@ export const use_editor_sync = (vscode: any) => {
   const [selected_files, set_selected_files] = useState<string[]>([])
   const [workspace_folder_count, set_workspace_folder_count] =
     useState<number>()
+  const [has_changes_to_commit, set_has_changes_to_commit] =
+    useState<boolean>(false)
 
   useEffect(() => {
     const handle_message = (event: MessageEvent<BackendMessage>) => {
@@ -32,6 +34,7 @@ export const use_editor_sync = (vscode: any) => {
         set_currently_open_file_text(message.text)
       } else if (message.command === 'WORKSPACE_STATE') {
         set_workspace_folder_count(message.folder_count)
+        set_has_changes_to_commit(message.has_changes_to_commit ?? false)
       }
     }
 
@@ -53,6 +56,7 @@ export const use_editor_sync = (vscode: any) => {
     current_selection,
     currently_open_file_text,
     selected_files,
-    workspace_folder_count
+    workspace_folder_count,
+    has_changes_to_commit
   }
 }

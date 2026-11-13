@@ -32,7 +32,7 @@ export type GitRepository = {
   show: (ref: string, path: string) => Promise<string>
 }
 
-const get_all_git_repositories = (): GitRepository[] | null => {
+const get_all_git_repositories = async (): Promise<GitRepository[] | null> => {
   const git_extension = vscode.extensions.getExtension('vscode.git')
   if (!git_extension) {
     vscode.window.showWarningMessage(
@@ -41,8 +41,19 @@ const get_all_git_repositories = (): GitRepository[] | null => {
     return null
   }
 
-  const git_api = git_extension.exports.getAPI(1)
-  const repositories: GitRepository[] = git_api.repositories
+  if (!git_extension.isActive) {
+    try {
+      await git_extension.activate()
+    } catch {
+      vscode.window.showWarningMessage(
+        t('common.warning.git-integration-missing')
+      )
+      return null
+    }
+  }
+
+  const git_api = git_extension.exports?.getAPI(1)
+  const repositories: GitRepository[] | undefined = git_api?.repositories
 
   if (!repositories || repositories.length === 0) {
     vscode.window.showWarningMessage(
@@ -57,7 +68,7 @@ const get_all_git_repositories = (): GitRepository[] | null => {
 export const get_git_repository = async (
   source_control?: vscode.SourceControl
 ): Promise<GitRepository | null> => {
-  const repositories = get_all_git_repositories()
+  const repositories = await get_all_git_repositories()
   if (!repositories) return null
 
   if (source_control?.rootUri) {
@@ -131,7 +142,7 @@ export const get_git_repository = async (
 export const get_repository_for_commit = async (
   source_control?: vscode.SourceControl
 ): Promise<GitRepository | null> => {
-  const repositories = get_all_git_repositories()
+  const repositories = await get_all_git_repositories()
   if (!repositories) return null
 
   if (source_control?.rootUri) {
