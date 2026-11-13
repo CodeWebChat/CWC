@@ -40,7 +40,9 @@ No code, prompts, or usage data are collected.
 
 ## Introduction
 
-Autofill chatbots in your web browser, send API requests, or headlessly invoke agentic CLIs using [markdown prompts](#markdown-prompts) with seamless integration. The extension is free for personal and commercial use.
+Autofill chatbots in your web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts). Integrate seamlessly with in-editor preview.
+
+It's free for personal and commercial use.
 
 > [!TIP]
 >
@@ -49,21 +51,21 @@ Autofill chatbots in your web browser, send API requests, or headlessly invoke a
 <details>
 <summary><strong>Attaching files</strong></summary>
 
-Selected files are sent alongside task instructions in a single message.
+Selected files are placed alongside task instructions in a single markdown prompt.
 
 </details>
 
 <details>
 <summary><strong>Effortless context selection</strong></summary>
 
-[Agentic Search](#-agentic-search) prompt accurately selects relevant files in the explorer hands-free.
+[Agentic Search](#-agentic-search) accurately selects relevant files hands-free.
 
 </details>
 
 <details>
 <summary><strong>Iterations without context bloat</strong></summary>
 
-Refine instructions without dragging old ones in an ever-growing conversation.
+When refining instructions, old ones are not dragged in an ever-growing session.
 
 </details>
 
