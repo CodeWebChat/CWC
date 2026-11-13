@@ -1116,7 +1116,7 @@ export const translations = {
     bg: 'Изпращане на заявка'
   },
   'common.action.invoke-agent': {
-    en: 'Invoke Agent',
+    en: 'Invoke agent',
     pl: 'Wywołaj agenta',
     'zh-cn': '调用智能体',
     ja: 'エージェントを呼び出す',
