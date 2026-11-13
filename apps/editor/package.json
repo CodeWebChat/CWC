@@ -436,7 +436,7 @@
     "submenus": [
       {
         "id": "codeWebChat.editorSubmenu",
-        "label": "CodeWebChat"
+        "label": "Code Web Chat"
       }
     ],
     "menus": {

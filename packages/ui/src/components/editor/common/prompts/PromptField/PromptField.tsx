@@ -164,7 +164,7 @@ export const PromptField: React.FC<PromptField.Props> = (props) => {
     !!(props.selected_files && props.selected_files.length > 0) ||
     props.completed_tasks.length > 0
 
-  const { is_alt_pressed, handle_container_key_down } =
+  const { is_alt_pressed, is_left_alt_pressed_ref, handle_container_key_down } =
     use_keyboard_shortcuts(props)
 
   const {
@@ -422,6 +422,19 @@ export const PromptField: React.FC<PromptField.Props> = (props) => {
                 contentEditable={true}
                 suppressContentEditableWarning={true}
                 onInput={(e) => {
+                  if (is_left_alt_pressed_ref.current) {
+                    if (
+                      input_ref.current &&
+                      input_ref.current.innerHTML !== highlighted_html
+                    ) {
+                      input_ref.current.innerHTML = highlighted_html
+                      set_caret_position_for_div(
+                        input_ref.current,
+                        caret_position
+                      )
+                    }
+                    return
+                  }
                   set_should_show_ghost_text(true)
                   handle_input_change(e)
                 }}

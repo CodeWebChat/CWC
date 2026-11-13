@@ -7,6 +7,7 @@ import type {
 
 export const use_keyboard_shortcuts = (props: PromptField.Props) => {
   const [is_alt_pressed, set_is_alt_pressed] = useState(false)
+  const is_left_alt_pressed_ref = useRef(false)
   const pressed_keys_ref = useRef(new Set<string>())
   const is_alt_pressed_raw_ref = useRef(false)
   const is_alt_consumed_ref = useRef(false)
@@ -45,6 +46,12 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
 
   useEffect(() => {
     const handle_key_down = (e: KeyboardEvent) => {
+      if (e.code === 'AltLeft') {
+        is_left_alt_pressed_ref.current = true
+      } else if (!e.altKey) {
+        is_left_alt_pressed_ref.current = false
+      }
+
       if (props.are_keyboard_shortcuts_disabled) return
 
       pressed_keys_ref.current.add(e.code)
@@ -142,6 +149,10 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
     }
 
     const handle_key_up = (e: KeyboardEvent) => {
+      if (e.code === 'AltLeft' || !e.altKey) {
+        is_left_alt_pressed_ref.current = false
+      }
+
       pressed_keys_ref.current.delete(e.code)
       if (e.code === 'AltLeft') {
         is_alt_consumed_ref.current = false
@@ -157,6 +168,7 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
     }
 
     const handle_blur = () => {
+      is_left_alt_pressed_ref.current = false
       pressed_keys_ref.current.clear()
       is_alt_consumed_ref.current = false
       update_alt_pressed(false)
@@ -172,8 +184,11 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
     }
   }, [
     props.show_edit_format_selector,
-    props.on_edit_format_change,
     props.edit_format,
+    props.show_terminal_interactivity_selector,
+    props.is_terminal_interactivity_disabled,
+    props.terminal_interactivity,
+    props.targets_order,
     props.are_keyboard_shortcuts_disabled
   ])
 
@@ -342,5 +357,9 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
     }
   }
 
-  return { is_alt_pressed, handle_container_key_down }
+  return {
+    is_alt_pressed,
+    is_left_alt_pressed_ref,
+    handle_container_key_down
+  }
 }
