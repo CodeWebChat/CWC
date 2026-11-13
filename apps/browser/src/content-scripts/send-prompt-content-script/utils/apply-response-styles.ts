@@ -10,6 +10,16 @@ export const apply_response_button_style = (button: HTMLButtonElement) => {
   button.style.outline = 'none'
   button.style.width = 'auto'
 
+  button.addEventListener('mouseenter', () => {
+    if (!button.disabled) {
+      button.style.filter = 'brightness(1.08)'
+    }
+  })
+
+  button.addEventListener('mouseleave', () => {
+    button.style.filter = ''
+  })
+
   button.addEventListener('focus', () => {
     button.style.outline = '2px solid rgba(251, 177, 0, 0.5)'
     button.style.outlineOffset = '2px'
@@ -30,6 +40,7 @@ export const set_button_disabled_state = (button: HTMLButtonElement) => {
   button.disabled = true
   button.style.opacity = '0.5'
   button.style.cursor = ''
+  button.style.filter = ''
 
   setTimeout(() => {
     button.disabled = false
