@@ -19,27 +19,60 @@ const build_diff_from_sandbox = async (
     { original: string; dest_rel: string }
   >()
 
-  const temp_files = await get_all_files(sandbox_dir)
   const workspace_folders = vscode.workspace.workspaceFolders || []
 
-  for (const temp_file of temp_files) {
-    const rel_path = path.relative(sandbox_dir, temp_file)
-    const unix_rel_path = rel_path.replace(/\\/g, '/')
-
-    let original_path: string | undefined
-
+  const resolve_original_path = (unix_rel_path: string) => {
     if (workspace_folders.length === 1) {
-      original_path = path.join(workspace_folders[0].uri.fsPath, rel_path)
+      return path.join(workspace_folders[0].uri.fsPath, unix_rel_path)
     } else if (workspace_folders.length > 1) {
       const parts = unix_rel_path.split('/')
       const ws_name = parts[0]
       const folder = workspace_folders.find((f) => f.name === ws_name)
       if (folder) {
-        original_path = path.join(folder.uri.fsPath, parts.slice(1).join('/'))
+        return path.join(folder.uri.fsPath, parts.slice(1).join('/'))
       } else {
-        original_path = path.join(workspace_folders[0].uri.fsPath, rel_path)
+        return path.join(workspace_folders[0].uri.fsPath, unix_rel_path)
       }
     }
+    return undefined
+  }
+
+  try {
+    const metadata_path = path.join(sandbox_dir, '.cwc', 'metadata.json')
+    const metadata_content = await fs.promises.readFile(metadata_path, 'utf-8')
+    const metadata = JSON.parse(metadata_content)
+    if (metadata && metadata.files && Array.isArray(metadata.files)) {
+      for (const rel_path of metadata.files) {
+        const original = resolve_original_path(rel_path)
+        if (original) {
+          file_mappings.set(path.join(sandbox_dir, rel_path), {
+            original,
+            dest_rel: rel_path
+          })
+        }
+      }
+    }
+  } catch {
+    // Ignore
+  }
+
+  const temp_files = await get_all_files(sandbox_dir)
+
+  for (const temp_file of temp_files) {
+    const temp_file_resolved = path.resolve(temp_file)
+    let has_mapping = false
+    for (const key of file_mappings.keys()) {
+      if (path.resolve(key) === temp_file_resolved) {
+        has_mapping = true
+        break
+      }
+    }
+    if (has_mapping) continue
+
+    const rel_path = path.relative(sandbox_dir, temp_file)
+    const unix_rel_path = rel_path.replace(/\\/g, '/')
+
+    const original_path = resolve_original_path(unix_rel_path)
 
     if (original_path) {
       try {

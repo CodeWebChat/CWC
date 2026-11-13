@@ -376,24 +376,7 @@ export const invoke_agentic_cli = async (params: {
           path.join(os.tmpdir(), prefix)
         )
 
-        try {
-          const metadata_dir = path.join(temp_dir_path, '.cwc')
-          await fs.promises.mkdir(metadata_dir, { recursive: true })
-          await fs.promises.writeFile(
-            path.join(metadata_dir, 'metadata.json'),
-            JSON.stringify({
-              agent: selected_agent_info?.label,
-              flags: flags_string
-            }),
-            'utf-8'
-          )
-        } catch (e) {
-          Logger.warn({
-            function_name: 'invoke_agentic_cli',
-            message: 'Failed to write metadata',
-            data: e
-          })
-        }
+        const files_array: string[] = []
 
         if (params.copy_selected_files) {
           const selected_files = params.workspace_provider.get_selected_files()
@@ -417,11 +400,35 @@ export const invoke_agentic_cli = async (params: {
             })
             await fs.promises.copyFile(file_path, dest_path)
 
+            const unix_dest_rel = dest_rel.replace(/\\/g, '/')
+
             file_mappings.set(dest_path, {
               original: file_path,
-              dest_rel: dest_rel.replace(/\\/g, '/')
+              dest_rel: unix_dest_rel
             })
+
+            files_array.push(unix_dest_rel)
           }
+        }
+
+        try {
+          const metadata_dir = path.join(temp_dir_path, '.cwc')
+          await fs.promises.mkdir(metadata_dir, { recursive: true })
+          await fs.promises.writeFile(
+            path.join(metadata_dir, 'metadata.json'),
+            JSON.stringify({
+              agent: selected_agent_info?.label,
+              flags: flags_string,
+              files: files_array
+            }),
+            'utf-8'
+          )
+        } catch (e) {
+          Logger.warn({
+            function_name: 'invoke_agentic_cli',
+            message: 'Failed to write metadata',
+            data: e
+          })
         }
 
         selected_root = temp_dir_path
