@@ -96,7 +96,7 @@ export const Footer: React.FC<Props> = (props) => {
         <CompactableActionButton
           is_compact={compact_step >= 4}
           on_click={on_apply_click}
-          codicon="check-all"
+          codicon="merge-into"
           label={t('footer.action.apply')}
         />
       </div>
