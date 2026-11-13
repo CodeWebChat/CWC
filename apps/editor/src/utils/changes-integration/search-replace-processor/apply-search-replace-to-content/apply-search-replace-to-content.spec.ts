@@ -142,5 +142,9 @@ describe('search-replace-parser', () => {
     it('applies back-to-back blocks targeting identical duplicate snippets in order', () => {
       run_test_case('adjacent-blocks-and-duplicate-snippets')
     })
+
+    it('ignores invisible formatting characters and normalizes list markers in loose mode', () => {
+      run_test_case('invisible-chars-and-list-markers')
+    })
   })
 })

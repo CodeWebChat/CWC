@@ -1,7 +1,9 @@
 import { Segment } from '../types'
 
-const INVISIBLE_CHARS_REGEX = /[\u200B-\u200F\uFEFF]/g
-const IGNORABLE_CHAR_REGEX = /[\s\u200B-\u200F\uFEFF]/
+const INVISIBLE_CHARS_REGEX =
+  /[\u00AD\u180E\u200B-\u200F\u202A-\u202E\u2060\u2066-\u2069\uFEFF]/g
+const IGNORABLE_CHAR_REGEX =
+  /[\s\u00AD\u180E\u200B-\u200F\u202A-\u202E\u2060\u2066-\u2069\uFEFF]/
 const EQUALS_DIVIDER_REGEX = /^={7}$/
 const MAX_CONTEXT_LINES = 5
 
@@ -25,7 +27,11 @@ const strip_invisible = (text: string): string =>
 const normalize_strict: Normalizer = (line) => strip_invisible(line).trim()
 
 const normalize_loose: Normalizer = (line) =>
-  strip_invisible(line).replace(/\s+/g, ' ').trim()
+  strip_invisible(line)
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^[-*+]\s+/, '- ')
+    .replace(/^\d+[.)]\s+/, '1. ')
 
 const index_non_blank_lines = (params: {
   content: string

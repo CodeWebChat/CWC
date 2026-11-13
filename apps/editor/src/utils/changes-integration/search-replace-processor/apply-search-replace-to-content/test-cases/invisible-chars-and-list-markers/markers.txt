@@ -1,0 +1,11 @@
+<<<<<<< SEARCH
+* first item
+​- second item
+1) third item
+2. fourth item
+=======
+- first item updated
+- second item updated
+1. third item updated
+2. fourth item updated
+>>>>>>> REPLACE
