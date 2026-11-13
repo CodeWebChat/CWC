@@ -75,7 +75,9 @@ export class TokenCalculator implements vscode.Disposable {
     try {
       const stats = await fs.promises.stat(file_path)
       file_size = stats.size
-    } catch {}
+    } catch {
+      // Ignore
+    }
 
     if (!range) {
       let display_path = normalize_path(file_path)

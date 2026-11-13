@@ -267,8 +267,12 @@ export const get_imports_for_uri = async (
             if (uri.scheme === 'file') found_uris.add(uri.toString())
           }
         }
-      } catch {}
+      } catch {
+        // Ignore
+      }
     }
-  } catch {}
+  } catch {
+    // Ignore
+  }
   return Array.from(found_uris)
 }

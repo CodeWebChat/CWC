@@ -558,7 +558,11 @@ if (-not $depsOk) {
 
     $prevPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
-    try { pnpm store prune *>$null } catch {}
+    try {
+        pnpm store prune *>$null
+    } catch {
+        # Ignore
+    }
     $ErrorActionPreference = $prevPreference
 
     $null = Invoke-Step "$msg_step_cloning..." {

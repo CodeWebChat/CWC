@@ -85,7 +85,7 @@ export class PersistentPromptStorage<T extends 'text' | 'image'> {
               await fs.promises.unlink(file_path)
             }
           } catch {
-            // ignore
+            // Ignore
           }
         }
       }

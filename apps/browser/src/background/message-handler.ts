@@ -186,7 +186,9 @@ const handle_initialize_chat_message = async (
               break
             }
           }
-        } catch {}
+        } catch {
+          // Ignore
+        }
       }
     }
 

@@ -475,7 +475,9 @@ export class WorkspaceProvider
     let is_directory = false
     try {
       is_directory = fs.statSync(created_file_path).isDirectory()
-    } catch {}
+    } catch {
+      // Ignore
+    }
 
     if (is_directory) {
       await this._load_all_gitignore_files()
@@ -1293,7 +1295,9 @@ export class WorkspaceProvider
             all_files_to_check.push(file_path)
           }
         }
-      } catch {}
+      } catch {
+        // Ignore
+      }
     }
 
     for (const file_path of all_files_to_check) {
@@ -1346,7 +1350,9 @@ export class WorkspaceProvider
             gitignore_files.push(full_path)
           }
         }
-      } catch {}
+      } catch {
+        // Ignore
+      }
     }
 
     for (const root of this._workspace_roots) {
@@ -1586,7 +1592,9 @@ export class WorkspaceProvider
         }
         return results
       }
-    } catch {}
+    } catch {
+      // Ignore
+    }
     return []
   }
 

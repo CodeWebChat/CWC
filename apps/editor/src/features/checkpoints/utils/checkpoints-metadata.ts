@@ -73,10 +73,14 @@ export const checkpoints_cleanup = async (
               message: `Removed old workspace checkpoints folder: ${name}`
             })
           }
-        } catch {}
+        } catch {
+          // Ignore
+        }
       }
     }
-  } catch {}
+  } catch {
+    // Ignore
+  }
 }
 
 export const save_checkpoints_metadata = async (

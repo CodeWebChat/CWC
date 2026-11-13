@@ -166,7 +166,9 @@ export const setup_workspace_listeners = (params: {
               const content = Buffer.from(contentBytes).toString('utf8')
               deleted_files_content_cache.set(uri.fsPath, content)
             }
-          } catch {}
+          } catch {
+            // Ignore
+          }
         }
 
         for (const uri of event.files) {
@@ -1017,7 +1019,9 @@ export const setup_workspace_listeners = (params: {
                 workspace_root
               })
             }
-          } catch {}
+          } catch {
+            // Ignore
+          }
         } else {
           await vscode.workspace.fs.writeFile(
             vscode.Uri.file(file_to_toggle.sanitized_path),
@@ -1036,7 +1040,9 @@ export const setup_workspace_listeners = (params: {
                 workspace_root
               })
             }
-          } catch {}
+          } catch {
+            // Ignore
+          }
         } else {
           await vscode.workspace.fs.writeFile(
             vscode.Uri.file(file_to_toggle.sanitized_path),

@@ -175,7 +175,9 @@ export const agentic_search = async (params: {
             await vscode.workspace.fs.delete(vscode.Uri.file(snapshot_dir), {
               recursive: true
             })
-          } catch {}
+          } catch {
+            // Ignore
+          }
         }
       }
     }

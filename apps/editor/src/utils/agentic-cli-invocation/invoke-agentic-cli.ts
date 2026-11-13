@@ -664,7 +664,9 @@ export const invoke_agentic_cli = async (params: {
             recursive: true,
             force: true
           })
-        } catch {}
+        } catch {
+          // Ignore
+        }
 
         return {
           agent_output: current_agent_output,
@@ -766,7 +768,9 @@ export const invoke_agentic_cli = async (params: {
                         if (result?.output !== undefined) {
                           current_agent_output = result.output
                         }
-                      } catch {}
+                      } catch {
+                        // Ignore
+                      }
                     }
                   } else {
                     current_agent_output += chunk
@@ -798,7 +802,9 @@ export const invoke_agentic_cli = async (params: {
                           parsed,
                           current_agent_output
                         ) ?? current_agent_output
-                    } catch {}
+                    } catch {
+                      // Ignore
+                    }
                   }
 
                   if (

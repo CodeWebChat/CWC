@@ -30,7 +30,9 @@ export const prepare_rename_operation = async (params: {
     try {
       const doc = await vscode.workspace.openTextDocument(rename_source_path)
       original_content = doc.getText()
-    } catch {}
+    } catch {
+      // Ignore
+    }
   }
 
   return {

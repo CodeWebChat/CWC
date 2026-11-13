@@ -48,7 +48,9 @@ const build_diff_from_sandbox = async (
           original: original_path,
           dest_rel: unix_rel_path
         })
-      } catch {}
+      } catch {
+        // Ignore
+      }
     }
   }
 
@@ -117,7 +119,9 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
                 flags: metadata.flags
               }
             }
-          } catch {}
+          } catch {
+            // Ignore
+          }
 
           const accepted = await apply_response({
             response: diff_markdown,

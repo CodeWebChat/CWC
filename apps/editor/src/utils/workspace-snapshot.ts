@@ -175,7 +175,9 @@ export const restore_workspace_snapshot = async (
               vscode.Uri.file(diff_file_path)
             )
             diff = Buffer.from(diff_content).toString('utf8')
-          } catch {}
+          } catch {
+            // Ignore
+          }
 
           if (diff.trim().length > 0) {
             const temp_diff_path = path.join(
@@ -228,7 +230,9 @@ export const restore_workspace_snapshot = async (
                 await vscode.workspace.fs.delete(
                   vscode.Uri.file(temp_diff_path)
                 )
-              } catch {}
+              } catch {
+                // Ignore
+              }
             }
           }
           continue
@@ -276,7 +280,9 @@ export const restore_workspace_snapshot = async (
               vscode.Uri.file(diff_file_path)
             )
             diff = Buffer.from(diff_content).toString('utf8')
-          } catch {}
+          } catch {
+            // Ignore
+          }
 
           if (diff.trim().length > 0) {
             const temp_diff_path = path.join(temp_git_clone_path, 'cwc.diff')
@@ -325,7 +331,9 @@ export const restore_workspace_snapshot = async (
                 await vscode.workspace.fs.delete(
                   vscode.Uri.file(temp_diff_path)
                 )
-              } catch {}
+              } catch {
+                // Ignore
+              }
             }
           }
 
@@ -349,12 +357,16 @@ export const restore_workspace_snapshot = async (
               await vscode.workspace.fs.delete(temp_git_dir_uri, {
                 recursive: true
               })
-            } catch {}
+            } catch {
+              // Ignore
+            }
           }
           if (temp_index_path) {
             try {
               await vscode.workspace.fs.delete(vscode.Uri.file(temp_index_path))
-            } catch {}
+            } catch {
+              // Ignore
+            }
           }
         }
       } else {
@@ -371,7 +383,9 @@ export const restore_workspace_snapshot = async (
             workspace_provider,
             progress
           })
-        } catch {}
+        } catch {
+          // Ignore
+        }
       }
     }
   } else {

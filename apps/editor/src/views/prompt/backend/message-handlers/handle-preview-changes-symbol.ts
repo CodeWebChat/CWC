@@ -17,5 +17,7 @@ export const handle_preview_changes_symbol = async (message: {
         extension: '.md'
       })
     }
-  } catch {}
+  } catch {
+    // Ignore
+  }
 }

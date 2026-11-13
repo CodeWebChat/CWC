@@ -43,7 +43,9 @@ export const new_folder_command = () => {
         if (!stats.isDirectory()) {
           parent_path = path.dirname(parent_path)
         }
-      } catch {}
+      } catch {
+        // Ignore
+      }
 
       const input_box = vscode.window.createInputBox()
       input_box.title = t('command.new-folder-command.title')
@@ -117,7 +119,9 @@ export const new_folder_command = () => {
               })
             )
             return
-          } catch {}
+          } catch {
+            // Ignore
+          }
 
           const directory = path.dirname(target_path)
           await vscode.workspace.fs.createDirectory(vscode.Uri.file(directory))
@@ -145,7 +149,9 @@ export const new_folder_command = () => {
             })
           )
           return
-        } catch {}
+        } catch {
+          // Ignore
+        }
 
         await vscode.workspace.fs.createDirectory(vscode.Uri.file(target_path))
       } catch (error) {

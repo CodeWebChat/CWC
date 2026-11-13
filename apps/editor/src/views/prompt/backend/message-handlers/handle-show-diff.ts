@@ -31,7 +31,9 @@ export const handle_show_diff = async (
         await vscode.workspace.fs.stat(potential_uri)
         target_workspace = folder
         break
-      } catch {}
+      } catch {
+        // Ignore
+      }
     }
   }
 

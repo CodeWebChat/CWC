@@ -25,7 +25,9 @@ export const copy_merge_commit_details_command = (): vscode.Disposable => {
           })
             .toString()
             .trim()
-        } catch {}
+        } catch {
+          // Ignore
+        }
 
         if (!branches_output) {
           vscode.window.showInformationMessage(

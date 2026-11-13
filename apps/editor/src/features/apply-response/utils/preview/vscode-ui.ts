@@ -112,7 +112,9 @@ export const show_diff_with_actions = async (
       try {
         const right_doc = await vscode.workspace.openTextDocument(right_doc_uri)
         final_content = right_doc.getText()
-      } catch {}
+      } catch {
+        // Ignore
+      }
 
       const active_editor = vscode.window.activeTextEditor
       let active_file_uri: string | undefined

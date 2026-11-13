@@ -192,7 +192,9 @@ export const handle_commit_item = async (
           ['config', '--get', 'remote.origin.url'],
           { cwd: selected_folder.uri.fsPath, encoding: 'utf-8' }
         ).trim()
-      } catch {}
+      } catch {
+        // Ignore
+      }
 
       const commits_raw = log_output.trim().split('\n')
       const commit_items: vscode.QuickPickItem[] = []
@@ -350,7 +352,9 @@ export const handle_commit_item = async (
           diff_only_token_count = Math.ceil(
             replacement_text_only_diff.length / 4
           )
-        } catch {}
+        } catch {
+          // Ignore
+        }
 
         const action_quick_pick = vscode.window.createQuickPick()
         const diff_with_message_label = t(

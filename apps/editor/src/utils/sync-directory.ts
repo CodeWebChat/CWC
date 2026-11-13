@@ -44,7 +44,9 @@ const count_sync_operations = async (params: {
     let dest_stat: vscode.FileStat | undefined
     try {
       dest_stat = await vscode.workspace.fs.stat(dest_uri)
-    } catch {}
+    } catch {
+      // Ignore
+    }
 
     if (type === vscode.FileType.Directory) {
       if (dest_stat?.type === vscode.FileType.Directory) {
@@ -125,7 +127,9 @@ export const sync_directory = async (params: {
     let dest_stat: vscode.FileStat | undefined
     try {
       dest_stat = await vscode.workspace.fs.stat(dest_uri)
-    } catch {}
+    } catch {
+      // Ignore
+    }
 
     const source_stat = await vscode.workspace.fs.stat(source_uri)
 

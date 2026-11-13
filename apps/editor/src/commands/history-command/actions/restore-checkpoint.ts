@@ -166,7 +166,9 @@ export const restore_checkpoint = async (params: {
           const history_data =
             await vscode.workspace.fs.readFile(history_file_path)
           loaded_history = JSON.parse(new TextDecoder().decode(history_data))
-        } catch {}
+        } catch {
+          // Ignore
+        }
 
         if (loaded_history.length > 0) {
           params.prompt_view_provider.response_history = loaded_history
@@ -194,7 +196,9 @@ export const restore_checkpoint = async (params: {
           loaded_completed_tasks = JSON.parse(
             new TextDecoder().decode(completed_tasks_data)
           )
-        } catch {}
+        } catch {
+          // Ignore
+        }
 
         if (loaded_completed_tasks !== undefined) {
           params.prompt_view_provider.completed_tasks = loaded_completed_tasks
@@ -232,7 +236,9 @@ export const restore_checkpoint = async (params: {
               preserveFocus: true,
               preview: false
             })
-          } catch {}
+          } catch {
+            // Ignore
+          }
         }
 
         if (active_file) {
@@ -244,7 +250,9 @@ export const restore_checkpoint = async (params: {
               preserveFocus: false,
               preview: false
             })
-          } catch {}
+          } catch {
+            // Ignore
+          }
         }
 
         await params.extension_context.workspaceState.update(

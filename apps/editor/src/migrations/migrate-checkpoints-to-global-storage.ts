@@ -49,7 +49,9 @@ export async function migrate_checkpoints_to_global_storage(
             vscode.Uri.file(old_checkpoint_path),
             vscode.Uri.file(new_checkpoint_path)
           )
-        } catch {}
+        } catch {
+          // Ignore
+        }
 
         const any_checkpoint = checkpoint as any
         if (any_checkpoint.response_history || any_checkpoint.completed_tasks) {
@@ -81,7 +83,9 @@ export async function migrate_checkpoints_to_global_storage(
                 )
               )
             }
-          } catch {}
+          } catch {
+            // Ignore
+          }
           delete any_checkpoint.response_history
           delete any_checkpoint.completed_tasks
         }
@@ -118,7 +122,9 @@ export async function migrate_checkpoints_to_global_storage(
           vscode.Uri.file(old_temp_path),
           vscode.Uri.file(new_temp_path)
         )
-      } catch {}
+      } catch {
+        // Ignore
+      }
     }
 
     await extension_context.workspaceState.update(MIGRATION_ID, true)

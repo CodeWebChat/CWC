@@ -43,7 +43,9 @@ export const set_ranges_command = (
           const { bytesRead } = await file_handle.read(buffer, 0, 8000, 0)
           await file_handle.close()
           is_binary = is_binary_file(file_path, buffer.subarray(0, bytesRead))
-        } catch {}
+        } catch {
+          // Ignore
+        }
       }
 
       if (is_binary) {
@@ -69,7 +71,9 @@ export const set_ranges_command = (
         for (const [key, value] of Object.entries(raw_ranges)) {
           file_ranges[normalize_path(key)] = value as string
         }
-      } catch {}
+      } catch {
+        // Ignore
+      }
 
       const all_global_ranges = RangesStorage.load_all(extension_context)
       const global_ranges_for_workspace =

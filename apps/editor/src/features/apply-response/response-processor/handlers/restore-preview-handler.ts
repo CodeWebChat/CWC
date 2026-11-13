@@ -105,7 +105,9 @@ export const handle_restore_preview = async (
           const document =
             await vscode.workspace.openTextDocument(source_safe_path)
           original_content = document.getText()
-        } catch {}
+        } catch {
+          // Ignore
+        }
       }
     }
 

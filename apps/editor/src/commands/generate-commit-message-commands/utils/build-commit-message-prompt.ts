@@ -166,7 +166,9 @@ export const build_commit_message_prompt = async (
                 })
               }
             }
-          } catch {}
+          } catch {
+            // Ignore
+          }
         }
 
         changes_content_part = PromptBuilder.build_diff_file_context({
@@ -215,7 +217,9 @@ export const build_commit_message_prompt = async (
             })
           }
         }
-      } catch {}
+      } catch {
+        // Ignore
+      }
 
       return ''
     })

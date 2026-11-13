@@ -43,7 +43,9 @@ export const new_file_command = () => {
         if (!stats.isDirectory()) {
           parent_path = path.dirname(parent_path)
         }
-      } catch {}
+      } catch {
+        // Ignore
+      }
 
       const input_box = vscode.window.createInputBox()
       input_box.title = t('command.new-file-command.title')
@@ -111,7 +113,9 @@ export const new_file_command = () => {
             })
           )
           return
-        } catch {}
+        } catch {
+          // Ignore
+        }
 
         // Ensure parent directory exists (this does not trigger onDidCreateFiles)
         const directory = path.dirname(file_path)

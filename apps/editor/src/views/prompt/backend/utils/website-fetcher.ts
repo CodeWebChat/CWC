@@ -189,7 +189,9 @@ export const fetch_website = async (
       const { document: doc } = parseHTML(html)
       try {
         Object.defineProperty(doc, 'documentURI', { value: url })
-      } catch {}
+      } catch {
+        // Ignore
+      }
 
       doc.querySelectorAll('pre').forEach((pre) => {
         const code = pre.querySelector('code')

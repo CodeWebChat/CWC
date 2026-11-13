@@ -99,7 +99,9 @@ const abandon_socket = (c: Connection) => {
   ws.onclose = null
   try {
     ws.close()
-  } catch {}
+  } catch {
+    // Ignore
+  }
 }
 
 export const check_and_recover_connection = async () => {
@@ -261,10 +263,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     const old_ports = (changes['forwarded-ports'].oldValue as number[]) || []
 
     for (const port of old_ports) {
-      if (
-        !new_ports.includes(port) &&
-        port !== DEFAULT_PORT
-      ) {
+      if (!new_ports.includes(port) && port !== DEFAULT_PORT) {
         const c = connections.get(port)
         if (c) {
           abandon_socket(c)

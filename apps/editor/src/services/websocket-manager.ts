@@ -150,7 +150,9 @@ export class WebSocketManager {
                     resolve()
                     return
                   }
-                } catch {}
+                } catch {
+                  // Ignore
+                }
               }
               retry()
             })

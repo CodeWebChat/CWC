@@ -63,7 +63,9 @@ export const handle_paste_url = async (
             hostname = hostname.slice(4)
           }
           title_part = ` "${hostname}"`
-        } catch {}
+        } catch {
+          // Ignore
+        }
       }
 
       prompt_view_provider.add_text_at_cursor_position(

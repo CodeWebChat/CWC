@@ -244,7 +244,9 @@ const get_skill_lock = (): Record<string, { sourceUrl: string }> => {
       const json = JSON.parse(content)
       return json.skills || {}
     }
-  } catch {}
+  } catch {
+    // Ignore
+  }
   return {}
 }
 
