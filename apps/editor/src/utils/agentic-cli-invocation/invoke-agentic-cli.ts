@@ -647,20 +647,15 @@ export const invoke_agentic_cli = async (params: {
         }
 
         await terminal_closed
-        let current_agent_output = ''
-        if (params.generate_diff_for_temp_dir && temp_dir_path) {
+
+        if (temp_dir_path) {
           try {
-            const diff_markdown = await generate_diff_markdown(
-              temp_dir_path,
-              file_mappings
-            )
-            current_agent_output = diff_markdown.trim()
-          } catch (e) {
-            Logger.error({
-              function_name: 'invoke_agentic_cli',
-              message: 'Failed to generate diff',
-              data: e
+            await fs.promises.rm(temp_dir_path, {
+              recursive: true,
+              force: true
             })
+          } catch {
+            // Ignore
           }
         }
 
@@ -673,16 +668,7 @@ export const invoke_agentic_cli = async (params: {
           // Ignore
         }
 
-        return {
-          agent_output: current_agent_output,
-          selected_root: selected_root!,
-          cli_configuration_details: selected_agent_info
-            ? {
-                agent: selected_agent_info.label,
-                flags: flags_string
-              }
-            : undefined
-        }
+        return undefined
       }
 
       const initial_invocation_count = params.invocation_count || 1

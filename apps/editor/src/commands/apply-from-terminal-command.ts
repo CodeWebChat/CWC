@@ -70,8 +70,8 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
 
       const active_terminal = vscode.window.activeTerminal
       if (!active_terminal) {
-        vscode.window.showErrorMessage(
-          t('command.apply-from-terminal-command.error.no-active-terminal')
+        vscode.window.showInformationMessage(
+          t('command.apply-from-terminal-command.info.no-active-terminal')
         )
         return
       }

@@ -18,7 +18,7 @@ export const translations = {
     hu: 'A terminálból való alkalmazás letiltva van aktív válasz előnézet közben.',
     bg: 'Прилагането от терминала е деактивирано по време на активен преглед на отговор.'
   },
-  'command.apply-from-terminal-command.error.no-active-terminal': {
+  'command.apply-from-terminal-command.info.no-active-terminal': {
     en: 'No active terminal session.',
     pl: 'Brak aktywnej sesji terminala.',
     'zh-cn': '没有活动的终端会话。',
