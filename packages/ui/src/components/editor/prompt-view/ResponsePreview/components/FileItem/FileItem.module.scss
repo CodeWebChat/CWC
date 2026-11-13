@@ -40,10 +40,7 @@
     margin: 0 10px;
   }
 
-  &:not(.file--deleted):not(.file--selected):hover {
-    background-color: var(--vscode-list-hoverBackground);
-    border-color: var(--cwc-border-color);
-
+  &:not(.file--deleted):hover {
     .file__actions {
       display: flex;
     }
@@ -51,6 +48,11 @@
     .file__line-numbers {
       display: none;
     }
+  }
+
+  &:not(.file--deleted):not(.file--selected):hover {
+    background-color: var(--vscode-list-hoverBackground);
+    border-color: var(--cwc-border-color);
   }
 
   &--selected {
