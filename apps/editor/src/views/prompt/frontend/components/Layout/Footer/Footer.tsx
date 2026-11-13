@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext } from 'react'
 import styles from './Footer.module.scss'
 import { use_compacting } from '@shared/hooks'
 import { LayoutContext } from '../../../contexts/LayoutContext'
@@ -6,8 +6,7 @@ import { use_translation } from '../../../i18n/use-translation'
 import cn from 'classnames'
 import { CompactableActionButton } from '@ui/components/editor/prompt-view/CompactableActionButton'
 import { Icon as UiIcon } from '@ui/components/editor/common/Icon'
-
-const DIMMED_ICONS_TIMEOUT = 1000
+import { use_dimmed_icons } from './hooks/use-dimmed-icons'
 
 type Props = {
   on_history_click?: () => void
@@ -25,49 +24,36 @@ export const Footer: React.FC<Props> = (props) => {
   const apply_label = t('footer.action.apply')
 
   const { container_ref, compact_step } = use_compacting()
-  const [is_alt, set_is_alt] = useState(true)
-  const leave_timeout_ref = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const handle_mouse_enter = () => {
-    if (leave_timeout_ref.current) {
-      clearTimeout(leave_timeout_ref.current)
-      leave_timeout_ref.current = null
-    }
-    set_is_alt(false)
-  }
-
-  const handle_mouse_leave = () => {
-    leave_timeout_ref.current = setTimeout(() => {
-      set_is_alt(true)
-    }, DIMMED_ICONS_TIMEOUT)
-  }
-
-  useEffect(() => {
-    return () => {
-      if (leave_timeout_ref.current) {
-        clearTimeout(leave_timeout_ref.current)
-      }
-    }
-  }, [])
-
-  const handle_apply_click = () => {
-    on_apply_click()
-  }
+  const {
+    is_alt,
+    clear_leave_timeout,
+    handle_left_mouse_enter,
+    handle_footer_mouse_leave
+  } = use_dimmed_icons()
 
   const is_alt_style = is_alt && !props.is_home_active
 
+  const get_icon_button_class = (variant_class: string) =>
+    cn(styles['footer__icon-button'], variant_class, {
+      [styles['footer__icon-button--alt']]: is_alt_style
+    })
+
   return (
-    <div className={styles.footer} ref={container_ref}>
+    <div
+      className={styles.footer}
+      ref={container_ref}
+      onMouseEnter={clear_leave_timeout}
+      onMouseLeave={handle_footer_mouse_leave}
+    >
       <div
         className={styles.footer__left}
-        onMouseEnter={handle_mouse_enter}
-        onMouseLeave={handle_mouse_leave}
+        onMouseEnter={handle_left_mouse_enter}
       >
         <a
           href="https://discord.gg/KJySXsrSX5"
-          className={cn(styles['footer__discord-button'], {
-            [styles['footer__discord-button--alt']]: is_alt_style
-          })}
+          className={get_icon_button_class(
+            styles['footer__icon-button--discord']
+          )}
           title="Discord"
           target="_blank"
           rel="noopener noreferrer"
@@ -76,9 +62,9 @@ export const Footer: React.FC<Props> = (props) => {
         </a>
         <button
           type="button"
-          className={cn(styles['footer__donate-button'], {
-            [styles['footer__donate-button--alt']]: is_alt_style
-          })}
+          className={get_icon_button_class(
+            styles['footer__icon-button--donate']
+          )}
           onClick={props.on_donate_click}
           title={t('header.buy-me-a-coffee')}
         >
@@ -104,7 +90,7 @@ export const Footer: React.FC<Props> = (props) => {
         />
         <CompactableActionButton
           is_compact={compact_step >= 3}
-          on_click={handle_apply_click}
+          on_click={on_apply_click}
           title={t('footer.apply-title')}
           codicon="check-all"
           label={apply_label}

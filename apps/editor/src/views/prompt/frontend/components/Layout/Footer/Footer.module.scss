@@ -17,8 +17,7 @@
     gap: 4px;
   }
 
-  &__discord-button,
-  &__donate-button {
+  &__icon-button {
     --size: 24px;
     box-sizing: border-box;
     display: flex;
@@ -42,15 +41,24 @@
       filter: brightness(1.08);
       text-decoration: none;
     }
-  }
 
-  &__discord-button {
-    background-color: #5865f2;
-    color: #ffffff;
+    &--discord {
+      background-color: #5865f2;
+      color: #ffffff;
 
-    > svg {
-      width: 16px;
-      fill: currentColor;
+      > svg {
+        width: 16px;
+        fill: currentColor;
+      }
+    }
+
+    &--donate {
+      background-color: #ffdd00;
+      color: #000000;
+
+      &:hover {
+        filter: brightness(0.95);
+      }
     }
 
     &--alt {
@@ -61,25 +69,6 @@
         background-color 0.5s ease,
         border-color 0.5s ease,
         color 0.5s ease;
-    }
-  }
-
-  &__donate-button {
-    background-color: #ffdd00;
-    color: #000000;
-
-    &:hover {
-      filter: brightness(0.95);
-    }
-
-    &--alt {
-      background-color: transparent;
-      border-color: var(--cwc-border-color-dimmed);
-      color: var(--cwc-text-color-dimmed);
-      transition:
-        background-color 0.7s ease,
-        border-color 0.7s ease,
-        color 0.7s ease;
     }
   }
 
