@@ -1,0 +1,11 @@
+function header() {
+  return 'v1'
+}
+
+function body() {
+  return 'content'
+}
+
+function footer() {
+  return '2025'
+}

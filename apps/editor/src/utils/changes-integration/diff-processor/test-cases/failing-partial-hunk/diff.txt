@@ -1,0 +1,9 @@
+--- a/file.ts
++++ b/file.ts
+@@ -1,2 +1,2 @@
+-const a = 1
++const a = 10
+ const b = 2
+@@ -10,2 +10,2 @@
+-const z = 99
++const z = 100

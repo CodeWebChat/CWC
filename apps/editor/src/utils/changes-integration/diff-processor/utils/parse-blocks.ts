@@ -31,18 +31,17 @@ export const parse_patch_blocks = (params: {
       }
     }
 
-    if (search_chunks.length > 0 || replace_chunks.length > 0) {
-      if (current_block_has_changes) {
-        search_replace_blocks.push({
-          search_lines: search_chunks,
-          replace_lines: replace_chunks,
-          after_search_lines: after_search_chunks,
-          search_block_start_index: -1,
-          actual_original_line_count: 0,
-          search_to_original_map: new Map()
-        })
-      }
+    if (current_block_has_changes) {
+      search_replace_blocks.push({
+        search_lines: search_chunks,
+        replace_lines: replace_chunks,
+        after_search_lines: after_search_chunks,
+        search_block_start_index: -1,
+        actual_original_line_count: 0,
+        search_to_original_map: new Map()
+      })
     }
+
     search_chunks = []
     replace_chunks = []
     after_search_chunks = []
@@ -89,7 +88,7 @@ export const parse_patch_blocks = (params: {
 
       if (line === '~nnn') {
         replace_chunks.push({
-          content: line_original.replace(/^~nnn/, '') + '\n',
+          content: '\n',
           search_index: search_chunks.length - 1,
           insert_after_search_index: current_search_index_tracker
         })

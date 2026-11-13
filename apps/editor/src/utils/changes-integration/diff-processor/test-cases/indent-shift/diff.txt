@@ -1,0 +1,11 @@
+--- a/file.ts
++++ b/file.ts
+@@ -1,4 +1,6 @@
+ function init() {
+-  const data = fetch_data()
+-  process(data)
++  if (is_ready) {
++    const data = fetch_data()
++    process(data)
++  }
+ }

@@ -1,0 +1,6 @@
+function init() {
+  if (is_ready) {
+    const data = fetch_data()
+    process(data)
+  }
+}

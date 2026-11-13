@@ -1,0 +1,4 @@
+function init() {
+  const data = fetch_data()
+  process(data)
+}

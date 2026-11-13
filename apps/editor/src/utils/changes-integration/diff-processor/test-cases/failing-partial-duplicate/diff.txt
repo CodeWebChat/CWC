@@ -1,0 +1,8 @@
+--- a/file.ts
++++ b/file.ts
+@@ -1,4 +1,6 @@
+ import { a } from './a'
++import { b } from './b'
++import { c } from './c'
+ 
+ export const sum = a + b

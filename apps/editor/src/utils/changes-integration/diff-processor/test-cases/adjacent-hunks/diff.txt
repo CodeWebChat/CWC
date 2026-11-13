@@ -1,0 +1,12 @@
+--- a/file.ts
++++ b/file.ts
+@@ -1,3 +1,3 @@
+-const a = 1
++const a = 10
+ const b = 2
+ const c = 3
+@@ -2,3 +2,3 @@
+ const b = 2
+ const c = 3
+-const d = 4
++const d = 40

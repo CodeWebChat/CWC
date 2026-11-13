@@ -45,7 +45,8 @@ export const apply_diff = (params: {
 
   match_blocks({
     search_replace_blocks,
-    original_code_lines_normalized
+    original_code_lines_normalized,
+    use_strict_whitespace: params.use_strict_whitespace
   })
 
   const invalid_blocks = search_replace_blocks.filter(
@@ -58,15 +59,18 @@ export const apply_diff = (params: {
     )
   }
 
-  const valid_blocks = search_replace_blocks
-  valid_blocks.sort(
+  search_replace_blocks.sort(
     (a, b) => b.search_block_start_index - a.search_block_start_index
   )
 
-  return restore_eol(
-    apply_blocks({
-      valid_blocks,
-      original_code_lines
-    })
-  )
+  let result = apply_blocks({
+    valid_blocks: search_replace_blocks,
+    original_code_lines
+  })
+
+  if (result === '' && original_code_normalized.endsWith('\n')) {
+    result = '\n'
+  }
+
+  return restore_eol(result)
 }

@@ -277,5 +277,114 @@ describe('diff-processor', () => {
 
       expect(result).toBe(expected)
     })
+
+    it('applies diff with out-of-order hunks correctly', async () => {
+      const test_case = 'out-of-order-hunks'
+      const original = load_test_case_file('', test_case, 'original.txt')
+      const diff = load_test_case_file('', test_case, 'diff.txt')
+      const expected = load_test_case_file('', test_case, 'expected.txt')
+
+      const result = apply_diff({
+        original_code: original,
+        diff_patch: diff
+      })
+
+      expect(result).toBe(expected)
+    })
+
+    it('applies diff with adjacent hunks correctly', async () => {
+      const test_case = 'adjacent-hunks'
+      const original = load_test_case_file('', test_case, 'original.txt')
+      const diff = load_test_case_file('', test_case, 'diff.txt')
+      const expected = load_test_case_file('', test_case, 'expected.txt')
+
+      const result = apply_diff({
+        original_code: original,
+        diff_patch: diff
+      })
+
+      expect(result).toBe(expected)
+    })
+
+    it('applies diff with insertion in the middle of file correctly', async () => {
+      const test_case = 'insert-middle'
+      const original = load_test_case_file('', test_case, 'original.txt')
+      const diff = load_test_case_file('', test_case, 'diff.txt')
+      const expected = load_test_case_file('', test_case, 'expected.txt')
+
+      const result = apply_diff({
+        original_code: original,
+        diff_patch: diff
+      })
+
+      expect(result).toBe(expected)
+    })
+
+    it('applies diff deleting all lines correctly', async () => {
+      const test_case = 'delete-all-lines'
+      const original = load_test_case_file('', test_case, 'original.txt')
+      const diff = load_test_case_file('', test_case, 'diff.txt')
+      const expected = load_test_case_file('', test_case, 'expected.txt')
+
+      const result = apply_diff({
+        original_code: original,
+        diff_patch: diff
+      })
+
+      expect(result).toBe(expected)
+    })
+
+    it('applies diff with indent shift correctly', async () => {
+      const test_case = 'indent-shift'
+      const original = load_test_case_file('', test_case, 'original.txt')
+      const diff = load_test_case_file('', test_case, 'diff.txt')
+      const expected = load_test_case_file('', test_case, 'expected.txt')
+
+      const result = apply_diff({
+        original_code: original,
+        diff_patch: diff
+      })
+
+      expect(result).toBe(expected)
+    })
+
+    it('throws when a partial hunk fails to apply', async () => {
+      const test_case = 'failing-partial-hunk'
+      const original = load_test_case_file('', test_case, 'original.txt')
+      const diff = load_test_case_file('', test_case, 'diff.txt')
+
+      expect(() => {
+        apply_diff({
+          original_code: original,
+          diff_patch: diff
+        })
+      }).toThrow(/Failed to apply \d+ hunk\(s\)/)
+    })
+
+    it('throws when a stale deletion hunk fails to apply', async () => {
+      const test_case = 'failing-stale-deletion'
+      const original = load_test_case_file('', test_case, 'original.txt')
+      const diff = load_test_case_file('', test_case, 'diff.txt')
+
+      expect(() => {
+        apply_diff({
+          original_code: original,
+          diff_patch: diff
+        })
+      }).toThrow(/Failed to apply \d+ hunk\(s\)/)
+    })
+
+    it('throws when a partial duplicate hunk fails to apply', async () => {
+      const test_case = 'failing-partial-duplicate'
+      const original = load_test_case_file('', test_case, 'original.txt')
+      const diff = load_test_case_file('', test_case, 'diff.txt')
+
+      expect(() => {
+        apply_diff({
+          original_code: original,
+          diff_patch: diff
+        })
+      }).toThrow(/Failed to apply \d+ hunk\(s\)/)
+    })
   })
 })
