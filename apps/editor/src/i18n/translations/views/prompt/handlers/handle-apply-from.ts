@@ -91,21 +91,21 @@ export const translations = {
     bg: 'Изберете източник за прилагане на промени'
   },
   'views.prompt.handlers.handle-apply-from.title': {
-    en: 'Edits Sources',
-    pl: 'Źródła zmian',
-    'zh-cn': '编辑来源',
-    ja: '編集ソース',
-    'zh-tw': '編輯來源',
-    de: 'Bearbeitungsquellen',
-    es: 'Fuentes de edición',
-    fr: 'Sources des modifications',
-    'pt-br': 'Fontes de edição',
-    ru: 'Источники правок',
-    ko: '편집 소스',
-    it: 'Fonti di modifica',
-    tr: 'Düzenleme Kaynakları',
-    cs: 'Zdroje úprav',
-    hu: 'Szerkesztési források',
-    bg: 'Източници на редакции'
+    en: 'Response Sources',
+    pl: 'Źródła odpowiedzi',
+    'zh-cn': '响应来源',
+    ja: '応答ソース',
+    'zh-tw': '回應來源',
+    de: 'Antwortquellen',
+    es: 'Fuentes de respuesta',
+    fr: 'Sources de réponse',
+    'pt-br': 'Fontes de resposta',
+    ru: 'Источники ответов',
+    ko: '응답 소스',
+    it: 'Fonti di risposta',
+    tr: 'Yanıt Kaynakları',
+    cs: 'Zdroje odpovědí',
+    hu: 'Válaszforrások',
+    bg: 'Източници на отговори'
   }
 } as const

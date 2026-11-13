@@ -16,13 +16,7 @@ type Props = {
 
 export const Footer: React.FC<Props> = (props) => {
   const { can_undo, on_apply_click, on_undo_click } = useContext(LayoutContext)
-
   const { t } = use_translation()
-
-  const history_label = t('footer.action.history')
-  const undo_label = t('footer.action.undo')
-  const apply_label = t('footer.action.apply')
-
   const { container_ref, compact_step } = use_compacting()
   const {
     is_alt,
@@ -78,7 +72,7 @@ export const Footer: React.FC<Props> = (props) => {
           on_click={props.on_history_click}
           title={t('footer.history-title')}
           codicon="history"
-          label={history_label}
+          label={t('footer.action.history')}
         />
         <CompactableActionButton
           is_compact={compact_step >= 1}
@@ -86,14 +80,14 @@ export const Footer: React.FC<Props> = (props) => {
           title={t('footer.undo-title')}
           disabled={!can_undo}
           codicon="discard"
-          label={undo_label}
+          label={t('footer.action.undo')}
         />
         <CompactableActionButton
           is_compact={compact_step >= 3}
           on_click={on_apply_click}
           title={t('footer.apply-title')}
           codicon="check-all"
-          label={apply_label}
+          label={t('footer.action.apply')}
         />
       </div>
     </div>
