@@ -282,7 +282,10 @@ export const Prompt = () => {
             [styles['slot--hidden']]: is_main_slot_hidden
           })}
         >
-          <Layout on_history_click={handle_history_click}>
+          <Layout
+            on_history_click={handle_history_click}
+            on_donate_click={() => set_viewing_donations(true)}
+          >
             <div
               className={cn(styles.content, {
                 [styles['content--hidden']]: active_view !== 'main'

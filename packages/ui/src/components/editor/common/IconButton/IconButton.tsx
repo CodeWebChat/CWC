@@ -1,8 +1,10 @@
 import styles from './IconButton.module.scss'
 import cn from 'classnames'
+import { Icon as UiIcon } from '../Icon'
 
 type Props = {
-  codicon_icon: string
+  codicon_icon?: string
+  icon?: React.ComponentProps<typeof UiIcon>['variant']
   on_click?: (e: any) => void
   on_mouse_down?: (e: any) => void
   href?: string
@@ -15,7 +17,10 @@ type Props = {
 export const IconButton: React.FC<Props> = (props) => {
   const icon_element = (
     <span className={styles['icon-wrapper']}>
-      <span className={cn('codicon', `codicon-${props.codicon_icon}`)} />
+      {props.codicon_icon && (
+        <span className={cn('codicon', `codicon-${props.codicon_icon}`)} />
+      )}
+      {props.icon && <UiIcon variant={props.icon} />}
     </span>
   )
 

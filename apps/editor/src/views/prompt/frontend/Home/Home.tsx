@@ -10,12 +10,10 @@ import { post_message } from '../utils/post-message'
 import { BackendMessage } from '@/views/prompt/types/messages'
 import { Spacer as UiSpacer } from '@ui/components/editor/prompt-view/Spacer'
 import { Translation, use_translation } from '../i18n/use-translation'
-import { CompactableActionButton } from '@ui/components/editor/prompt-view/CompactableActionButton'
 import { Tasks as UiTasks } from '@ui/components/editor/prompt-view/Tasks'
 import { use_tasks } from './hooks/use-tasks'
 import { use_has_scrolled_past_target_button } from './hooks/use-has-scrolled-past-mode-button'
 import { use_keyboard_shortcuts } from './hooks/use-keyboard-shortcuts'
-import { use_compacting } from '@shared/hooks'
 import {
   ApiPromptType,
   WebPromptType,
@@ -73,14 +71,7 @@ export const Home: React.FC<Props> = (props) => {
       ? active_workspace_root
       : roots[0] || active_workspace_root || ''
 
-  const { container_ref, compact_step } = use_compacting({
-    is_disabled: is_landscape
-  })
-
   const header_targets_ref = useRef<HTMLDivElement>(null)
-
-  const discord_label = 'Discord'
-  const coffee_label = t('header.buy-me-a-coffee')
 
   useEffect(() => {
     const handle_message = (event: MessageEvent<BackendMessage>) => {
@@ -142,13 +133,12 @@ export const Home: React.FC<Props> = (props) => {
         className={cn(styles.header__normal, {
           [styles['header__normal--hidden']]: has_scrolled_past_target_button
         })}
-        ref={container_ref}
       >
         <div className={styles.header__icon}>
           <span className="codicon codicon-home" />
         </div>
         <div className={styles.header__links}>
-          <CompactableActionButton
+          {/* <CompactableActionButton
             label={discord_label}
             href="https://discord.gg/KJySXsrSX5"
             icon="DISCORD"
@@ -159,7 +149,7 @@ export const Home: React.FC<Props> = (props) => {
             on_click={props.on_donate_click}
             codicon="coffee"
             is_compact={is_landscape || compact_step >= 2}
-          />
+          /> */}
           {is_landscape && (
             <div
               style={{

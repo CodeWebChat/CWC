@@ -55,26 +55,24 @@ export const footer = {
     hu: 'Integrálja a másolt csevegési választ vagy egy aktív terminál-munkamenet CLI-módosításait',
     bg: 'Интегрирайте копиран отговор от чата или редакции на CLI от активна терминална сесия'
   },
-
-  'footer.action.apply-from': {
-    en: 'Apply from...',
-    pl: 'Integruj z...',
-    'zh-cn': '从…应用',
-    ja: '…から適用',
-    'zh-tw': '從…套用',
-    de: 'Anwenden von...',
-    es: 'Aplicar desde...',
-    fr: 'Appliquer depuis...',
-    'pt-br': 'Aplicar de...',
-    ru: 'Применить из...',
-    ko: '적용 위치...',
-    it: 'Applica da...',
-    tr: 'Şuradan uygula...',
-    cs: 'Použít z...',
+  'footer.action.apply': {
+    en: 'Apply...',
+    pl: 'Integruj...',
+    'zh-cn': '应用…',
+    ja: '適用…',
+    'zh-tw': '套用…',
+    de: 'Anwenden...',
+    es: 'Aplicar...',
+    fr: 'Appliquer...',
+    'pt-br': 'Aplicar...',
+    ru: 'Применить...',
+    ko: '적용...',
+    it: 'Applica...',
+    tr: 'Uygula...',
+    cs: 'Použít...',
     hu: 'Alkalmazás...',
-    bg: 'Приложи от...'
+    bg: 'Приложи...'
   },
-
   'footer.action.undo': {
     en: 'Undo',
     pl: 'Cofnij',
