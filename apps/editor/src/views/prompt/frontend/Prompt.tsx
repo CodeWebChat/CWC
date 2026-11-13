@@ -263,7 +263,7 @@ export const Prompt = () => {
   const handle_commit_action_click = () => {
     post_message(vscode, {
       command: 'EXECUTE_COMMAND',
-      command_id: 'codeWebChat.generateCommitMessage'
+      command_id: 'codeWebChat.generateCommitMessageAndCommit'
     })
   }
 

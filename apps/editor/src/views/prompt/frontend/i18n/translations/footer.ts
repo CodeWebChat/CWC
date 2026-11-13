@@ -17,44 +17,6 @@ export const footer = {
     hu: 'Vegyél részt',
     bg: 'Включете се'
   },
-  'footer.undo-title': {
-    en: 'Restore saved state of the codebase after chat/API response integration',
-    pl: 'Przywróć zapisany stan kodu po integracji z czatem/odpowiedzią API',
-    'zh-cn': '在聊天/API响应集成后恢复代码库的保存状态',
-    ja: 'チャット/API応答の統合後、コードベースの保存された状態を復元する',
-    'zh-tw': '在聊天/API響應集成後恢復代碼庫的保存狀態',
-    de: 'Stellen Sie den gespeicherten Zustand der Codebasis nach der Chat-/API-Antwortintegration wieder her',
-    es: 'Restaurar el estado guardado del código base después de la integración de respuesta de chat/API',
-    fr: "Restaurer l'état enregistré de la base de code après l'intégration de la réponse du chat/API",
-    'pt-br':
-      'Restaurar o estado salvo da base de código após a integração de resposta de bate-papo/API',
-    ru: 'Восстановить сохраненное состояние кодовой базы после интеграции ответа чата/API',
-    ko: '채팅/API 응답 통합 후 코드베이스의 저장된 상태 복원',
-    it: 'Ripristina lo stato salvato del codice base dopo integrazione della risposta di chat/API',
-    tr: 'Sohbet/API yanıt entegrasyonundan sonra kod tabanının kaydedilen durumunu geri yükle',
-    cs: 'Obnovit uložený stav kódové báze po integraci chatové/API odpovědi',
-    hu: 'Állítsa vissza a kódbázis mentett állapotát a csevegés/API-válasz integrálása után',
-    bg: 'Възстановете запазеното състояние на кодовата база след интегриране на чат/API отговор'
-  },
-  'footer.apply-title': {
-    en: 'Integrate a copied chat response or CLI edits from an active terminal session',
-    pl: 'Zintegruj skopiowaną odpowiedź czatu lub zmiany z aktywnej sesji CLI w terminalu',
-    'zh-cn': '集成复制的聊天响应或来自活动终端会话的 CLI 编辑',
-    ja: 'コピーされたチャットの応答、またはアクティブなターミナルセッションの CLI 編集を統合する',
-    'zh-tw': '集成複製的聊天回應或來自活動終端機工作階段的 CLI 編輯',
-    de: 'Integrieren Sie eine kopierte Chat-Antwort oder CLI-Bearbeitungen aus einer aktiven Terminalsitzung',
-    es: 'Integrar una respuesta de chat copiada o ediciones CLI de una sesión de terminal activa',
-    fr: "Intégrer une réponse de chat copiée ou des modifications CLI d'une session de terminal active",
-    'pt-br':
-      'Integrar uma resposta de bate-papo copiada ou edições da CLI de uma sessão de terminal ativa',
-    ru: 'Интегрировать скопированный ответ чата или правки CLI из активного сеанса терминала',
-    ko: '복사된 채팅 응답 또는 활성 터미널 세션의 CLI 편집 통합',
-    it: 'Integra una risposta della chat copiata o modifiche CLI da una sessione del terminale attiva',
-    tr: 'Kopyalanan sohbet yanıtını veya aktif bir terminal oturumundaki CLI düzenlemelerini entegre et',
-    cs: 'Integrovat zkopírovanou chatovou odpověď nebo úpravy CLI z aktivní relace terminálu',
-    hu: 'Integrálja a másolt csevegési választ vagy egy aktív terminál-munkamenet CLI-módosításait',
-    bg: 'Интегрирайте копиран отговор от чата или редакции на CLI от активна терминална сесия'
-  },
   'footer.action.commit': {
     en: 'Commit',
     pl: 'Zakomituj',
@@ -72,24 +34,6 @@ export const footer = {
     cs: 'Potvrdit',
     hu: 'Véglegesítés',
     bg: 'Комитни'
-  },
-  'footer.commit-title': {
-    en: 'Generate a commit message and commit changes',
-    pl: 'Wygeneruj wiadomość commita i zatwierdź zmiany',
-    'zh-cn': '生成提交消息并提交更改',
-    ja: 'コミットメッセージを生成して変更をコミットする',
-    'zh-tw': '生成提交訊息並提交更改',
-    de: 'Erstellen Sie eine Commit-Nachricht und übernehmen Sie die Änderungen',
-    es: 'Generar un mensaje de commit y confirmar los cambios',
-    fr: 'Générer un message de validation et valider les modifications',
-    'pt-br': 'Gerar uma mensagem de commit e confirmar as alterações',
-    ru: 'Сгенерировать сообщение коммита и зафиксировать изменения',
-    ko: '커밋 메시지를 생성하고 변경 사항을 커밋합니다',
-    it: 'Genera un messaggio di commit e conferma le modifiche',
-    tr: 'Bir commit mesajı oluştur ve değişiklikleri işle',
-    cs: 'Vygenerovat zprávu o potvrzení a potvrdit změny',
-    hu: 'Generáljon egy véglegesítési üzenetet és véglegesítse a módosításokat',
-    bg: 'Генерирайте съобщение за комит и потвърдете промените'
   },
   'footer.action.apply': {
     en: 'Apply...',
@@ -144,23 +88,5 @@ export const footer = {
     cs: 'Historie',
     hu: 'Előzmények',
     bg: 'История'
-  },
-  'footer.history-title': {
-    en: 'Restore or create a checkpoint',
-    pl: 'Przywróć lub utwórz punkt kontrolny',
-    'zh-cn': '恢复或创建检查点',
-    ja: 'チェックポイントを復元または作成する',
-    'zh-tw': '恢復或創建檢查點',
-    de: 'Einen Prüfpunkt wiederherstellen oder erstellen',
-    es: 'Restaurar o crear un punto de control',
-    fr: 'Restaurer ou créer un point de contrôle',
-    'pt-br': 'Restaurar ou criar um ponto de verificação',
-    ru: 'Восстановить или создать контрольную точку',
-    ko: '체크포인트 복원 또는 생성',
-    it: 'Ripristina o crea un checkpoint',
-    tr: 'Bir kontrol noktası geri yükle veya oluştur',
-    cs: 'Obnovit nebo vytvořit kontrolní bod',
-    hu: 'Ellenőrzőpont visszaállítása vagy létrehozása',
-    bg: 'Възстановете или създайте контролна точка'
   }
 } as const

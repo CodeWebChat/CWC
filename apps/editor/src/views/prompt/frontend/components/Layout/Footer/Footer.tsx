@@ -76,14 +76,12 @@ export const Footer: React.FC<Props> = (props) => {
         <CompactableActionButton
           is_compact={compact_step >= 2}
           on_click={props.on_history_click}
-          title={t('footer.history-title')}
           codicon="history"
           label={t('footer.action.history')}
         />
         <CompactableActionButton
           is_compact={compact_step >= 1}
           on_click={on_undo_click}
-          title={t('footer.undo-title')}
           disabled={!can_undo}
           codicon="discard"
           label={t('footer.action.undo')}
@@ -91,7 +89,6 @@ export const Footer: React.FC<Props> = (props) => {
         <CompactableActionButton
           is_compact={compact_step >= 3}
           on_click={on_commit_click}
-          title={t('footer.commit-title')}
           disabled={!has_changes_to_commit}
           codicon="git-commit"
           label={t('footer.action.commit')}
@@ -99,7 +96,6 @@ export const Footer: React.FC<Props> = (props) => {
         <CompactableActionButton
           is_compact={compact_step >= 4}
           on_click={on_apply_click}
-          title={t('footer.apply-title')}
           codicon="check-all"
           label={t('footer.action.apply')}
         />
