@@ -57,7 +57,6 @@ import { get_current_preview_url } from './views/prompt/backend/message-handlers
 import { AgenticSearchState } from './features/agentic-search'
 import { checkpoints_cleanup } from './features/checkpoints/utils'
 import { setup_apply_response } from './features/apply-response/apply-response'
-import { t } from '@/i18n'
 
 let websocket_server_instance: WebSocketManager | null = null
 
@@ -329,16 +328,6 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
       }
     })
   )
-
-  const commit_status_bar_item = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    1000
-  )
-  commit_status_bar_item.text = '$(git-commit) Commit Changes'
-  commit_status_bar_item.tooltip = t('misc.commit-status-bar.tooltip')
-  commit_status_bar_item.command = 'codeWebChat.generateCommitMessageAndCommit'
-  commit_status_bar_item.show()
-  extension_context.subscriptions.push(commit_status_bar_item)
 
   setup_git_discard_file_watcher(extension_context)
 }
