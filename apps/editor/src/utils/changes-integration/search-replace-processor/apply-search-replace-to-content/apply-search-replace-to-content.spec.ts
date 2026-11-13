@@ -86,5 +86,61 @@ describe('search-replace-parser', () => {
     it('does not prepend a newline when the first kept line moves without context', () => {
       run_test_case('reorder-without-context')
     })
+
+    it('applies search replace blocks that appear out of file order', () => {
+      run_test_case('out-of-order-blocks')
+    })
+
+    it('skips no-op blocks without failing on unmatched ones', () => {
+      run_test_case('noop-blocks')
+    })
+
+    it('prepends content at the start of the file when the search block is empty', () => {
+      run_test_case('prepend-empty-search')
+    })
+
+    it('adds a blank line between existing lines', () => {
+      run_test_case('add-blank-line')
+    })
+
+    it('removes a blank line between existing lines', () => {
+      run_test_case('remove-blank-line')
+    })
+
+    it('preserves blank lines at the boundaries of a search replace block', () => {
+      run_test_case('preserve-boundary-blank-lines')
+    })
+
+    it('expands a line into multiple lines before a blank line', () => {
+      run_test_case('expand-line-before-blank-line')
+    })
+
+    it('handles seven-character equals underlines inside search and replace blocks', () => {
+      run_test_case('seven-char-equals-underline')
+    })
+
+    it('matches the intended occurrence when out-of-order blocks follow a duplicate snippet', () => {
+      run_test_case('out-of-order-with-duplicate-snippet')
+    })
+
+    it('adds and removes trailing blank lines at the end of a search replace block', () => {
+      run_test_case('trailing-blank-lines-diff')
+    })
+
+    it('handles multiple seven-character equals underlines inside a single search block', () => {
+      run_test_case('multiple-seven-char-equals-underlines')
+    })
+
+    it('prefers an exact match over an earlier loose-whitespace match', () => {
+      run_test_case('strict-match-precedence')
+    })
+
+    it('adjusts the cursor properly when an out-of-order block shrinks earlier content', () => {
+      run_test_case('out-of-order-shrinking-block')
+    })
+
+    it('applies back-to-back blocks targeting identical duplicate snippets in order', () => {
+      run_test_case('adjacent-blocks-and-duplicate-snippets')
+    })
   })
 })

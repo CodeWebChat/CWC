@@ -1,0 +1,11 @@
+<<<<<<< SEARCH
+Summary
+=======
+
+Old summary text.
+=======
+Summary
+=======
+
+New summary text.
+>>>>>>> REPLACE

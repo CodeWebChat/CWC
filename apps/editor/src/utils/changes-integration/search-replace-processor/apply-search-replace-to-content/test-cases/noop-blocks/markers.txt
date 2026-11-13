@@ -1,0 +1,15 @@
+<<<<<<<
+first
+=======
+first
+>>>>>>>
+<<<<<<<
+missing
+=======
+missing
+>>>>>>>
+<<<<<<<
+second
+=======
+second updated
+>>>>>>>

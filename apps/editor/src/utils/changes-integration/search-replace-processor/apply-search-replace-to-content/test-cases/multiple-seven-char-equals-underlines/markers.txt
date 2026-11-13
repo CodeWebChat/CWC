@@ -1,0 +1,21 @@
+<<<<<<< SEARCH
+Title 1
+=======
+
+Old body 1.
+
+Title 2
+=======
+
+Old body 2.
+=======
+Title 1
+=======
+
+New body 1.
+
+Title 2
+=======
+
+New body 2.
+>>>>>>> REPLACE

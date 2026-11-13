@@ -1,0 +1,5 @@
+header
+
+const a = 2
+
+footer

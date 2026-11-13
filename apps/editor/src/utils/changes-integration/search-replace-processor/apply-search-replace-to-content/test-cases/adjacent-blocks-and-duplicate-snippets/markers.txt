@@ -1,0 +1,10 @@
+<<<<<<< SEARCH
+step()
+=======
+step(1)
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+step()
+=======
+step(2)
+>>>>>>> REPLACE

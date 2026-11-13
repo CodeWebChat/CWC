@@ -1,0 +1,15 @@
+<<<<<<< SEARCH
+middle
+=======
+middle updated
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+header with extra text to delete
+=======
+header
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+footer
+=======
+footer updated
+>>>>>>> REPLACE

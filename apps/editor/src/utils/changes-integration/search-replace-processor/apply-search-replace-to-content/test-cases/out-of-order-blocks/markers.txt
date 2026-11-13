@@ -1,0 +1,10 @@
+<<<<<<<
+second
+=======
+second updated
+>>>>>>>
+<<<<<<<
+first
+=======
+first updated
+>>>>>>>

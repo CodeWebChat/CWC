@@ -1,0 +1,15 @@
+<<<<<<< SEARCH
+section 2
+=======
+section 2 updated
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+section 1
+=======
+section 1 updated
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+target()
+=======
+target updated()
+>>>>>>> REPLACE

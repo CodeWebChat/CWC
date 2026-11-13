@@ -1,0 +1,10 @@
+<<<<<<< SEARCH
+const x = 1
+=======
+const x = 10
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+const y = 2
+=======
+const y = 20
+>>>>>>> REPLACE

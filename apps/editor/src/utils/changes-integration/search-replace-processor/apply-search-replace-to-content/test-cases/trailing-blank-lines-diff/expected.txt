@@ -1,0 +1,8 @@
+section 1
+const a = 10
+
+footer 1
+
+section 2
+const b = 20
+footer 2
