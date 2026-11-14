@@ -53,7 +53,7 @@ export const translations = {
     hu: 'Erősítse meg a kontextusba foglalandó fájlokat',
     bg: 'Потвърдете файловете за включване в контекста'
   },
-  'command.apply-response-command.error.no-valid-response': {
+  'command.apply-response-command.info.no-valid-response': {
     en: 'No valid response to apply.',
     pl: 'Brak prawidłowej odpowiedzi do zastosowania.',
     'zh-cn': '没有可应用的有效响应。',

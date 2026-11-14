@@ -221,8 +221,8 @@ export const setup_apply_response = (params: {
           params.prompt_view_provider.send_message({
             command: 'HIDE_PROGRESS'
           })
-          vscode.window.showWarningMessage(
-            t('command.apply-response-command.error.no-valid-response')
+          vscode.window.showInformationMessage(
+            t('command.apply-response-command.info.no-valid-response')
           )
           return false
         }
