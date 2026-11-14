@@ -502,33 +502,25 @@ mkdir -p -m 700 "$CWC_DIR"
 chmod 700 "$CWC_DIR" 2>/dev/null || true
 
 update_repo() {
-  git -C "$REPO_DIR" fetch origin --tags --quiet && \
   if [ -n "$TAG_NAME" ]; then
-    git -C "$REPO_DIR" checkout "$TAG_NAME" --quiet
+    git -C "$REPO_DIR" fetch --depth 1 origin "+refs/tags/$TAG_NAME:refs/tags/$TAG_NAME" --quiet && \
+    git -C "$REPO_DIR" checkout --force "$TAG_NAME" --quiet
   else
-    LATEST_TAG=$(git -C "$REPO_DIR" tag -l '*-vscode' --sort=-creatordate | head -n 1)
-    if [ -n "$LATEST_TAG" ]; then
-      git -C "$REPO_DIR" checkout "$LATEST_TAG" --quiet
-    else
-      git -C "$REPO_DIR" reset --hard origin/main --quiet
-    fi
+    git -C "$REPO_DIR" fetch --depth 1 origin main --quiet && \
+    git -C "$REPO_DIR" reset --hard FETCH_HEAD --quiet
   fi && \
   git -C "$REPO_DIR" clean -fd --quiet
 }
 
 clone_repo() {
-  if ! git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git "$REPO_DIR"; then
-    rm -rf "$REPO_DIR"
-    git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git "$REPO_DIR" || return 1
+  local clone_args=(-c core.longpaths=true --quiet --depth 1)
+  if [ -n "$TAG_NAME" ]; then
+    clone_args+=(--branch "$TAG_NAME")
   fi
 
-  if [ -n "$TAG_NAME" ]; then
-    git -C "$REPO_DIR" checkout "$TAG_NAME" --quiet || return 1
-  else
-    LATEST_TAG=$(git -C "$REPO_DIR" tag -l '*-vscode' --sort=-creatordate | head -n 1)
-    if [ -n "$LATEST_TAG" ]; then
-      git -C "$REPO_DIR" checkout "$LATEST_TAG" --quiet || return 1
-    fi
+  if ! git clone "${clone_args[@]}" https://github.com/CodeWebChat/CWC.git "$REPO_DIR"; then
+    rm -rf "$REPO_DIR"
+    git clone "${clone_args[@]}" https://github.com/CodeWebChat/CWC.git "$REPO_DIR" || return 1
   fi
 }
 
@@ -555,21 +547,21 @@ for i in "${indices[@]}"; do
 
   cd "$REPO_DIR"
 
-  if ! run_step "$msg_step_deps" pnpm install; then
+  if ! run_step "$msg_step_deps" pnpm --filter gemini-coder install --frozen-lockfile; then
     echo -e "  \033[33m$msg_deps_retry\033[0m"
     cd "$CWC_DIR"
     rm -rf "$CWC_DIR"/repository*
     pnpm store prune > /dev/null 2>&1 || true
     run_step "$msg_step_cloning" clone_repo
     cd "$REPO_DIR"
-    run_step "$msg_step_deps" pnpm install
+    run_step "$msg_step_deps" pnpm --filter gemini-coder install --frozen-lockfile
   fi
 
+  rm -f ./apps/editor/*.vsix
+
+  run_step "$msg_step_build" pnpm --filter gemini-coder build
+
   cd apps/editor
-
-  rm -f ./*.vsix
-
-  run_step "$msg_step_build" pnpm run build
 
   vsix_files=(*.vsix)
   VSIX_FILE="${vsix_files[0]}"

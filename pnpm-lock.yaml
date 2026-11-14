@@ -251,6 +251,12 @@ importers:
 
   apps/editor:
     dependencies:
+      '@cwc/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@cwc/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@mozilla/readability':
         specifier: 0.6.0
         version: 0.6.0

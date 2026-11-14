@@ -479,23 +479,19 @@ $originalLocation = Get-Location
 $cwcDir = Join-Path $env:USERPROFILE ".cwc"
 
 function Clone-Repo {
-    git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git $repoDir *>$null
+    $cloneArgs = @("clone", "-c", "core.longpaths=true", "--quiet", "--depth", "1")
+    if ($tagName) {
+        $cloneArgs += @("--branch", $tagName)
+    }
+    $cloneArgs += @("https://github.com/CodeWebChat/CWC.git", $repoDir)
+
+    git @cloneArgs *>$null
     if ($LASTEXITCODE -ne 0) {
         if (Test-Path $repoDir) {
             Remove-Item -Path $repoDir -Recurse -Force -ErrorAction SilentlyContinue
         }
-        git clone -c core.longpaths=true --quiet https://github.com/CodeWebChat/CWC.git $repoDir *>$null
+        git @cloneArgs *>$null
         if ($LASTEXITCODE -ne 0) { throw "Failed to clone" }
-    }
-    if ($tagName) {
-        git -C $repoDir checkout $tagName --quiet *>$null
-        if ($LASTEXITCODE -ne 0) { throw "Failed to checkout" }
-    } else {
-        $latestTag = git -C $repoDir tag -l '*-vscode' --sort=-creatordate | Select-Object -First 1
-        if ($latestTag) {
-            git -C $repoDir checkout $latestTag --quiet *>$null
-            if ($LASTEXITCODE -ne 0) { throw "Failed to checkout latest tag" }
-        }
     }
 }
 
@@ -515,20 +511,16 @@ if ($installAll) {
 $updated = $false
 if (Test-Path (Join-Path $repoDir ".git")) {
     $updated = Invoke-Step "$msg_step_cloning..." {
-        git -C $repoDir fetch origin --tags --quiet *>$null
-        if ($LASTEXITCODE -ne 0) { throw "Failed to fetch" }
         if ($tagName) {
-            git -C $repoDir checkout $tagName --quiet *>$null
+            git -C $repoDir fetch --depth 1 origin "+refs/tags/${tagName}:refs/tags/${tagName}" --quiet *>$null
+            if ($LASTEXITCODE -ne 0) { throw "Failed to fetch" }
+            git -C $repoDir checkout --force $tagName --quiet *>$null
             if ($LASTEXITCODE -ne 0) { throw "Failed to checkout" }
         } else {
-            $latestTag = git -C $repoDir tag -l '*-vscode' --sort=-creatordate | Select-Object -First 1
-            if ($latestTag) {
-                git -C $repoDir checkout $latestTag --quiet *>$null
-                if ($LASTEXITCODE -ne 0) { throw "Failed to checkout latest tag" }
-            } else {
-                git -C $repoDir reset --hard origin/main --quiet *>$null
-                if ($LASTEXITCODE -ne 0) { throw "Failed to reset" }
-            }
+            git -C $repoDir fetch --depth 1 origin main --quiet *>$null
+            if ($LASTEXITCODE -ne 0) { throw "Failed to fetch" }
+            git -C $repoDir reset --hard FETCH_HEAD --quiet *>$null
+            if ($LASTEXITCODE -ne 0) { throw "Failed to reset" }
         }
         git -C $repoDir clean -fd --quiet *>$null
         if ($LASTEXITCODE -ne 0) { throw "Failed to clean" }
@@ -547,7 +539,7 @@ if (-not $updated) {
 Set-Location $repoDir
 
 $depsOk = Invoke-Step "$msg_step_deps..." {
-    pnpm install *>$null
+    pnpm --filter gemini-coder install --frozen-lockfile *>$null
     if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
 }
 
@@ -572,19 +564,19 @@ if (-not $depsOk) {
     Set-Location $repoDir
 
     $null = Invoke-Step "$msg_step_deps..." {
-        pnpm install *>$null
+        pnpm --filter gemini-coder install --frozen-lockfile *>$null
         if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
     } $msg_step_deps
 }
 
-Set-Location apps/editor
-
-Remove-Item *.vsix -Force -ErrorAction SilentlyContinue
+Remove-Item "apps/editor/*.vsix" -Force -ErrorAction SilentlyContinue
 
 $null = Invoke-Step "$msg_step_build..." {
-    pnpm run build *>$null
-    if ($LASTEXITCODE -ne 0) { throw "pnpm run build failed" }
+    pnpm --filter gemini-coder build *>$null
+    if ($LASTEXITCODE -ne 0) { throw "pnpm build failed" }
 } $msg_step_build
+
+Set-Location apps/editor
 
 $vsixFile = Get-ChildItem *.vsix -ErrorAction SilentlyContinue | Select-Object -First 1
 

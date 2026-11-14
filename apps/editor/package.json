@@ -1388,6 +1388,8 @@
     "vite": "8.3.6"
   },
   "dependencies": {
+    "@cwc/ui": "workspace:*",
+    "@cwc/shared": "workspace:*",
     "@mozilla/readability": "0.6.0",
     "@vscode/codicons": "0.0.46-38",
     "axios": "1.21.0",
