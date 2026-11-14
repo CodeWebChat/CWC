@@ -79,8 +79,8 @@ export const StatusBar: React.FC<Props> = (props) => {
                     message={action.tooltip}
                     position="top"
                     align={action.tooltip_align || 'center'}
-                    offset={6}
-                    translate={{ y: -7 }}
+                    offset={is_last ? 15 : 6}
+                    translate={{ y: -7, x: is_last ? 8 : undefined }}
                   />
                 )}
                 <span className={cn('codicon', action.icon)} />
