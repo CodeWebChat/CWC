@@ -7,12 +7,14 @@ import { t } from '@/i18n'
 import {
   LAST_SELECTED_WORKSPACE_IN_AGENTIC_SEARCH_STATE_KEY,
   LAST_USED_AGENTIC_SEARCH_AGENT_STATE_KEY,
-  LAST_AGENTIC_SEARCH_QUERY_STATE_KEY
+  LAST_AGENTIC_SEARCH_QUERY_STATE_KEY,
+  LAST_AGENTIC_SEARCH_ADDITIONAL_INSTRUCTIONS_STATE_KEY
 } from '@/constants/state-keys'
 import { extract_paths_from_bullet_list } from '@/utils/extract-paths-from-bullet-list'
 import { get_all_workspace_files } from '@/context/helpers/get-all-workspace-files'
 import { show_search_results_quick_pick } from '@/features/search-files/utils/show-search-results-quick-pick'
 import { prompt_for_search_term } from './utils/prompt-for-search-term'
+import { prompt_for_additional_instructions } from './utils/prompt-for-additional-instructions'
 import { build_agent_prompt } from './utils/build-agent-prompt'
 import { replace_symbols } from '@/views/prompt/backend/utils/symbols/replace-symbols'
 import { search_files } from '@/features/search-files'
@@ -90,15 +92,55 @@ export const agentic_search = async (params: {
         target_folder: params.folder_path,
         build_prompt: async () => {
           while (true) {
+            let current_query = query
+
             if (
               first_run &&
               params.skip_prompt_if_not_empty &&
               query.trim() !== ''
             ) {
+              const last_additional =
+                params.extension_context.workspaceState.get<string>(
+                  LAST_AGENTIC_SEARCH_ADDITIONAL_INSTRUCTIONS_STATE_KEY
+                ) || ''
+              const additional_instructions_result =
+                await prompt_for_additional_instructions({
+                  show_back_button: true,
+                  initial_value: last_additional,
+                  on_change: (value) => {
+                    params.extension_context.workspaceState.update(
+                      LAST_AGENTIC_SEARCH_ADDITIONAL_INSTRUCTIONS_STATE_KEY,
+                      value
+                    )
+                  }
+                })
+
+              if (additional_instructions_result.back) {
+                return 'back'
+              }
+
+              if (additional_instructions_result.value === undefined) {
+                return undefined
+              }
+
               first_run = false
+
+              if (additional_instructions_result.value.trim() !== '') {
+                current_query = `${query}\n\nAdditional instructions:\n${additional_instructions_result.value}`
+              }
             } else {
               const query_result = await prompt_for_search_term(query, {
-                show_back_button: true
+                show_back_button: true,
+                on_change: (value) => {
+                  query = value
+                  params.extension_context.workspaceState.update(
+                    LAST_AGENTIC_SEARCH_QUERY_STATE_KEY,
+                    {
+                      instructions: params.current_instructions,
+                      query: value
+                    }
+                  )
+                }
               })
 
               if (query_result.back) {
@@ -109,11 +151,13 @@ export const agentic_search = async (params: {
                 return undefined
               }
 
-              query = query_result.value
-            }
-            first_run = false
+              first_run = false
 
-            if (query.trim() === '') {
+              query = query_result.value
+              current_query = query
+            }
+
+            if (current_query.trim() === '') {
               continue
             }
 
@@ -121,11 +165,11 @@ export const agentic_search = async (params: {
               LAST_AGENTIC_SEARCH_QUERY_STATE_KEY,
               {
                 instructions: params.current_instructions,
-                query
+                query: current_query
               }
             )
 
-            const instructions_to_process = [query]
+            const instructions_to_process = [current_query]
             if (params.completed_tasks) {
               instructions_to_process.push(...params.completed_tasks)
             }

@@ -16,5 +16,41 @@ export const translations = {
     cs: 'Agentní vyhledávání',
     hu: 'Ügynökkeresés',
     bg: 'Агентно търсене'
+  },
+  'feature.agentic-search.prompt.additional-instructions': {
+    en: 'Additional instructions',
+    pl: 'Dodatkowe instrukcje',
+    'zh-cn': '附加说明',
+    ja: '追加の指示',
+    'zh-tw': '附加說明',
+    de: 'Zusätzliche Anweisungen',
+    es: 'Instrucciones adicionales',
+    fr: 'Instructions supplémentaires',
+    'pt-br': 'Instruções adicionais',
+    ru: 'Дополнительные инструкции',
+    ko: '추가 지침',
+    it: 'Istruzioni aggiuntive',
+    tr: 'Ek talimatlar',
+    cs: 'Další instrukce',
+    hu: 'További utasítások',
+    bg: 'Допълнителни инструкции'
+  },
+  'feature.agentic-search.placeholder.additional-instructions': {
+    en: 'Any extra instructions for the search',
+    pl: 'Dodatkowe instrukcje dla tego wyszukiwania',
+    'zh-cn': '搜索的任何额外说明',
+    ja: '検索に関する追加の指示',
+    'zh-tw': '搜尋的任何額外說明',
+    de: 'Zusätzliche Anweisungen für die Suche',
+    es: 'Cualquier instrucción adicional para la búsqueda',
+    fr: 'Toute instruction supplémentaire pour la recherche',
+    'pt-br': 'Quaisquer instruções extras para a pesquisa',
+    ru: 'Любые дополнительные инструкции для поиска',
+    ko: '검색에 대한 추가 지침',
+    it: 'Eventuali istruzioni aggiuntive per la ricerca',
+    tr: 'Arama için ek talimatlar',
+    cs: 'Jakékoli další instrukce pro vyhledávání',
+    hu: 'További utasítások a kereséshez',
+    bg: 'Допълнителни инструкции за търсенето'
   }
 } as const

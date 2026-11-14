@@ -5,12 +5,6 @@
   color: var(--vscode-foreground);
 }
 
-.model {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .description {
   opacity: var(--dimmed-opacity);
   white-space: nowrap;

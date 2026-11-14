@@ -48,7 +48,7 @@ export const DefaultConfigurationSelector: React.FC<
       title={props.title}
       description={
         <div className={styles.info}>
-          <span className={styles.model}>{selected_config.model}</span>
+          <span>{selected_config.model}</span>
           {selected_config.description && (
             <span className={styles.description}>
               {selected_config.description}
