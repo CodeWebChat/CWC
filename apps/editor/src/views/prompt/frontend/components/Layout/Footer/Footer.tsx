@@ -87,13 +87,13 @@ export const Footer: React.FC<Props> = (props) => {
           is_compact={compact_step >= 3}
           on_click={on_commit_click}
           disabled={!has_changes_to_commit}
-          codicon="git-commit"
+          codicon="git-pull-request-comment"
           label={t('footer.action.commit')}
         />
         <CompactableActionButton
           is_compact={compact_step >= 4}
           on_click={on_apply_click}
-          codicon="clippy"
+          codicon="sparkle"
           label={t('footer.action.apply')}
         />
       </div>

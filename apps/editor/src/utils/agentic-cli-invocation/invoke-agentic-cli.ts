@@ -48,6 +48,7 @@ export const invoke_agentic_cli = async (params: {
   invocation_count?: number
   allow_adding_invocations?: boolean
   target_folder?: string
+  raw_instructions?: string
 }): Promise<
   | {
       agent_output: string
@@ -419,7 +420,8 @@ export const invoke_agentic_cli = async (params: {
             JSON.stringify({
               agent: selected_agent_info?.label,
               flags: flags_string,
-              files: files_array
+              files: files_array,
+              instructions: params.raw_instructions
             }),
             'utf-8'
           )

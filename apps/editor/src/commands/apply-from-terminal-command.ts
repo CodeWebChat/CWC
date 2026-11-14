@@ -139,6 +139,7 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
           let cli_configuration_details:
             | { agent: string; flags?: string }
             | undefined
+          let raw_instructions: string | undefined
           try {
             const metadata_path = path.join(cwd_path, '.cwc', 'metadata.json')
             const metadata_content = await fs.promises.readFile(
@@ -146,10 +147,15 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
               'utf-8'
             )
             const metadata = JSON.parse(metadata_content)
-            if (metadata && metadata.agent) {
-              cli_configuration_details = {
-                agent: metadata.agent,
-                flags: metadata.flags
+            if (metadata) {
+              if (metadata.agent) {
+                cli_configuration_details = {
+                  agent: metadata.agent,
+                  flags: metadata.flags
+                }
+              }
+              if (metadata.instructions) {
+                raw_instructions = metadata.instructions
               }
             }
           } catch {
@@ -158,6 +164,7 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
 
           const accepted = await apply_response({
             response: diff_markdown,
+            raw_instructions,
             is_from_agentic_cli: true,
             cli_configuration_details
           })

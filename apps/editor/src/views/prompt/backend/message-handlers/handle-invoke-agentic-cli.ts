@@ -47,6 +47,7 @@ export const handle_invoke_agentic_cli = async (
     agent_state_key: last_used_key,
     last_selected_workspace_state_key:
       LAST_SELECTED_WORKSPACE_IN_AGENTIC_CLI_STATE_KEY,
+    raw_instructions: current_instructions,
     isolate_in_temp_dir: true,
     copy_selected_files: prompt_type === 'edit',
     generate_diff_for_temp_dir: prompt_type === 'edit',
