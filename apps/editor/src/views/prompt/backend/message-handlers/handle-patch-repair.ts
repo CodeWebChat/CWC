@@ -144,11 +144,6 @@ export const handle_patch_repair = async (params: {
     if (default_config || api_configurations.length === 1) {
       skip_action_quick_pick = true
     } else {
-      vscode.window.showInformationMessage(
-        t(
-          'views.prompt.handlers.handle-patch-repair.some-changes-unable-to-apply'
-        )
-      )
       return
     }
   }
