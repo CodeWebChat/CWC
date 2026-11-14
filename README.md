@@ -580,8 +580,8 @@ Respond with the audio transcription or the word INAUDIBLE, without explanations
 
 ### Actions
 
-​- `CWC: Apply from Clipboard` - Integrate edits from clipboard.
-​- `CWC: Apply from Terminal` - Integrate edits from active terminal session.
+- `CWC: Apply from Clipboard` - Integrate edits from clipboard.
+- `CWC: Apply from Terminal` - Integrate edits from active terminal session.
 
 ### Misc
 
