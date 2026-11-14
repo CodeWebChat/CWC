@@ -49,6 +49,13 @@ type Props = {
   cli_configuration_details?: CliConfigurationDetails
   web_configuration_details?: WebConfigurationDetails
   is_from_agentic_cli?: boolean
+  translations: {
+    failed_to_apply_changes_to_file: string
+    files_failed_to_apply_changes: string
+    files_applied_with_fallback: string
+    fix: string
+    fix_all: string
+  }
 }
 
 export const ResponsePreview: FC<Props> = (props) => {
@@ -295,8 +302,10 @@ export const ResponsePreview: FC<Props> = (props) => {
             icon="codicon-error"
             label={
               files_in_preview.length > 1
-                ? `${error_count} of ${files_in_preview.length} files failed to apply changes`
-                : 'Failed to apply changes to the file'
+                ? props.translations.files_failed_to_apply_changes
+                    .replace('{error_count}', String(error_count))
+                    .replace('{total_count}', String(files_in_preview.length))
+                : props.translations.failed_to_apply_changes_to_file
             }
             actions={
               !props.is_from_agentic_cli
@@ -304,7 +313,10 @@ export const ResponsePreview: FC<Props> = (props) => {
                     {
                       id: 'fix',
                       icon: 'codicon-sparkle',
-                      label: error_count > 1 ? 'Fix all' : 'Fix',
+                      label:
+                        error_count > 1
+                          ? props.translations.fix_all
+                          : props.translations.fix,
                       on_click: () => {
                         set_is_fixing_all(true)
                         const files_to_fix = files_in_preview
@@ -333,7 +345,9 @@ export const ResponsePreview: FC<Props> = (props) => {
             <StatusBar
               theme="warning"
               icon="codicon-warning"
-              label={`${aggressive_fallback_count} of ${files_in_preview.length} files applied with fallback method`}
+              label={props.translations.files_applied_with_fallback
+                .replace('{count}', String(aggressive_fallback_count))
+                .replace('{total_count}', String(files_in_preview.length))}
             />
           </div>
         )}

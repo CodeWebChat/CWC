@@ -1,0 +1,72 @@
+export const response_preview = {
+  'response-preview.failed-to-apply-changes-to-file': {
+    en: 'Failed to apply changes to the file',
+    pl: 'Nie udało się zastosować zmian w pliku',
+    zh: '无法将更改应用到文件',
+    es: 'No se pudieron aplicar los cambios al archivo',
+    de: 'Änderungen konnten nicht auf die Datei angewendet werden',
+    fr: 'Échec de l’application des modifications au fichier',
+    ja: 'ファイルに変更を適用できませんでした',
+    ko: '파일에 변경 사항을 적용하지 못했습니다',
+    pt: 'Falha ao aplicar alterações ao arquivo',
+    ru: 'Не удалось применить изменения к файлу',
+    it: 'Impossibile applicare le modifiche al file',
+    tr: 'Değişiklikler dosyaya uygulanamadı'
+  },
+  'response-preview.files-failed-to-apply-changes': {
+    en: '{error_count} of {total_count} files failed to apply changes',
+    pl: 'Nie udało się zastosować zmian w {error_count} z {total_count} plików',
+    zh: '{total_count} 个文件中有 {error_count} 个无法应用更改',
+    es: 'No se pudieron aplicar los cambios a {error_count} de {total_count} archivos',
+    de: 'Bei {error_count} von {total_count} Dateien konnten Änderungen nicht angewendet werden',
+    fr: 'Échec de l’application des modifications sur {error_count} fichiers sur {total_count}',
+    ja: '{total_count} 個中 {error_count} 個のファイルに変更を適用できませんでした',
+    ko: '{total_count}개 파일 중 {error_count}개에 변경 사항을 적용하지 못했습니다',
+    pt: 'Falha ao aplicar alterações em {error_count} de {total_count} arquivos',
+    ru: 'Не удалось применить изменения в {error_count} из {total_count} файлов',
+    it: 'Impossibile applicare le modifiche a {error_count} di {total_count} file',
+    tr: '{total_count} dosyadan {error_count} tanesine değişiklikler uygulanamadı'
+  },
+  'response-preview.files-applied-with-fallback': {
+    en: '{count} of {total_count} files applied with fallback method',
+    pl: 'Zastosowano metodą awaryjną w {count} z {total_count} plików',
+    zh: '{total_count} 个文件中有 {count} 个使用了备用方法应用',
+    es: '{count} de {total_count} archivos aplicados con método alternativo',
+    de: '{count} von {total_count} Dateien mit Fallback-Methode angewendet',
+    fr: '{count} fichiers sur {total_count} appliqués avec la méthode de secours',
+    ja: '{total_count} 個中 {count} 個のファイルがフォールバック方式で適用されました',
+    ko: '{total_count}개 파일 중 {count}개가 대체 방식으로 적용되었습니다',
+    pt: '{count} de {total_count} arquivos aplicados com método alternativo',
+    ru: '{count} из {total_count} файлов применено резервным методом',
+    it: '{count} di {total_count} file applicati con metodo alternativo',
+    tr: '{total_count} dosyadan {count} tanesi yedek yöntemle uygulandı'
+  },
+  'response-preview.fix': {
+    en: 'Fix',
+    pl: 'Napraw',
+    zh: '修复',
+    es: 'Corregir',
+    de: 'Beheben',
+    fr: 'Corriger',
+    ja: '修正',
+    ko: '수정',
+    pt: 'Corrigir',
+    ru: 'Исправить',
+    it: 'Correggi',
+    tr: 'Düzelt'
+  },
+  'response-preview.fix-all': {
+    en: 'Fix all',
+    pl: 'Napraw wszystkie',
+    zh: '全部修复',
+    es: 'Corregir todo',
+    de: 'Alle beheben',
+    fr: 'Tout corriger',
+    ja: 'すべて修正',
+    ko: '모두 수정',
+    pt: 'Corrigir tudo',
+    ru: 'Исправить все',
+    it: 'Correggi tutto',
+    tr: 'Tümünü düzelt'
+  }
+} as const

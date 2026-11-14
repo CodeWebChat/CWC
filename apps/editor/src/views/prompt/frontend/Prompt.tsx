@@ -671,6 +671,19 @@ export const Prompt = () => {
               <UiResponsePreview
                 items={items_in_preview}
                 raw_instructions={raw_instructions}
+                translations={{
+                  failed_to_apply_changes_to_file: t(
+                    'response-preview.failed-to-apply-changes-to-file'
+                  ),
+                  files_failed_to_apply_changes: t(
+                    'response-preview.files-failed-to-apply-changes'
+                  ),
+                  files_applied_with_fallback: t(
+                    'response-preview.files-applied-with-fallback'
+                  ),
+                  fix: t('response-preview.fix'),
+                  fix_all: t('response-preview.fix-all')
+                }}
                 api_configuration_details={api_configuration_details}
                 cli_configuration_details={cli_configuration_details}
                 web_configuration_details={web_configuration_details}
