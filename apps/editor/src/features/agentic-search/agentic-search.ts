@@ -34,6 +34,7 @@ export const agentic_search = async (params: {
   websocket_manager: WebSocketManager
   query: string
   current_instructions: string
+  completed_tasks?: string[]
   skip_prompt_if_not_empty?: boolean
   folder_path?: string
 }): Promise<
@@ -124,15 +125,21 @@ export const agentic_search = async (params: {
               }
             )
 
+            const instructions_to_process = [query]
+            if (params.completed_tasks) {
+              instructions_to_process.push(...params.completed_tasks)
+            }
+
             const { instructions: processed_queries, skill_definitions } =
               await replace_symbols({
-                instructions: [query],
+                instructions: instructions_to_process,
                 extension_context: params.extension_context,
                 workspace_provider: params.workspace_provider,
                 image_as_paths: true
               })
 
             const processed_query = processed_queries[0]
+            const processed_completed_tasks = processed_queries.slice(1)
 
             const final_query = skill_definitions
               ? `${processed_query}\n\n${skill_definitions}`
@@ -150,7 +157,7 @@ export const agentic_search = async (params: {
               params.workspace_provider
             )
 
-            return build_agent_prompt(final_query)
+            return build_agent_prompt(final_query, processed_completed_tasks)
           }
         }
       })

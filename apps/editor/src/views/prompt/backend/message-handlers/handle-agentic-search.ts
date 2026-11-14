@@ -38,6 +38,10 @@ export const handle_agentic_search = async (
       websocket_manager: prompt_view_provider.websocket_server_instance,
       query: initial_query,
       current_instructions,
+      completed_tasks:
+        prompt_view_provider.prompt_type === 'edit'
+          ? prompt_view_provider.completed_tasks
+          : undefined,
       skip_prompt_if_not_empty: current_instructions !== ''
     })
 
