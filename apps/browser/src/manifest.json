@@ -3,8 +3,8 @@
   "author": "Robert Piosik",
   "name": "Autofill for Code Web Chat",
   "short_name": "CWC",
-  "description": "Autofill CWC-constructed markdown prompts in free chatbots.",
-  "version": "2026.1112.40",
+  "description": "Autofill CWC-constructed markdown prompts in chatbots.",
+  "version": "2026.1114.41",
   "homepage_url": "https://github.com/CodeWebChat/CWC",
   "icons": {
     "16": "icons/icon-16.png",
