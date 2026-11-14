@@ -1,4 +1,6 @@
 import * as vscode from 'vscode'
+import * as os from 'os'
+import * as path from 'path'
 import { t } from '@/i18n'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { ShowApplyFromQuickPickMessage } from '@/views/prompt/types/messages'
@@ -10,6 +12,29 @@ export const handle_apply_from = async (
   prompt_view_provider: PromptViewProvider,
   _: ShowApplyFromQuickPickMessage
 ): Promise<void> => {
+  const active_terminal = vscode.window.activeTerminal
+  let is_cwc_cli = false
+
+  if (active_terminal) {
+    const creation_options = active_terminal.creationOptions as
+      | vscode.TerminalOptions
+      | undefined
+    const cwd = creation_options?.cwd
+
+    if (cwd) {
+      const cwd_path = typeof cwd === 'string' ? cwd : cwd.fsPath
+
+      if (cwd_path.startsWith(path.join(os.tmpdir(), 'cwc-cli-edit-'))) {
+        is_cwc_cli = true
+      }
+    }
+  }
+
+  if (!is_cwc_cli) {
+    await vscode.commands.executeCommand('codeWebChat.applyFromClipboard')
+    return
+  }
+
   const last_option =
     prompt_view_provider.extension_context.workspaceState.get<ApplyFromOption>(
       LAST_APPLY_FROM_STATE_KEY
