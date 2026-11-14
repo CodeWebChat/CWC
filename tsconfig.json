@@ -5,7 +5,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "types": ["jest", "chrome"],
+    "types": ["jest"],
     "rootDir": ".",
     "paths": {
       "@shared/*": ["./packages/shared/src/*"],

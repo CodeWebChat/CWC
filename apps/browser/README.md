@@ -5,13 +5,13 @@ This browser extension communicates with the editor via a locally run WebSockets
 Serves two purposes:
 
 1. Autofilling the constructed prompt text
-2. Placing _Apply Response_ button under responses
+2. Placing _Apply_ button under responses
 
 > [!TIP]
 > Elevate your workflow with smart workspaces (called [projects](https://help.openai.com/en/articles/10169521-projects-in-chatgpt), [gems](https://gemini.google/pl/overview/gems), or [spaces](https://docs.github.com/en/copilot/concepts/context/spaces)).
 
 > [!NOTE]
-> The _Apply Response_ button is an alias for the copy button typically placed at the end of a chat response. Once clicked, it copies the response and notifies the editor via a WebSocket message to read the clipboard.
+> The _Apply_ button is an alias for the copy button typically placed at the end of a chat response. Once clicked, it copies the response and notifies the editor via a WebSocket message to read the clipboard.
 
 > [!IMPORTANT]
 > Prompt text is never submitted or response accepted automatically.
