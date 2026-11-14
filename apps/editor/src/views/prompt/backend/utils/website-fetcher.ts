@@ -184,68 +184,107 @@ export const fetch_website = async (
       httpsAgent: https_agent
     })
 
-    if (response.status === 200 && typeof response.data === 'string') {
-      const html = response.data
-      const { document: doc } = parseHTML(html)
-      try {
-        Object.defineProperty(doc, 'documentURI', { value: url })
-      } catch {
-        // Ignore
+    if (response.status === 200) {
+      const content_type = (
+        (response.headers as any)['content-type'] || ''
+      ).toLowerCase()
+
+      if (
+        content_type.includes('application/json') ||
+        typeof response.data === 'object'
+      ) {
+        const content =
+          typeof response.data === 'string'
+            ? response.data
+            : JSON.stringify(response.data, null, 2)
+        return { content, title: '' }
       }
 
-      doc.querySelectorAll('pre').forEach((pre) => {
-        const code = pre.querySelector('code')
-        const language = (code?.className.match(/language-(\S+)/) ||
-          pre.className.match(/language-(\S+)/) || [null, ''])[1]
+      if (typeof response.data === 'string') {
+        const is_html =
+          content_type.includes('text/html') ||
+          response.data.trim().toLowerCase().startsWith('<!doctype html') ||
+          response.data.trim().toLowerCase().startsWith('<html')
 
-        let text = ''
-        const lines = pre.querySelectorAll('.line')
-        if (lines.length > 0) {
-          text = Array.from(lines)
-            .map((l) => l.textContent)
-            .join('\n')
-        } else {
-          text = pre.textContent || ''
+        if (!is_html) {
+          const is_text =
+            content_type.includes('text/') ||
+            content_type.includes('json') ||
+            content_type.includes('xml') ||
+            content_type.includes('javascript') ||
+            content_type.includes('yaml') ||
+            content_type.includes('csv') ||
+            content_type === ''
+
+          if (is_text) {
+            return { content: response.data, title: '' }
+          }
+          return null
         }
 
-        pre.innerHTML = ''
-        const new_code = doc.createElement('code')
-        if (language) {
-          new_code.className = `language-${language}`
+        const html = response.data
+        const { document: doc } = parseHTML(html)
+        try {
+          Object.defineProperty(doc, 'documentURI', { value: url })
+        } catch {
+          // Ignore
         }
-        new_code.textContent = text
-        pre.appendChild(new_code)
 
-        let current: Element = pre
-        while (
-          current.parentElement &&
-          current.parentElement.tagName === 'DIV' &&
-          current.parentElement.textContent?.trim() === pre.textContent?.trim()
-        ) {
-          current = current.parentElement
-        }
-        if (current !== pre && current.parentElement) {
-          current.parentElement.insertBefore(pre, current)
-          current.remove()
-        }
-      })
+        doc.querySelectorAll('pre').forEach((pre) => {
+          const code = pre.querySelector('code')
+          const language = (code?.className.match(/language-(\S+)/) ||
+            pre.className.match(/language-(\S+)/) || [null, ''])[1]
 
-      if (isProbablyReaderable(doc as any)) {
-        const reader = new Readability(doc as any, { keepClasses: true })
-        const article = reader.parse()
+          let text = ''
+          const lines = pre.querySelectorAll('.line')
+          if (lines.length > 0) {
+            text = Array.from(lines)
+              .map((l) => l.textContent)
+              .join('\n')
+          } else {
+            text = pre.textContent || ''
+          }
 
-        if (article && article.content) {
-          const turndown_service = create_turndown_service()
-          const { document: article_doc } = parseHTML(
-            `<!DOCTYPE html><html><body>${article.content}</body></html>`
-          )
-          let content = turndown_service.turndown(
-            (article_doc.body || article_doc.documentElement) as any
-          )
-          content = remove_markdown_images(content)
+          pre.innerHTML = ''
+          const new_code = doc.createElement('code')
+          if (language) {
+            new_code.className = `language-${language}`
+          }
+          new_code.textContent = text
+          pre.appendChild(new_code)
 
-          if (content && content.trim().length > 0) {
-            return { content, title: article.title || doc.title || '' }
+          let current: Element = pre
+          while (
+            current.parentElement &&
+            current.parentElement.tagName === 'DIV' &&
+            current.parentElement.textContent?.trim() ===
+              pre.textContent?.trim()
+          ) {
+            current = current.parentElement
+          }
+          if (current !== pre && current.parentElement) {
+            current.parentElement.insertBefore(pre, current)
+            current.remove()
+          }
+        })
+
+        if (isProbablyReaderable(doc as any)) {
+          const reader = new Readability(doc as any, { keepClasses: true })
+          const article = reader.parse()
+
+          if (article && article.content) {
+            const turndown_service = create_turndown_service()
+            const { document: article_doc } = parseHTML(
+              `<!DOCTYPE html><html><body>${article.content}</body></html>`
+            )
+            let content = turndown_service.turndown(
+              (article_doc.body || article_doc.documentElement) as any
+            )
+            content = remove_markdown_images(content)
+
+            if (content && content.trim().length > 0) {
+              return { content, title: article.title || doc.title || '' }
+            }
           }
         }
       }
