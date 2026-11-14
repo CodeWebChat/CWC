@@ -641,6 +641,43 @@ export const invoke_agentic_cli = async (params: {
             }
           })
         })
+
+        let watcher: vscode.FileSystemWatcher | undefined
+        let notification_shown = false
+
+        if (temp_dir_path && prompt_type === 'edit') {
+          watcher = vscode.workspace.createFileSystemWatcher(
+            new vscode.RelativePattern(vscode.Uri.file(temp_dir_path), '**/*')
+          )
+
+          const handle_change = (uri: vscode.Uri) => {
+            if (uri.fsPath.includes('.cwc')) return
+            if (notification_shown) return
+            notification_shown = true
+            vscode.window
+              .showInformationMessage(
+                t(
+                  'command.apply-from-terminal-command.info.agent-started-edits'
+                ),
+                t('command.apply-from-terminal-command.action.apply')
+              )
+              .then((selection) => {
+                if (
+                  selection ===
+                  t('command.apply-from-terminal-command.action.apply')
+                ) {
+                  vscode.commands.executeCommand(
+                    'codeWebChat.applyFromTerminal'
+                  )
+                }
+              })
+          }
+
+          watcher.onDidChange(handle_change)
+          watcher.onDidCreate(handle_change)
+          watcher.onDidDelete(handle_change)
+        }
+
         terminal.show()
         terminal.sendText(command)
 
@@ -654,6 +691,10 @@ export const invoke_agentic_cli = async (params: {
         }
 
         await terminal_closed
+
+        if (watcher) {
+          watcher.dispose()
+        }
 
         if (temp_dir_path) {
           try {

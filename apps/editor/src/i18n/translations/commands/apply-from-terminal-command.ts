@@ -71,5 +71,42 @@ export const translations = {
     cs: 'V terminálovém sandboxu nebyly nalezeny žádné změny.',
     hu: 'Nem találhatók változások a terminál homokozójában.',
     bg: 'Не са намерени промени в пясъчника на терминала.'
+  },
+  'command.apply-from-terminal-command.info.agent-started-edits': {
+    en: 'Agent started making edits in sandbox. Apply once finished.',
+    pl: 'Agent rozpoczął wprowadzanie zmian w piaskownicy. Zastosuj po zakończeniu.',
+    'zh-cn': '代理已开始在沙盒中进行编辑。完成后应用。',
+    ja: 'エージェントがサンドボックスで編集を開始しました。完了したら適用してください。',
+    'zh-tw': '代理已開始在沙盒中進行編輯。完成後套用。',
+    de: 'Der Agent hat mit der Bearbeitung in der Sandbox begonnen. Nach Abschluss anwenden.',
+    es: 'El agente comenzó a realizar ediciones en el sandbox. Aplicar una vez finalizado.',
+    fr: "L'agent a commencé à effectuer des modifications dans la sandbox. Appliquez une fois terminé.",
+    'pt-br':
+      'O agente começou a fazer edições no sandbox. Aplique quando terminar.',
+    ru: 'Агент начал вносить правки в песочнице. Примените по завершении.',
+    ko: '에이전트가 샌드박스에서 편집을 시작했습니다. 완료되면 적용하세요.',
+    it: "L'agente ha iniziato ad apportare modifiche nella sandbox. Applica una volta terminato.",
+    tr: "Aracı sandbox'ta düzenlemeler yapmaya başladı. Tamamlandığında uygulayın.",
+    cs: 'Agent začal provádět úpravy v sandboxu. Po dokončení použijte.',
+    hu: 'Az ügynök megkezdte a szerkesztést a homokozóban. Ha végzett, alkalmazza.',
+    bg: 'Агентът започна да прави редакции в пясъчника. Приложете след завършване.'
+  },
+  'command.apply-from-terminal-command.action.apply': {
+    en: 'Apply',
+    pl: 'Zastosuj',
+    'zh-cn': '应用',
+    ja: '適用',
+    'zh-tw': '套用',
+    de: 'Anwenden',
+    es: 'Aplicar',
+    fr: 'Appliquer',
+    'pt-br': 'Aplicar',
+    ru: 'Применить',
+    ko: '적용',
+    it: 'Applica',
+    tr: 'Uygula',
+    cs: 'Použít',
+    hu: 'Alkalmaz',
+    bg: 'Прилагане'
   }
 } as const
