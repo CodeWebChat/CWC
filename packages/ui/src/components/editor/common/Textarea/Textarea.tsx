@@ -65,9 +65,9 @@ export const Textarea = React.forwardRef<HTMLDivElement, Props>(
     React.useEffect(() => {
       if (
         internal_ref.current &&
-        internal_ref.current.textContent !== props.value
+        internal_ref.current.innerText !== props.value
       ) {
-        internal_ref.current.textContent = props.value || ''
+        internal_ref.current.innerText = props.value || ''
       }
     }, [props.value])
 
@@ -94,7 +94,7 @@ export const Textarea = React.forwardRef<HTMLDivElement, Props>(
     }
 
     const handle_input = (e: React.FormEvent<HTMLDivElement>) => {
-      update_value(e.currentTarget.textContent || '')
+      update_value(e.currentTarget.innerText || '')
     }
 
     const handle_key_down = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -158,16 +158,18 @@ export const Textarea = React.forwardRef<HTMLDivElement, Props>(
         e.currentTarget.blur()
       } else if (e.key === 'Enter') {
         e.preventDefault()
-        const selection = window.getSelection()
-        if (selection && selection.rangeCount > 0) {
-          const range = selection.getRangeAt(0)
-          range.deleteContents()
-          const text_node = document.createTextNode('\n')
-          range.insertNode(text_node)
-          range.collapse(false)
-          selection.removeAllRanges()
-          selection.addRange(range)
-          update_value(e.currentTarget.textContent || '')
+        if (!document.execCommand('insertText', false, '\n')) {
+          const selection = window.getSelection()
+          if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0)
+            range.deleteContents()
+            const text_node = document.createTextNode('\n')
+            range.insertNode(text_node)
+            range.collapse(false)
+            selection.removeAllRanges()
+            selection.addRange(range)
+            update_value(e.currentTarget.innerText || '')
+          }
         }
       }
       props.on_key_down?.(e)
@@ -176,16 +178,18 @@ export const Textarea = React.forwardRef<HTMLDivElement, Props>(
     const handle_paste = (e: React.ClipboardEvent<HTMLDivElement>) => {
       e.preventDefault()
       const text = e.clipboardData.getData('text/plain')
-      const selection = window.getSelection()
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0)
-        range.deleteContents()
-        const text_node = document.createTextNode(text)
-        range.insertNode(text_node)
-        range.collapse(false)
-        selection.removeAllRanges()
-        selection.addRange(range)
-        update_value(e.currentTarget.textContent || '')
+      if (!document.execCommand('insertText', false, text)) {
+        const selection = window.getSelection()
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0)
+          range.deleteContents()
+          const text_node = document.createTextNode(text)
+          range.insertNode(text_node)
+          range.collapse(false)
+          selection.removeAllRanges()
+          selection.addRange(range)
+          update_value(e.currentTarget.innerText || '')
+        }
       }
     }
 

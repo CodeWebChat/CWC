@@ -12,7 +12,9 @@ import { Spacer as UiSpacer } from '@ui/components/editor/prompt-view/Spacer'
 import { Translation, use_translation } from '../i18n/use-translation'
 import { Tasks as UiTasks } from '@ui/components/editor/prompt-view/Tasks'
 import { use_tasks } from './hooks/use-tasks'
+import { use_notes } from './hooks/use-notes'
 import { use_has_scrolled_past_target_button } from './hooks/use-has-scrolled-past-mode-button'
+import { Textarea as UiTextarea } from '@ui/components/editor/common/Textarea'
 import { use_keyboard_shortcuts } from './hooks/use-keyboard-shortcuts'
 import {
   ApiPromptType,
@@ -45,6 +47,7 @@ export const Home: React.FC<Props> = (props) => {
   const { t } = use_translation()
   const is_landscape = use_is_landscape()
   const [active_workspace_root, set_active_workspace_root] = useState<string>()
+  const [active_tab, set_active_tab] = useState<'tasks' | 'notes'>('tasks')
   const { has_scrolled_past_target_button, target_ref, handle_scroll } =
     use_has_scrolled_past_target_button(props.is_active)
 
@@ -65,7 +68,11 @@ export const Home: React.FC<Props> = (props) => {
     handle_delete
   } = use_tasks(props.vscode)
 
-  const roots = Object.keys(tasks)
+  const { notes, handle_note_change } = use_notes(props.vscode)
+
+  const roots = Array.from(
+    new Set([...Object.keys(tasks), ...Object.keys(notes)])
+  )
   const active_root =
     active_workspace_root && roots.includes(active_workspace_root)
       ? active_workspace_root
@@ -242,12 +249,29 @@ export const Home: React.FC<Props> = (props) => {
     </div>
   )
 
+  const notes_for_root = notes[active_root] || ''
+
+  const notes_section = (
+    <div className={styles.inner__notes}>
+      <UiTextarea
+        value={notes_for_root}
+        on_change={(v) => handle_note_change(active_root, v)}
+        placeholder={t('home.notes.placeholder')}
+        min_rows={10}
+        blur_on_enter={false}
+      />
+    </div>
+  )
+
   const tasks_section = (
     <>
       <UiTabs
-        tabs={[{ id: 'tasks', label: t('home.tasks') }]}
-        active_tab="tasks"
-        on_tab_change={() => {}}
+        tabs={[
+          { id: 'tasks', label: t('home.tasks') },
+          { id: 'notes', label: t('home.notes') }
+        ]}
+        active_tab={active_tab}
+        on_tab_change={(id) => set_active_tab(id as any)}
         actions={
           <>
             {roots.length > 1 && (
@@ -286,33 +310,37 @@ export const Home: React.FC<Props> = (props) => {
 
       <UiSpacer height={4} />
 
-      <div className={styles.inner__tasks}>
-        <UiTasks
-          tasks={tasks[active_root] || []}
-          on_reorder={(new_tasks) => handle_reorder(active_root, new_tasks)}
-          on_change={(updated_task) => {
-            handle_change(active_root, tasks[active_root] || [], updated_task)
-          }}
-          on_add={(timestamp) => {
-            handle_add(active_root, tasks[active_root] || [], timestamp)
-          }}
-          on_add_subtask={(parent_task, timestamp) => {
-            handle_add_subtask(
-              active_root,
-              tasks[active_root] || [],
-              parent_task,
-              timestamp
-            )
-          }}
-          on_delete={(timestamp) => {
-            handle_delete(active_root, timestamp)
-          }}
-          translations={{
-            placeholder: t('home.tasks.placeholder'),
-            add_new: t('home.tasks.add-new')
-          }}
-        />
-      </div>
+      {active_tab === 'tasks' && (
+        <div className={styles.inner__tasks}>
+          <UiTasks
+            tasks={tasks[active_root] || []}
+            on_reorder={(new_tasks) => handle_reorder(active_root, new_tasks)}
+            on_change={(updated_task) => {
+              handle_change(active_root, tasks[active_root] || [], updated_task)
+            }}
+            on_add={(timestamp) => {
+              handle_add(active_root, tasks[active_root] || [], timestamp)
+            }}
+            on_add_subtask={(parent_task, timestamp) => {
+              handle_add_subtask(
+                active_root,
+                tasks[active_root] || [],
+                parent_task,
+                timestamp
+              )
+            }}
+            on_delete={(timestamp) => {
+              handle_delete(active_root, timestamp)
+            }}
+            translations={{
+              placeholder: t('home.tasks.placeholder'),
+              add_new: t('home.tasks.add-new')
+            }}
+          />
+        </div>
+      )}
+
+      {active_tab === 'notes' && notes_section}
     </>
   )
 

@@ -56,3 +56,4 @@ export const RangesStorage = new GlobalWorkspaceStorage<Record<string, string>>(
   'ranges.json'
 )
 export const TasksStorage = new GlobalWorkspaceStorage<Task[]>('tasks.json')
+export const NotesStorage = new GlobalWorkspaceStorage<string>('notes.json')

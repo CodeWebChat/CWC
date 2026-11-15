@@ -49,7 +49,7 @@ import {
   check_for_updates
 } from './utils'
 import * as path from 'path'
-import { TasksStorage } from '@/utils/global-workspace-storage'
+import { TasksStorage, NotesStorage } from '@/utils/global-workspace-storage'
 
 export class PromptViewProvider implements vscode.WebviewViewProvider {
   public readonly extension_uri: vscode.Uri
@@ -317,12 +317,24 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
     tasks_watcher.onDidCreate(() => handlers.handle_get_tasks(this))
     tasks_watcher.onDidChange(() => handlers.handle_get_tasks(this))
     tasks_watcher.onDidDelete(() => handlers.handle_get_tasks(this))
-
     this.extension_context.subscriptions.push(tasks_watcher)
+
+    const notes_file_path = NotesStorage.get_file_path(this.extension_context)
+    const notes_watcher = vscode.workspace.createFileSystemWatcher(
+      new vscode.RelativePattern(
+        vscode.Uri.file(path.dirname(notes_file_path)),
+        path.basename(notes_file_path)
+      )
+    )
+    notes_watcher.onDidCreate(() => handlers.handle_get_notes(this))
+    notes_watcher.onDidChange(() => handlers.handle_get_notes(this))
+    notes_watcher.onDidDelete(() => handlers.handle_get_notes(this))
+    this.extension_context.subscriptions.push(notes_watcher)
 
     this.extension_context.subscriptions.push(
       vscode.workspace.onDidChangeWorkspaceFolders(() => {
         handlers.handle_get_tasks(this)
+        handlers.handle_get_notes(this)
         handlers.handle_get_workspace_state(this)
         this.send_token_count()
       })
@@ -835,6 +847,10 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
             await handlers.handle_save_tasks(this, message)
           } else if (message.command === 'DELETE_TASK') {
             await handlers.handle_delete_task(this, message)
+          } else if (message.command === 'GET_NOTES') {
+            await handlers.handle_get_notes(this)
+          } else if (message.command === 'SAVE_NOTES') {
+            await handlers.handle_save_notes(this, message)
           } else if (message.command === 'PREVIEW_GENERATED_CODE') {
             await handlers.handle_preview_generated_code(message)
           } else if (message.command === 'CREATE_API_CONFIGURATION') {

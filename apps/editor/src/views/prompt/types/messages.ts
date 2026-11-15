@@ -496,6 +496,15 @@ export interface DeleteTaskMessage extends BaseMessage {
   timestamp: number
 }
 
+export interface GetNotesMessage extends BaseMessage {
+  command: 'GET_NOTES'
+}
+
+export interface SaveNotesMessage extends BaseMessage {
+  command: 'SAVE_NOTES'
+  notes: Record<string, string>
+}
+
 export interface UpdateFileProgressMessage extends BaseMessage {
   command: 'UPDATE_FILE_PROGRESS'
   file_path: string
@@ -764,6 +773,8 @@ export type FrontendMessage =
   | GetTasksMessage
   | SaveTasksMessage
   | DeleteTaskMessage
+  | GetNotesMessage
+  | SaveNotesMessage
   | PreviewGeneratedCodeMessage
   | CreateApiConfigurationMessage
   | DeleteApiConfigurationMessage
@@ -1081,6 +1092,11 @@ export interface TasksWorkspacePickedMessage extends BaseMessage {
   root: string
 }
 
+export interface NotesMessage extends BaseMessage {
+  command: 'NOTES'
+  notes: Record<string, string>
+}
+
 export interface IsModernUiMessage extends BaseMessage {
   command: 'IS_MODERN_UI'
   is_modern_ui: boolean
@@ -1137,6 +1153,7 @@ export type BackendMessage =
   | StartWebConfigurationCreationMessage
   | StartApiConfigurationCreationMessage
   | TasksWorkspacePickedMessage
+  | NotesMessage
   | IsModernUiMessage
   | AgentConfigurationsMessage
   | AgentConfigurationUpdatedMessage
