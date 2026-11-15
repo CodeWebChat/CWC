@@ -2,7 +2,7 @@
   "name": "gemini-coder",
   "displayName": "Code Web Chat",
   "description": "Markdown prompts for chatbots, APIs, and CLIs with seamless integration",
-  "version": "2026.1115.463",
+  "version": "2026.1115.464",
   "scripts": {
     "build": "node scripts/build.mts && node scripts/package.mts",
     "compile": "node scripts/build.mts",
