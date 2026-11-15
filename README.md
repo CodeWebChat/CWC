@@ -51,14 +51,14 @@ Autofill chatbots in your web browser, send API requests, or invoke agentic CLIs
 <details>
 <summary><strong>Attaching files</strong></summary>
 
-Selected files are placed alongside task instructions in a single markdown prompt.
+Selected files are sent alongside task instructions so the model has everything it needs from the start.
 
 </details>
 
 <details>
 <summary><strong>Effortless context selection</strong></summary>
 
-[Agentic Search](#-agentic-search) accurately selects relevant files hands-free.
+[Agentic Search](#-agentic-search) discovers the codebase and selects relevant files, hands-free.
 
 </details>
 
