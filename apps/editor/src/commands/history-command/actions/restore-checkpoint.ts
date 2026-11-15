@@ -32,6 +32,7 @@ export const restore_checkpoint = async (params: {
   prompt_view_provider: PromptViewProvider
   options?: {
     skip_confirmation?: boolean
+    hide_notification?: boolean
   }
 }) => {
   const operation_in_progress =
@@ -172,16 +173,10 @@ export const restore_checkpoint = async (params: {
 
         if (loaded_history.length > 0) {
           params.prompt_view_provider.response_history = loaded_history
-          params.prompt_view_provider.send_message({
-            command: 'RESPONSE_HISTORY',
-            history: loaded_history
-          })
-        } else {
+          params.prompt_view_provider.update_response_history()
+        } else if (params.checkpoint.trigger !== 'before-response-previewed') {
           params.prompt_view_provider.response_history = []
-          params.prompt_view_provider.send_message({
-            command: 'RESPONSE_HISTORY',
-            history: []
-          })
+          params.prompt_view_provider.update_response_history()
         }
 
         let loaded_completed_tasks: string[] | undefined
@@ -329,14 +324,18 @@ export const restore_checkpoint = async (params: {
     : t('command.history-command.progress.restoring')
   let temp_check: Checkpoint | undefined
   try {
-    temp_check = await vscode.window.withProgress(
-      {
-        location: vscode.ProgressLocation.Notification,
-        title,
-        cancellable: false
-      },
-      main_task
-    )
+    if (params.options?.hide_notification) {
+      temp_check = await main_task({ report: () => {} })
+    } else {
+      temp_check = await vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title,
+          cancellable: false
+        },
+        main_task
+      )
+    }
   } catch {
     return
   }
@@ -347,10 +346,10 @@ export const restore_checkpoint = async (params: {
 
   if (temp_check) {
     const action_label = t('command.history-command.action.revert')
-    const action = await vscode.window.showInformationMessage(
-      message,
-      action_label
-    )
+    let action: string | undefined
+    if (!params.options?.hide_notification) {
+      action = await vscode.window.showInformationMessage(message, action_label)
+    }
     if (action === action_label) {
       await restore_checkpoint({
         checkpoint: temp_check,
@@ -370,6 +369,8 @@ export const restore_checkpoint = async (params: {
       })
     }
   } else {
-    vscode.window.showInformationMessage(message)
+    if (!params.options?.hide_notification) {
+      vscode.window.showInformationMessage(message)
+    }
   }
 }

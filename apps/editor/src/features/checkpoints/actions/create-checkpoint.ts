@@ -8,7 +8,6 @@ import type { Checkpoint, CheckpointTab, CheckpointTrigger } from '../types'
 import { get_checkpoints, remove_old_checkpoints } from './get-checkpoints'
 import { get_checkpoint_path, get_incremented_description } from '../utils'
 import { create_workspace_snapshot } from '@/utils/workspace-snapshot'
-import { is_git_repository } from '@/utils/git-utils'
 import { Logger } from '@shared/utils/logger'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
@@ -67,18 +66,6 @@ export const create_checkpoint = async (params: {
       )
     }
     const timestamp = Date.now()
-    const workspace_folders = vscode.workspace.workspaceFolders!
-
-    const folder_git_statuses = await Promise.all(
-      workspace_folders.map((folder) => is_git_repository(folder))
-    )
-
-    if (
-      trigger !== 'manual' &&
-      folder_git_statuses.some((has_git) => !has_git)
-    ) {
-      return undefined
-    }
 
     let new_checkpoint: Checkpoint | undefined
 

@@ -72,10 +72,7 @@ const update_response_history = (params: {
     }
 
     recalculate_history_item_totals(item_to_update)
-    params.prompt_view_provider.send_message({
-      command: 'RESPONSE_HISTORY',
-      history
-    })
+    params.prompt_view_provider.update_response_history()
   }
 }
 
@@ -120,10 +117,7 @@ export const setup_workspace_listeners = (params: {
             f.file_path !== file_path || f.workspace_name !== workspace_name
         )
         recalculate_history_item_totals(item_to_update)
-        params.prompt_view_provider.send_message({
-          command: 'RESPONSE_HISTORY',
-          history
-        })
+        params.prompt_view_provider.update_response_history()
       }
     }
   }
@@ -959,10 +953,7 @@ export const setup_workspace_listeners = (params: {
           if (file_in_history) {
             file_in_history.is_checked = is_checked
             recalculate_history_item_totals(item_to_update)
-            params.prompt_view_provider.send_message({
-              command: 'RESPONSE_HISTORY',
-              history
-            })
+            params.prompt_view_provider.update_response_history()
           }
         }
       }
@@ -982,10 +973,7 @@ export const setup_workspace_listeners = (params: {
         if (file_in_history) {
           file_in_history.is_checked = is_checked
           recalculate_history_item_totals(item_to_update)
-          params.prompt_view_provider.send_message({
-            command: 'RESPONSE_HISTORY',
-            history
-          })
+          params.prompt_view_provider.update_response_history()
         }
       }
     }

@@ -74,10 +74,7 @@ export const preview_handler = async (params: {
         )
 
         params.prompt_view_provider.response_history = new_history
-        params.prompt_view_provider.send_message({
-          command: 'RESPONSE_HISTORY',
-          history: new_history
-        })
+        params.prompt_view_provider.update_response_history()
       }
       if (params.original_editor_state) {
         try {
@@ -159,10 +156,7 @@ export const preview_handler = async (params: {
     if (accepted_states.length > 0) {
       if (preview_result.created_at) {
         params.prompt_view_provider.response_history = []
-        params.prompt_view_provider.send_message({
-          command: 'RESPONSE_HISTORY',
-          history: []
-        })
+        params.prompt_view_provider.update_response_history()
       }
 
       const { workspace_map, default_workspace } =

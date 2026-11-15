@@ -27,6 +27,8 @@ export const LAST_UPDATE_CHECK_TIMESTAMP_STATE_KEY =
 export const CACHED_UPDATE_INFO_STATE_KEY = 'cached-update-info'
 
 export const CHATS_VIEW_CHAT_HISTORY_STATE_KEY = 'chats-view-chat-history'
+export const CHATS_VIEW_RESPONSE_HISTORY_STATE_KEY =
+  'chats-view-response-history'
 
 export const DUPLICATE_WORKSPACE_CONTEXT_STATE_KEY =
   'duplicate-workspace-context'

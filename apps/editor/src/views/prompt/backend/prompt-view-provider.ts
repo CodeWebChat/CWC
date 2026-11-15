@@ -87,6 +87,17 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
   public prompt_view_api_calls_manager!: PromptViewApiCallsManager
   public response_history: ResponseHistoryItem[] = []
   public message_listeners: ((message: BackendMessage) => void)[] = []
+
+  public update_response_history() {
+    this.extension_context.workspaceState.update(
+      state_keys.CHATS_VIEW_RESPONSE_HISTORY_STATE_KEY,
+      this.response_history
+    )
+    this.send_message({
+      command: 'RESPONSE_HISTORY',
+      history: this.response_history
+    })
+  }
   public symbols_cache = new SymbolCacheManager()
   public agentic_search_state: AgenticSearchState
   public completed_tasks: string[] = []
@@ -248,6 +259,10 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
       state_keys.COMPLETED_TASKS_STATE_KEY,
       []
     )
+
+    this.response_history = this.extension_context.workspaceState.get<
+      ResponseHistoryItem[]
+    >(state_keys.CHATS_VIEW_RESPONSE_HISTORY_STATE_KEY, [])
 
     this.edit_format =
       this.extension_context.workspaceState.get<EditFormat>(
@@ -792,6 +807,7 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
             this.response_history = this.response_history.filter(
               (item) => item.created_at !== message.created_at
             )
+            this.update_response_history()
           } else if (message.command === 'GET_WORKSPACE_STATE') {
             handlers.handle_get_workspace_state(this)
           } else if (message.command === 'PICK_MODEL') {

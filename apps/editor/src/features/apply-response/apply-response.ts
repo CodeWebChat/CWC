@@ -2,8 +2,10 @@ import * as vscode from 'vscode'
 import {
   accept_checkpoint,
   create_checkpoint,
-  delete_checkpoint
+  delete_checkpoint,
+  get_checkpoints
 } from '@/features/checkpoints/actions'
+import { restore_checkpoint } from '@/commands/history-command/actions/restore-checkpoint'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { WorkspaceProvider } from '@/context/providers/workspace/workspace-provider'
 import { get_response_preview_promise_resolve } from './utils/preview'
@@ -30,6 +32,9 @@ import {
   restore_tab_groups,
   SavedTabGroups
 } from './utils/tab-group-manager'
+import { CHECKPOINT_OPERATION_IN_PROGRESS_STATE_KEY } from '@/constants/state-keys'
+import { update_undo_button_state } from './utils/state-manager'
+import { Logger } from '@shared/utils/logger'
 
 let in_progress = false
 let initialization_mutex = Promise.resolve()
@@ -54,6 +59,82 @@ export const setup_apply_response = (params: {
       preview_document_provider
     )
   )
+
+  initialization_mutex = initialization_mutex.then(async () => {
+    try {
+      await params.extension_context.workspaceState.update(
+        CHECKPOINT_OPERATION_IN_PROGRESS_STATE_KEY,
+        undefined
+      )
+
+      const checkpoints = await get_checkpoints(params.extension_context)
+      const preview_checkpoints = checkpoints.filter(
+        (c) => c.trigger === 'before-response-previewed'
+      )
+
+      for (const tab_group of vscode.window.tabGroups.all) {
+        for (const tab of tab_group.tabs) {
+          if (
+            (tab.input instanceof vscode.TabInputTextDiff &&
+              (tab.input.original.scheme === 'cwc-preview' ||
+                tab.input.modified.scheme === 'cwc-preview')) ||
+            (tab.input instanceof vscode.TabInputText &&
+              tab.input.uri.scheme === 'cwc-preview')
+          ) {
+            try {
+              await vscode.window.tabGroups.close(tab)
+            } catch {
+              // Ignore
+            }
+          }
+        }
+      }
+
+      preview_checkpoints.reverse()
+      for (const cp of preview_checkpoints) {
+        try {
+          await restore_checkpoint({
+            checkpoint: cp,
+            workspace_provider: params.workspace_provider,
+            extension_context: params.extension_context,
+            prompt_view_provider: params.prompt_view_provider,
+            options: { skip_confirmation: true, hide_notification: true }
+          })
+        } catch (err) {
+          console.error('Failed to restore interrupted preview checkpoint', err)
+        } finally {
+          await delete_checkpoint({
+            extension_context: params.extension_context,
+            prompt_view_provider: params.prompt_view_provider,
+            checkpoint_to_delete: cp
+          })
+        }
+      }
+
+      update_undo_button_state({
+        extension_context: params.extension_context,
+        prompt_view_provider: params.prompt_view_provider,
+        states: null
+      })
+
+      let history_changed = false
+      for (const item of params.prompt_view_provider.response_history) {
+        if (item.is_not_looked_at) {
+          item.is_not_looked_at = false
+          history_changed = true
+        }
+      }
+      if (history_changed) {
+        params.prompt_view_provider.update_response_history()
+      }
+    } catch (err) {
+      Logger.error({
+        function_name: 'setup_apply_response',
+        message: 'Error during initialization',
+        data: err
+      })
+    }
+  })
 
   apply_response_instance = async (args: ApplyResponseArgs) => {
     const previous_mutex = initialization_mutex
@@ -229,8 +310,6 @@ export const setup_apply_response = (params: {
       }
 
       if (resolve_fn && !is_intelligent_file_search_results) {
-        const history = params.prompt_view_provider.response_history
-
         let created_at_for_switch: number
 
         if (!args?.created_at) {
@@ -246,11 +325,8 @@ export const setup_apply_response = (params: {
           }
 
           created_at_for_switch = new_item.created_at
-          history.push(new_item)
-          params.prompt_view_provider.send_message({
-            command: 'RESPONSE_HISTORY',
-            history
-          })
+          params.prompt_view_provider.response_history.push(new_item)
+          params.prompt_view_provider.update_response_history()
         } else {
           created_at_for_switch = args.created_at
         }
@@ -304,14 +380,12 @@ export const setup_apply_response = (params: {
 
     if (args?.created_at) {
       const target_created_at = args.created_at
-      const history = params.prompt_view_provider.response_history
-      const existing = history.find((i) => i.created_at === target_created_at)
+      const existing = params.prompt_view_provider.response_history.find(
+        (i) => i.created_at === target_created_at
+      )
       if (existing && existing.is_not_looked_at !== false) {
         existing.is_not_looked_at = false
-        params.prompt_view_provider.send_message({
-          command: 'RESPONSE_HISTORY',
-          history
-        })
+        params.prompt_view_provider.update_response_history()
       }
     }
 
@@ -401,10 +475,7 @@ export const setup_apply_response = (params: {
             history.push(new_item)
           }
 
-          params.prompt_view_provider.send_message({
-            command: 'RESPONSE_HISTORY',
-            history
-          })
+          params.prompt_view_provider.update_response_history()
         }
 
         const history_for_checkpoint = [
