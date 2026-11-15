@@ -36,12 +36,24 @@ export const grok: Chatbot = {
       const model_label = CHATBOTS['Grok'].models[model].label
       const target_label_lower = model_label.toLowerCase()
 
+      const current_text =
+        model_selector_trigger.textContent?.toLowerCase() || ''
+      const current_aria =
+        model_selector_trigger.getAttribute('aria-label')?.toLowerCase() || ''
+
+      if (
+        current_text.includes(target_label_lower) ||
+        current_aria.includes(target_label_lower)
+      ) {
+        return
+      }
+
       model_selector_trigger.click()
       await new Promise((r) => requestAnimationFrame(r))
 
       const menu_items = Array.from(
         document.querySelectorAll(
-          '[data-radix-menu-content] [role="menuitemradio"]'
+          '[role="menuitemradio"], [role="menuitemcheckbox"]'
         )
       )
       let found = false
@@ -71,17 +83,26 @@ export const grok: Chatbot = {
     const supported_options = CHATBOTS['Grok'].supported_options
     for (const option of options) {
       if (option === 'private' && supported_options?.['private']) {
-        const private_link = document.querySelector(
-          'a[href="/c#private"]'
-        ) as HTMLAnchorElement
-        if (!private_link) {
+        const private_button = Array.from(
+          document.querySelectorAll('button')
+        ).find((btn) =>
+          btn.querySelector(
+            'path[d="M2.24 11.64 L2.24 21.28 Q2.24 21.76 2.72 21.76 L12.4 21.76 A10.16 10.16 0 1 0 2.24 11.64 Z"]'
+          )
+        )
+        if (!private_button) {
           report_initialization_error({
             function_name: 'set_options',
-            log_message: 'Private mode link not found'
+            log_message: 'Private mode button not found'
           })
           return
         }
-        private_link.click()
+
+        const is_pressed =
+          private_button.getAttribute('aria-pressed') === 'true'
+        if (!is_pressed) {
+          private_button.click()
+        }
       }
     }
   },
@@ -128,10 +149,8 @@ export const grok: Chatbot = {
     observe_for_responses({
       chatbot_name: 'Grok',
       is_generating: () =>
-        !!document.querySelector(
-          'path[d="M4 9.2v5.6c0 1.116 0 1.673.11 2.134a4 4 0 0 0 2.956 2.956c.46.11 1.018.11 2.134.11h5.6c1.116 0 1.673 0 2.134-.11a4 4 0 0 0 2.956-2.956c.11-.46.11-1.018.11-2.134V9.2c0-1.116 0-1.673-.11-2.134a4 4 0 0 0-2.956-2.955C16.474 4 15.916 4 14.8 4H9.2c-1.116 0-1.673 0-2.134.11a4 4 0 0 0-2.955 2.956C4 7.526 4 8.084 4 9.2Z"]'
-        ),
-      footer_selector: 'div.items-start div.action-buttons > div',
+        !!document.querySelector('div[data-testid="composer-stop"]'),
+      footer_selector: 'div[role="article"] + div > div[role="toolbar"]',
       add_buttons: params.inject_button ? add_buttons : undefined
     })
   }
