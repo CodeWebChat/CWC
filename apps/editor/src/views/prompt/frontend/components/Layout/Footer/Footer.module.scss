@@ -16,6 +16,29 @@
     gap: 4px;
   }
 
+  &__actions {
+    position: relative;
+    align-items: center;
+  }
+
+  &__actions-buttons {
+    display: flex;
+    gap: 4px;
+
+    &--hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  &__happy-coding {
+    position: absolute;
+    right: 0;
+    white-space: nowrap;
+    font-size: 12px;
+    color: var(--cwc-text-color-dimmed);
+  }
+
   &__icon-button {
     --size: 24px;
     box-sizing: border-box;

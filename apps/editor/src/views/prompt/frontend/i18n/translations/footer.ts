@@ -88,5 +88,23 @@ export const footer = {
     cs: 'Historie',
     hu: 'Előzmények',
     bg: 'История'
+  },
+  'footer.happy-coding': {
+    en: 'Happy coding!',
+    pl: 'Miłego kodowania!',
+    'zh-cn': '编程愉快！',
+    ja: '楽しいコーディングを！',
+    'zh-tw': '編程愉快！',
+    de: 'Frohes Programmieren!',
+    es: '¡Feliz programación!',
+    fr: 'Bon codage !',
+    'pt-br': 'Boa programação!',
+    ru: 'Приятного кодинга!',
+    ko: '즐거운 코딩 되세요!',
+    it: 'Buona programmazione!',
+    tr: 'İyi kodlamalar!',
+    cs: 'Příjemné kódování!',
+    hu: 'Jó kódolást!',
+    bg: 'Приятно кодиране!'
   }
 } as const

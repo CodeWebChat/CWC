@@ -69,33 +69,44 @@ export const Footer: React.FC<Props> = (props) => {
         </button>
       </div>
 
-      <div>
-        <CompactableActionButton
-          is_compact={compact_step >= 2}
-          on_click={props.on_history_click}
-          codicon="history"
-          label={t('footer.action.history')}
-        />
-        <CompactableActionButton
-          is_compact={compact_step >= 1}
-          on_click={on_undo_click}
-          disabled={!can_undo}
-          codicon="discard"
-          label={t('footer.action.undo')}
-        />
-        <CompactableActionButton
-          is_compact={compact_step >= 3}
-          on_click={on_commit_click}
-          disabled={!has_changes_to_commit}
-          codicon="git-pull-request-comment"
-          label={t('footer.action.commit')}
-        />
-        <CompactableActionButton
-          is_compact={compact_step >= 4}
-          on_click={on_apply_click}
-          codicon="sparkle"
-          label={t('footer.action.apply')}
-        />
+      <div className={styles.footer__actions}>
+        <div
+          className={cn(styles['footer__actions-buttons'], {
+            [styles['footer__actions-buttons--hidden']]: props.is_home_active
+          })}
+        >
+          <CompactableActionButton
+            is_compact={compact_step >= 2}
+            on_click={props.on_history_click}
+            codicon="history"
+            label={t('footer.action.history')}
+          />
+          <CompactableActionButton
+            is_compact={compact_step >= 1}
+            on_click={on_undo_click}
+            disabled={!can_undo}
+            codicon="discard"
+            label={t('footer.action.undo')}
+          />
+          <CompactableActionButton
+            is_compact={compact_step >= 3}
+            on_click={on_commit_click}
+            disabled={!has_changes_to_commit}
+            codicon="git-pull-request-comment"
+            label={t('footer.action.commit')}
+          />
+          <CompactableActionButton
+            is_compact={compact_step >= 4}
+            on_click={on_apply_click}
+            codicon="sparkle"
+            label={t('footer.action.apply')}
+          />
+        </div>
+        {props.is_home_active && (
+          <span className={styles['footer__happy-coding']}>
+            {t('footer.happy-coding')}
+          </span>
+        )}
       </div>
     </div>
   )
