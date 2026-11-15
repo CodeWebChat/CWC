@@ -90,21 +90,21 @@ export const selected_files = {
     bg: 'Изчистване на контекста'
   },
   'selected-files.find-context-files': {
-    en: 'Find relevant files',
-    pl: 'Znajdź odpowiednie pliki',
-    'zh-cn': '查找相关文件',
-    ja: '関連ファイルを検索',
-    'zh-tw': '尋找相關檔案',
-    de: 'Relevante Dateien finden',
-    es: 'Buscar archivos relevantes',
-    fr: 'Trouver des fichiers pertinents',
-    'pt-br': 'Encontrar arquivos relevantes',
-    ru: 'Найти релевантные файлы',
-    ko: '관련 파일 찾기',
-    it: 'Trova file rilevanti',
-    tr: 'İlgili dosyaları bul',
-    cs: 'Najít relevantní soubory',
-    hu: 'Releváns fájlok keresése',
-    bg: 'Намиране на подходящи файлове'
+    en: 'Select context files',
+    pl: 'Zaznacz pliki kontekstu',
+    'zh-cn': '选择上下文文件',
+    ja: 'コンテキストファイルを選択',
+    'zh-tw': '選取上下文檔案',
+    de: 'Kontextdateien auswählen',
+    es: 'Seleccionar archivos de contexto',
+    fr: 'Sélectionner les fichiers de contexte',
+    'pt-br': 'Selecionar arquivos de contexto',
+    ru: 'Выбрать файлы контекста',
+    ko: '컨텍스트 파일 선택',
+    it: 'Seleziona file di contesto',
+    tr: 'Bağlam dosyalarını seç',
+    cs: 'Vybrat soubory kontextu',
+    hu: 'Környezeti fájlok kiválasztása',
+    bg: 'Избиране на контекстни файлове'
   }
 } as const
