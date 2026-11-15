@@ -1,9 +1,9 @@
-const start_time = Date.now()
-
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
+
+const start_time = Date.now()
 
 const { build } = await import('vite')
 
@@ -41,14 +41,14 @@ const run = async () => {
       stdio: 'inherit',
       shell: process.platform == 'win32'
     })
-    tsc.on('error', (error) => {
+    tsc.on('error', (error: Error) => {
       console.error(`Could not start tsc: ${error.message}`)
     })
     process.on('exit', () => tsc.kill())
   }
 
   const pending = new Set(targets)
-  const finish = (target) => {
+  const finish = (target: string) => {
     if (pending.delete(target) && pending.size == 0) {
       const time = ((Date.now() - start_time) / 1000).toFixed(1)
       console.log(`Built in ${time}s.`)
@@ -68,7 +68,7 @@ const run = async () => {
     })
 
     if (is_watch) {
-      result.on('event', (event) => {
+      ;(result as any).on('event', (event: any) => {
         if (event.code == 'END' || event.code == 'ERROR') {
           finish(target)
         }
@@ -79,7 +79,7 @@ const run = async () => {
   }
 }
 
-run().catch((error) => {
+run().catch((error: any) => {
   console.error(error)
   process.exit(1)
 })

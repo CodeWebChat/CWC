@@ -547,14 +547,14 @@ for i in "${indices[@]}"; do
 
   cd "$REPO_DIR"
 
-  if ! run_step "$msg_step_deps" pnpm --filter gemini-coder install --frozen-lockfile; then
+  if ! run_step "$msg_step_deps" pnpm --filter gemini-coder install --frozen-lockfile --no-optional; then
     echo -e "  \033[33m$msg_deps_retry\033[0m"
     cd "$CWC_DIR"
     rm -rf "$CWC_DIR"/repository*
     pnpm store prune > /dev/null 2>&1 || true
     run_step "$msg_step_cloning" clone_repo
     cd "$REPO_DIR"
-    run_step "$msg_step_deps" pnpm --filter gemini-coder install --frozen-lockfile
+    run_step "$msg_step_deps" pnpm --filter gemini-coder install --frozen-lockfile --no-optional
   fi
 
   rm -f ./apps/editor/*.vsix

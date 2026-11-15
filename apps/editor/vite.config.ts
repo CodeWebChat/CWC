@@ -228,6 +228,6 @@ export default defineConfig(({ mode }) => {
     return create_view_config(target, view_targets[target], is_production)
   }
   throw new Error(
-    `Unknown CWC_TARGET "${target}". Build with "node scripts/build.mjs".`
+    `Unknown CWC_TARGET "${target}". Build with "node scripts/build.mts".`
   )
 })

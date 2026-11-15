@@ -5,21 +5,14 @@
     "build-storybook": "storybook build"
   },
   "devDependencies": {
-    "@storybook/types": "7.6.20",
     "@types/node": "22.x",
     "@types/react": "18.2.60",
     "@types/react-dom": "18.2.19",
     "@types/vscode": "1.98.0",
-    "css-loader": "6.5.1",
-    "sass": "1.86.1",
-    "sass-loader": "12.4.0",
-    "storybook": "7.6.24",
-    "style-loader": "3.3.1"
+    "sass-embedded": "1.89.2"
   },
   "dependencies": {
-    "@storybook/react": "7.6.20",
-    "@storybook/react-vite": "7.6.20",
-    "@vscode/codicons": "0.0.45",
+    "@vscode/codicons": "0.0.46-51",
     "classnames": "2.5.1",
     "dayjs": "1.11.10",
     "react": "18.2.0",
@@ -29,5 +22,11 @@
     "react-sortablejs": "6.1.4",
     "simplebar-react": "3.3.1",
     "vite-plugin-svgr": "3.2.0"
+  },
+  "optionalDependencies": {
+    "@storybook/react": "7.6.24",
+    "@storybook/react-vite": "7.6.24",
+    "@storybook/types": "7.6.24",
+    "storybook": "7.6.24"
   }
 }

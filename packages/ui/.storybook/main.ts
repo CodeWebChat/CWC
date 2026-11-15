@@ -33,6 +33,7 @@ const config: StorybookConfig = {
         },
         preprocessorOptions: {
           scss: {
+            silenceDeprecations: ['legacy-js-api'],
             additionalData: `@use "${path.resolve(
               __dirname,
               '../src/styles/foundation'
@@ -49,6 +50,9 @@ const config: StorybookConfig = {
         ]
       }
     }
+  },
+  core: {
+    disableTelemetry: true
   }
 }
 

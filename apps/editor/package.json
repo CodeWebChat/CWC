@@ -4,12 +4,11 @@
   "description": "Markdown prompts for chatbots, APIs, and CLIs with seamless integration",
   "version": "2026.1114.458",
   "scripts": {
-    "build": "vsce package --no-dependencies",
-    "vscode:prepublish": "npm run compile",
-    "compile": "node scripts/build.mjs",
-    "watch": "node scripts/build.mjs --watch",
+    "build": "node scripts/build.mts && node scripts/package.mts",
+    "compile": "node scripts/build.mts",
+    "watch": "node scripts/build.mts --watch",
     "typecheck": "tsc --noEmit",
-    "bump": "node scripts/bump.js",
+    "bump": "node scripts/bump.ts",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -1383,7 +1382,6 @@
     "@types/turndown": "5.0.5",
     "@types/vscode": "1.96.0",
     "@types/ws": "8.18.1",
-    "@vscode/vsce": "4.1.0",
     "sass-embedded": "1.89.2",
     "vite": "8.3.6"
   },
@@ -1391,7 +1389,7 @@
     "@cwc/ui": "workspace:*",
     "@cwc/shared": "workspace:*",
     "@mozilla/readability": "0.6.0",
-    "@vscode/codicons": "0.0.46-38",
+    "@vscode/codicons": "0.0.46-51",
     "axios": "1.21.0",
     "classnames": "2.5.1",
     "dayjs": "1.11.10",
