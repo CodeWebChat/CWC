@@ -28,13 +28,13 @@ export const use_modal_manager = () => {
     const handle_message = (event: MessageEvent<BackendMessage>) => {
       const message = event.data
       if (message.command === 'SHOW_PROGRESS') {
-        set_progress_state({
+        set_progress_state((prev) => ({
           title: message.title,
           subtitle: message.subtitle,
           progress: message.progress,
-          cancellable: message.cancellable ?? false,
-          delay_visibility: message.delay_visibility
-        })
+          cancellable: message.cancellable ?? prev?.cancellable ?? false,
+          delay_visibility: message.delay_visibility ?? prev?.delay_visibility
+        }))
       } else if (message.command === 'HIDE_PROGRESS') {
         set_progress_state(undefined)
       } else if (message.command === 'SHOW_AUTO_CLOSING_MODAL') {
