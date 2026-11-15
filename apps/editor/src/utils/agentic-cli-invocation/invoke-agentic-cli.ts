@@ -372,7 +372,7 @@ export const invoke_agentic_cli = async (params: {
       >()
 
       if (params.isolate_in_temp_dir) {
-        const base_prefix = `cwc-cli-${params.cli_prompt_type || 'edit'}`
+        const base_prefix = `cwc-cli-${params.cli_prompt_type}`
         let i = 1
         while (true) {
           temp_dir_path = path.join(os.tmpdir(), `${base_prefix}-${i}`)
@@ -596,7 +596,7 @@ export const invoke_agentic_cli = async (params: {
       })
 
       if (execution_mode === 'interactive-terminal') {
-        const prompt_type = params.cli_prompt_type || 'edit'
+        const prompt_type = params.cli_prompt_type
         const base_args =
           prompt_type === 'edit'
             ? agent_info.get_integrated_terminal_edit_args
