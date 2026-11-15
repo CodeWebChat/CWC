@@ -42,8 +42,6 @@ No code, prompts, or usage data are collected.
 
 Autofill chatbots in your web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts). Integrate seamlessly with in-editor preview.
 
-It's free for personal and commercial use.
-
 > [!TIP]
 >
 > Click ▶ to expand.
