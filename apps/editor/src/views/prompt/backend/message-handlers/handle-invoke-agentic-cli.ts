@@ -19,7 +19,7 @@ export const handle_invoke_agentic_cli = async (
   const current_instructions = prompt_view_provider.current_instructions.trim()
 
   if (!current_instructions) {
-    vscode.window.showWarningMessage(
+    vscode.window.showInformationMessage(
       t('views.common.handlers.common.instructions-cannot-be-empty')
     )
     return
