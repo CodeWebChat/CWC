@@ -412,10 +412,21 @@ export const invoke_agentic_cli = async (params: {
             })
             await fs.promises.copyFile(file_path, dest_path)
 
+            const original_backup_path = path.join(
+              temp_dir_path,
+              '.cwc',
+              'originals',
+              dest_rel
+            )
+            await fs.promises.mkdir(path.dirname(original_backup_path), {
+              recursive: true
+            })
+            await fs.promises.copyFile(file_path, original_backup_path)
+
             const unix_dest_rel = dest_rel.replace(/\\/g, '/')
 
             file_mappings.set(dest_path, {
-              original: file_path,
+              original: original_backup_path,
               dest_rel: unix_dest_rel
             })
 

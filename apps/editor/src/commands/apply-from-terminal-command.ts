@@ -5,10 +5,7 @@ import * as path from 'path'
 import { get_response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
 import { apply_response } from '@/features/apply-response/apply-response'
 import { t } from '@/i18n'
-import {
-  generate_diff_markdown,
-  get_all_files
-} from '../utils/agentic-cli-invocation/utils/generate-diff-markdown'
+import { generate_diff_markdown } from '../utils/agentic-cli-invocation/utils/generate-diff-markdown'
 import { Logger } from '@shared/utils/logger'
 
 const build_diff_from_sandbox = async (
@@ -43,48 +40,35 @@ const build_diff_from_sandbox = async (
     const metadata = JSON.parse(metadata_content)
     if (metadata && metadata.files && Array.isArray(metadata.files)) {
       for (const rel_path of metadata.files) {
-        const original = resolve_original_path(rel_path)
-        if (original) {
+        const original_backup_path = path.join(
+          sandbox_dir,
+          '.cwc',
+          'originals',
+          rel_path
+        )
+        const original_exists = await fs.promises
+          .access(original_backup_path)
+          .then(() => true)
+          .catch(() => false)
+
+        if (original_exists) {
           file_mappings.set(path.join(sandbox_dir, rel_path), {
-            original,
+            original: original_backup_path,
             dest_rel: rel_path
           })
+        } else {
+          const original = resolve_original_path(rel_path)
+          if (original) {
+            file_mappings.set(path.join(sandbox_dir, rel_path), {
+              original,
+              dest_rel: rel_path
+            })
+          }
         }
       }
     }
   } catch {
     // Ignore
-  }
-
-  const temp_files = await get_all_files(sandbox_dir)
-
-  for (const temp_file of temp_files) {
-    const temp_file_resolved = path.resolve(temp_file)
-    let has_mapping = false
-    for (const key of file_mappings.keys()) {
-      if (path.resolve(key) === temp_file_resolved) {
-        has_mapping = true
-        break
-      }
-    }
-    if (has_mapping) continue
-
-    const rel_path = path.relative(sandbox_dir, temp_file)
-    const unix_rel_path = rel_path.replace(/\\/g, '/')
-
-    const original_path = resolve_original_path(unix_rel_path)
-
-    if (original_path) {
-      try {
-        await fs.promises.access(original_path)
-        file_mappings.set(temp_file, {
-          original: original_path,
-          dest_rel: unix_rel_path
-        })
-      } catch {
-        // Ignore
-      }
-    }
   }
 
   return await generate_diff_markdown(sandbox_dir, file_mappings)
