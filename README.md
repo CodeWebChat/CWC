@@ -40,7 +40,9 @@ No code, prompts, or usage data are collected.
 
 ## Introduction
 
-Autofill chatbots in your web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts). Integrate seamlessly with in-editor preview and rollback capabilities. It's free!
+Autofill chatbots in your web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts).
+
+**It's free!**
 
 > [!TIP]
 >
