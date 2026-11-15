@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const DIMMED_ICONS_TIMEOUT = 1000
 
-export const use_dimmed_icons = () => {
+export const use_dimmed_icons = (is_home_active?: boolean) => {
   const [is_alt, set_is_alt] = useState(true)
   const leave_timeout_ref = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -23,6 +23,13 @@ export const use_dimmed_icons = () => {
       set_is_alt(true)
     }, DIMMED_ICONS_TIMEOUT)
   }
+
+  useEffect(() => {
+    if (!is_home_active) {
+      clear_leave_timeout()
+      set_is_alt(true)
+    }
+  }, [is_home_active])
 
   useEffect(() => {
     return () => {

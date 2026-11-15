@@ -29,7 +29,7 @@ export const Footer: React.FC<Props> = (props) => {
     clear_leave_timeout,
     handle_left_mouse_enter,
     handle_footer_mouse_leave
-  } = use_dimmed_icons()
+  } = use_dimmed_icons(props.is_home_active)
 
   const is_alt_style = is_alt && !props.is_home_active
 
