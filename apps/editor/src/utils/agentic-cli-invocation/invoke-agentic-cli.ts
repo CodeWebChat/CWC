@@ -372,10 +372,21 @@ export const invoke_agentic_cli = async (params: {
       >()
 
       if (params.isolate_in_temp_dir) {
-        const prefix = `cwc-cli-${params.cli_prompt_type || 'edit'}-`
-        temp_dir_path = await fs.promises.mkdtemp(
-          path.join(os.tmpdir(), prefix)
-        )
+        const base_prefix = `cwc-cli-${params.cli_prompt_type || 'edit'}`
+        let i = 1
+        while (true) {
+          temp_dir_path = path.join(os.tmpdir(), `${base_prefix}-${i}`)
+          try {
+            await fs.promises.mkdir(temp_dir_path)
+            break
+          } catch (err: any) {
+            if (err.code === 'EEXIST') {
+              i++
+            } else {
+              throw err
+            }
+          }
+        }
 
         const files_array: string[] = []
 
