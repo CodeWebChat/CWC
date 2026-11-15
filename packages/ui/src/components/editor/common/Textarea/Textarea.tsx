@@ -63,9 +63,12 @@ export const Textarea = React.forwardRef<HTMLDivElement, Props>(
     )
 
     React.useEffect(() => {
+      if (!internal_ref.current) return
+
+      const current_inner_text = internal_ref.current.innerText || ''
       if (
-        internal_ref.current &&
-        internal_ref.current.innerText !== props.value
+        current_inner_text !== props.value &&
+        !(current_inner_text === '\n' && !props.value)
       ) {
         internal_ref.current.innerText = props.value || ''
       }
@@ -94,7 +97,11 @@ export const Textarea = React.forwardRef<HTMLDivElement, Props>(
     }
 
     const handle_input = (e: React.FormEvent<HTMLDivElement>) => {
-      update_value(e.currentTarget.innerText || '')
+      let new_value = e.currentTarget.innerText || ''
+      if (new_value === '\n') {
+        new_value = ''
+      }
+      update_value(new_value)
     }
 
     const handle_key_down = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -168,7 +175,9 @@ export const Textarea = React.forwardRef<HTMLDivElement, Props>(
             range.collapse(false)
             selection.removeAllRanges()
             selection.addRange(range)
-            update_value(e.currentTarget.innerText || '')
+            let new_value = e.currentTarget.innerText || ''
+            if (new_value === '\n') new_value = ''
+            update_value(new_value)
           }
         }
       }
@@ -188,7 +197,9 @@ export const Textarea = React.forwardRef<HTMLDivElement, Props>(
           range.collapse(false)
           selection.removeAllRanges()
           selection.addRange(range)
-          update_value(e.currentTarget.innerText || '')
+          let new_value = e.currentTarget.innerText || ''
+          if (new_value === '\n') new_value = ''
+          update_value(new_value)
         }
       }
     }

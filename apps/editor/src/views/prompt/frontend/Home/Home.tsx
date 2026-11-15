@@ -257,7 +257,7 @@ export const Home: React.FC<Props> = (props) => {
         value={notes_for_root}
         on_change={(v) => handle_note_change(active_root, v)}
         placeholder={t('home.notes.placeholder')}
-        min_rows={10}
+        min_rows={4}
         blur_on_enter={false}
       />
     </div>
@@ -308,9 +308,8 @@ export const Home: React.FC<Props> = (props) => {
         }
       />
 
-      <UiSpacer height={4} />
-
-      {active_tab === 'tasks' && (
+      <div style={{ display: active_tab === 'tasks' ? 'block' : 'none' }}>
+        <UiSpacer height={4} />
         <div className={styles.inner__tasks}>
           <UiTasks
             tasks={tasks[active_root] || []}
@@ -338,9 +337,12 @@ export const Home: React.FC<Props> = (props) => {
             }}
           />
         </div>
-      )}
+      </div>
 
-      {active_tab === 'notes' && notes_section}
+      <div style={{ display: active_tab === 'notes' ? 'block' : 'none' }}>
+        <UiSpacer height={10} />
+        {notes_section}
+      </div>
     </>
   )
 
