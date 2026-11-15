@@ -88,6 +88,18 @@ export const AGENTS = {
     flags_placeholder: '',
     example_flags: []
   },
+  'GitHub Copilot': {
+    docs_url:
+      'https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference',
+    homepage_url: 'https://github.com/features/copilot',
+    flags_placeholder: '--model claude-sonnet-5.5 --effort medium',
+    example_flags: [
+      '--model claude-opus-5.5 --effort high',
+      '--model claude-sonnet-5.5 --effort medium',
+      '--model claude-haiku-5.5 --effort low',
+      '--model gpt-6.1-sol --effort high'
+    ]
+  },
   'Grok Build': {
     docs_url: 'https://docs.x.ai/build/cli/headless-scripting',
     homepage_url: 'https://x.ai/build',
