@@ -6,7 +6,7 @@ export const use_dayjs_locale = () => {
     const lang = document.documentElement.lang || 'en'
     if (lang !== 'en') {
       // @ts-ignore
-      import(/* webpackInclude: /\.js$/ */ `dayjs/locale/${lang}`)
+      import(`../../node_modules/dayjs/locale/${lang}.js`)
         .then(() => {
           dayjs.locale(lang)
         })

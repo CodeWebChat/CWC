@@ -1,10 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react'
 import { Item } from './Item'
 
-const meta: Meta<typeof Item> = {
+export default {
   component: Item,
   decorators: [
-    (Story) => (
+    (Story: any) => (
       <div
         style={{
           maxWidth: '600px',
@@ -19,17 +18,14 @@ const meta: Meta<typeof Item> = {
   ]
 }
 
-export default meta
-type Story = StoryObj<typeof Item>
-
-export const Default: Story = {
+export const Default = {
   args: {
     title: 'Provider',
     description: 'Select the provider to use for this configuration.'
   }
 }
 
-export const WithChildren: Story = {
+export const WithChildren = {
   args: {
     title: 'API Key',
     description:
@@ -38,7 +34,7 @@ export const WithChildren: Story = {
   }
 }
 
-export const Toggleable: Story = {
+export const Toggleable = {
   args: {
     title: 'Advanced Settings',
     description: 'Toggle to see more advanced options.',

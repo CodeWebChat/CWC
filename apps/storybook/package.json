@@ -1,0 +1,25 @@
+{
+  "name": "@cwc/storybook",
+  "private": true,
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@vscode/codicons": "0.0.46-51",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "simplebar-react": "3.3.1"
+  },
+  "devDependencies": {
+    "@storybook/react": "7.6.24",
+    "@storybook/react-vite": "7.6.24",
+    "@types/node": "22.x",
+    "@types/react": "18.2.60",
+    "@types/react-dom": "18.2.19",
+    "sass-embedded": "1.89.2",
+    "storybook": "7.6.24",
+    "vite": "5.4.14",
+    "vite-plugin-svgr": "3.2.0"
+  }
+}

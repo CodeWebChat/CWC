@@ -1,9 +1,5 @@
 {
   "name": "@cwc/ui",
-  "scripts": {
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
   "devDependencies": {
     "@types/node": "22.x",
     "@types/react": "18.2.60",
@@ -22,11 +18,5 @@
     "react-sortablejs": "6.1.4",
     "simplebar-react": "3.3.1",
     "vite-plugin-svgr": "3.2.0"
-  },
-  "optionalDependencies": {
-    "@storybook/react": "7.6.24",
-    "@storybook/react-vite": "7.6.24",
-    "@storybook/types": "7.6.24",
-    "storybook": "7.6.24"
   }
 }

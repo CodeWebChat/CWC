@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "react", "jest"],
+    "paths": {
+      "@shared/*": ["../../packages/shared/src/*"],
+      "@ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+  "include": [
+    ".storybook/**/*",
+    "../../packages/ui/src/**/*",
+    "../../packages/shared/src/**/*"
+  ]
+}

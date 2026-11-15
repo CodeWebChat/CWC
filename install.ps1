@@ -539,7 +539,7 @@ if (-not $updated) {
 Set-Location $repoDir
 
 $depsOk = Invoke-Step "$msg_step_deps..." {
-    pnpm --filter gemini-coder install --frozen-lockfile --no-optional *>$null
+    pnpm --filter gemini-coder install *>$null
     if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
 }
 
@@ -564,7 +564,7 @@ if (-not $depsOk) {
     Set-Location $repoDir
 
     $null = Invoke-Step "$msg_step_deps..." {
-        pnpm --filter gemini-coder install --frozen-lockfile --no-optional *>$null
+        pnpm --filter gemini-coder install *>$null
         if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
     } $msg_step_deps
 }
