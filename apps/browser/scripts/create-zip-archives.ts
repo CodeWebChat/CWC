@@ -1,6 +1,6 @@
+import { create_zip } from '../../../packages/shared/src/utils/create-zip/create-zip.ts'
 import * as fs from 'fs'
 import * as path from 'path'
-import archiver from 'archiver'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -12,21 +12,33 @@ const get_version = (): string => {
   return manifest.version
 }
 
-const create_zip_from_directory = (
+const collect_files = (
+  dir: string,
+  base_dir = dir
+): { name: string; data: Buffer }[] => {
+  const entries: { name: string; data: Buffer }[] = []
+  if (!fs.existsSync(dir)) return entries
+  const files = fs.readdirSync(dir)
+  for (const file of files) {
+    const fullPath = path.join(dir, file)
+    const stat = fs.statSync(fullPath)
+    if (stat.isDirectory()) {
+      entries.push(...collect_files(fullPath, base_dir))
+    } else {
+      const relativePath = path.relative(base_dir, fullPath).replace(/\\/g, '/')
+      entries.push({ name: relativePath, data: fs.readFileSync(fullPath) })
+    }
+  }
+  return entries
+}
+
+const create_zip_from_directory = async (
   source_dir: string,
   output_path: string
 ): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    const output = fs.createWriteStream(output_path)
-    const archive = archiver('zip', {
-      zlib: { level: 9 }
-    })
-    output.on('close', resolve)
-    archive.on('error', reject)
-    archive.pipe(output)
-    archive.directory(source_dir, false)
-    archive.finalize()
-  })
+  const entries = collect_files(source_dir)
+  const zip_buffer = create_zip(entries)
+  fs.writeFileSync(output_path, zip_buffer)
 }
 
 const log = (message: string) => console.log(`[create-zip-archives] ${message}`)
