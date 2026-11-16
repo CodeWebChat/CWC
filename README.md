@@ -79,7 +79,7 @@ Guide the model with broader context for outputs you're looking for.
 <details>
 <summary><strong>First-class support for prompt caching</strong></summary>
 
-When including selected files, unchanged files are placed first, followed by recently modified ones, and task instructions are placed at the very end. Send the same prompt multiple times and compare outputs, for minimal cost.
+When including selected files, unchanged files are placed first, followed by recently modified ones, and task instructions are placed at the very end. Compare outputs from concurrent runs, at minimal cost.
 
 </details>
 
