@@ -42,7 +42,7 @@ No code, prompts, or usage data are collected.
 
 Autofill chatbots in your web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts).
 
-**CWC independent and free!**
+**CWC is independent and free!**
 
 > [!TIP]
 >
