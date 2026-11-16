@@ -4,18 +4,14 @@ import { send_llm_message } from '@/utils/send-llm-message'
 import { randomUUID, createHash } from 'crypto'
 import { display_token_count } from '@shared/utils/display-token-count'
 import { Logger } from '@shared/utils/logger'
+import { WaitingChain } from '@/utils/waiting-chain'
 import * as vscode from 'vscode'
 import { t } from '@/i18n'
-
-const CHAIN_RESOLUTION_DELAY_MS = 5000
 
 export class PromptViewApiCallsManager {
   private abort_controllers: Map<string, AbortController> = new Map()
   private next_allowed_finish_time = 0
-  private waiting_chain: Map<
-    string,
-    { promise: Promise<void>; resolve: () => void; body_hash: string }
-  > = new Map()
+  private waiting_chain = new WaitingChain()
 
   constructor(
     private prompt_view_provider: PromptViewProvider,
@@ -53,33 +49,9 @@ export class PromptViewApiCallsManager {
       .update(JSON.stringify(body_to_hash))
       .digest('hex')
 
-    const previous_waiting = this.waiting_chain.get(params.base_url)
-
-    let resolve_current: () => void = () => {}
-    const current_promise = new Promise<void>((resolve) => {
-      resolve_current = resolve
+    const gate = this.waiting_chain.enqueue({
+      key: `${params.base_url}:${body_hash}`
     })
-
-    let is_chain_resolution_scheduled = false
-    const schedule_chain_resolution = () => {
-      if (is_chain_resolution_scheduled) return
-
-      const chain_entry = this.waiting_chain.get(params.base_url)
-      if (chain_entry && chain_entry.resolve === resolve_current) {
-        is_chain_resolution_scheduled = true
-        setTimeout(() => {
-          chain_entry.resolve()
-        }, CHAIN_RESOLUTION_DELAY_MS)
-      }
-    }
-
-    if (!previous_waiting || previous_waiting.body_hash !== body_hash) {
-      this.waiting_chain.set(params.base_url, {
-        promise: current_promise,
-        resolve: resolve_current,
-        body_hash
-      })
-    }
 
     return await vscode.window.withProgress(
       {
@@ -93,8 +65,7 @@ export class PromptViewApiCallsManager {
         })
 
         try {
-          const is_queued =
-            previous_waiting && previous_waiting.body_hash === body_hash
+          const is_queued = gate.must_wait
 
           const queued_msg = t(
             'service.prompt-view-api-calls-manager.progress.queued'
@@ -115,21 +86,7 @@ export class PromptViewApiCallsManager {
           })
 
           if (is_queued) {
-            if (abort_controller.signal.aborted) {
-              throw abort_controller.signal.reason
-            }
-
-            const abort_promise = new Promise<void>((_, reject) => {
-              abort_controller.signal.addEventListener(
-                'abort',
-                () => {
-                  reject(abort_controller.signal.reason)
-                },
-                { once: true }
-              )
-            })
-
-            await Promise.race([previous_waiting.promise, abort_promise])
+            await gate.wait(abort_controller.signal)
 
             progress.report({ message: waiting_msg })
 
@@ -149,7 +106,7 @@ export class PromptViewApiCallsManager {
             body: params.body,
             abort_signal: abort_controller.signal,
             on_thinking_chunk: () => {
-              schedule_chain_resolution()
+              gate.release()
               progress.report({ message: thinking_msg })
               this.broadcast_message({
                 command: 'SHOW_PROMPT_VIEW_API_CALLS_MANAGER_PROGRESS',
@@ -161,7 +118,7 @@ export class PromptViewApiCallsManager {
               })
             },
             on_chunk: (tokens_per_second, total_tokens) => {
-              schedule_chain_resolution()
+              gate.release()
 
               const msg =
                 tokens_per_second && total_tokens
@@ -214,9 +171,7 @@ export class PromptViewApiCallsManager {
 
           return null
         } finally {
-          if (!is_chain_resolution_scheduled) {
-            resolve_current()
-          }
+          gate.release()
 
           this.broadcast_message({
             command: 'HIDE_PROMPT_VIEW_API_CALLS_MANAGER_PROGRESS',

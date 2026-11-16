@@ -192,6 +192,7 @@ export const send_llm_message = async (params: {
     if (stream_start_time === 0) {
       stream_start_time = current_time
       last_on_chunk_time = current_time
+      params.on_chunk(0, total_tokens)
       return
     }
 
