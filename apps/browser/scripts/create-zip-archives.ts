@@ -1,4 +1,4 @@
-import { create_zip } from '../../../packages/shared/src/utils/create-zip/create-zip.ts'
+import { create_zip } from '@shared/utils/create-zip'
 import * as fs from 'fs'
 import * as path from 'path'
 import { fileURLToPath } from 'url'

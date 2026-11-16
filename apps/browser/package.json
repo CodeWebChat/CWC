@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "build": "tsc --noEmit && node scripts/build.mjs && node scripts/create-firefox-build.ts && node scripts/create-zip-archives.ts",
+    "build": "tsc --noEmit && node scripts/build.mjs && tsx scripts/create-firefox-build.ts && tsx scripts/create-zip-archives.ts",
     "watch": "node scripts/build.mjs --watch",
     "typecheck": "tsc --noEmit",
     "bump": "node scripts/bump.cjs"
@@ -13,6 +13,7 @@
     "@types/webextension-polyfill": "0.12.6",
     "baseline-browser-mapping": "2.11.35",
     "sass": "1.93.3",
+    "tsx": "4.23.15",
     "vite": "8.3.6",
     "webextension-polyfill": "0.12.0"
   },
