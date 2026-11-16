@@ -49,7 +49,7 @@ export const CompactableActionButton: React.FC<CompactableActionButtonProps> = (
       className={className}
       onClick={props.on_click}
       title={props.title}
-      disabled={props.disabled}
+      data-disabled={props.disabled ? 'true' : undefined}
     >
       {content}
     </button>

@@ -10,13 +10,13 @@
   border: 1px solid var(--cwc-border-color-dimmed);
   color: inherit;
 
-  &:hover:not(:disabled) {
+  &:hover:not([data-disabled='true']) {
     background-color: var(--vscode-toolbar-hoverBackground);
     border-color: var(--cwc-border-color);
     text-decoration: none;
   }
 
-  &:disabled {
+  &[data-disabled='true'] {
     opacity: var(--disabled-opacity);
     cursor: default;
   }
