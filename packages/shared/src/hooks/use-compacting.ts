@@ -1,4 +1,10 @@
-import { useState, useEffect, useRef, useLayoutEffect } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+  useCallback
+} from 'react'
 
 export const use_compacting = (options?: { is_disabled?: boolean }) => {
   const container_ref = useRef<HTMLDivElement>(null)
@@ -83,8 +89,14 @@ export const use_compacting = (options?: { is_disabled?: boolean }) => {
     return () => observer.disconnect()
   }, [thresholds, compact_step, is_disabled])
 
+  const reset_compacting = useCallback(() => {
+    set_compact_step(0)
+    set_thresholds((prev) => (Object.keys(prev).length === 0 ? prev : {}))
+  }, [])
+
   return {
     container_ref,
-    compact_step
+    compact_step,
+    reset_compacting
   }
 }

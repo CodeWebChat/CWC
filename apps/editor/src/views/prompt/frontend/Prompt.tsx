@@ -209,7 +209,7 @@ export const Prompt = () => {
 
   const handle_apply_click = () => {
     post_message(vscode, {
-      command: 'SHOW_APPLY_FROM_QUICK_PICK'
+      command: 'APPLY'
     })
   }
 
@@ -270,6 +270,7 @@ export const Prompt = () => {
   const layout_context_value = {
     can_undo,
     has_changes_to_commit,
+    target,
     on_apply_click: handle_apply_click,
     on_undo_click: handle_undo_click,
     on_commit_click: handle_commit_action_click

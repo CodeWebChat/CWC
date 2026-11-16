@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import styles from './Footer.module.scss'
 import { use_compacting } from '@shared/hooks'
 import { LayoutContext } from '../../../contexts/LayoutContext'
@@ -18,12 +18,18 @@ export const Footer: React.FC<Props> = (props) => {
   const {
     can_undo,
     has_changes_to_commit,
+    target,
     on_apply_click,
     on_undo_click,
     on_commit_click
   } = useContext(LayoutContext)
   const { t } = use_translation()
-  const { container_ref, compact_step } = use_compacting()
+  const { container_ref, compact_step, reset_compacting } = use_compacting()
+
+  useEffect(() => {
+    reset_compacting()
+  }, [target, reset_compacting])
+
   const {
     is_alt,
     clear_leave_timeout,
@@ -95,12 +101,14 @@ export const Footer: React.FC<Props> = (props) => {
             codicon="git-pull-request-comment"
             label={t('footer.action.commit')}
           />
-          <CompactableActionButton
-            is_compact={compact_step >= 4}
-            on_click={on_apply_click}
-            codicon="sparkle"
-            label={t('footer.action.apply')}
-          />
+          {target !== 'API' && (
+            <CompactableActionButton
+              is_compact={compact_step >= 4}
+              on_click={on_apply_click}
+              codicon="sparkle"
+              label={t('footer.action.apply')}
+            />
+          )}
         </div>
         {props.is_home_active && (
           <span className={styles['footer__happy-coding']}>

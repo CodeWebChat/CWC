@@ -87,8 +87,8 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
 
       const active_terminal = vscode.window.activeTerminal
       if (!active_terminal) {
-        vscode.window.showInformationMessage(
-          t('command.apply-from-terminal-command.info.no-active-terminal')
+        vscode.window.showWarningMessage(
+          t('command.apply-from-terminal-command.warning.no-active-terminal')
         )
         return
       }
@@ -176,8 +176,8 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
           )
         }
       } else {
-        vscode.window.showInformationMessage(
-          t('command.apply-from-terminal-command.info.not-cwc-cli')
+        vscode.window.showWarningMessage(
+          t('command.apply-from-terminal-command.warning.not-cwc-cli')
         )
       }
     }

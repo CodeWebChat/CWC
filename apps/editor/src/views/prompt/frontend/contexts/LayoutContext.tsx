@@ -1,8 +1,10 @@
 import { createContext } from 'react'
+import { Target } from '@shared/types/target'
 
 type LayoutContextType = {
   can_undo: boolean
   has_changes_to_commit: boolean
+  target: Target
   on_apply_click: () => void
   on_undo_click: () => void
   on_commit_click: () => void
@@ -11,6 +13,7 @@ type LayoutContextType = {
 export const LayoutContext = createContext<LayoutContextType>({
   can_undo: false,
   has_changes_to_commit: false,
+  target: 'WEB',
   on_apply_click: () => {},
   on_undo_click: () => {},
   on_commit_click: () => {}

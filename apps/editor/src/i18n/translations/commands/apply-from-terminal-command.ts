@@ -18,7 +18,7 @@ export const translations = {
     hu: 'A terminálból való alkalmazás letiltva van aktív válasz előnézet közben.',
     bg: 'Прилагането от терминала е деактивирано по време на активен преглед на отговор.'
   },
-  'command.apply-from-terminal-command.info.no-active-terminal': {
+  'command.apply-from-terminal-command.warning.no-active-terminal': {
     en: 'No active terminal session.',
     pl: 'Brak aktywnej sesji terminala.',
     'zh-cn': '没有活动的终端会话。',
@@ -36,7 +36,7 @@ export const translations = {
     hu: 'Nincs aktív terminál munkamenet.',
     bg: 'Няма активна терминална сесия.'
   },
-  'command.apply-from-terminal-command.info.not-cwc-cli': {
+  'command.apply-from-terminal-command.warning.not-cwc-cli': {
     en: 'Active terminal is not a CLI edit session.',
     pl: 'Aktywny terminal nie jest sesją edycji z CLI.',
     'zh-cn': '活动终端不是 CLI 编辑会话。',
