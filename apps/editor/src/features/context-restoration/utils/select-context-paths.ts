@@ -143,8 +143,8 @@ export const select_context_paths = async (params: {
             (i) => i.file_path
           )
           if (selected_paths.length === 0) {
-            vscode.window.showInformationMessage(
-              t('common.info.select-files-to-search')
+            vscode.window.showWarningMessage(
+              t('common.warning.select-files-to-search')
             )
             return
           }

@@ -152,8 +152,8 @@ export const show_search_results_quick_pick = async (params: {
           .filter((p): p is string => p !== undefined)
 
         if (selected.length === 0) {
-          vscode.window.showInformationMessage(
-            t('common.info.select-files-to-search')
+          vscode.window.showWarningMessage(
+            t('common.warning.select-files-to-search')
           )
           return
         }

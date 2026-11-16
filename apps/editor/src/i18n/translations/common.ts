@@ -1043,7 +1043,7 @@ export const translations = {
     hu: 'Beállítások megnyitása',
     bg: 'Отвори настройките'
   },
-  'common.info.select-files-to-search': {
+  'common.warning.select-files-to-search': {
     en: 'Please select files to search.',
     pl: 'Proszę wybrać pliki do przeszukania.',
     'zh-cn': '请选择要搜索的文件。',

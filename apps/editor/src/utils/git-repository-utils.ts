@@ -485,8 +485,8 @@ export const prepare_staged_changes = async (params: {
                   quick_pick.selectedItems
                 ).map((i: any) => i.fsPath)
                 if (current_selected_fs_paths.length === 0) {
-                  vscode.window.showInformationMessage(
-                    t('common.info.select-files-to-search')
+                  vscode.window.showWarningMessage(
+                    t('common.warning.select-files-to-search')
                   )
                   return
                 }

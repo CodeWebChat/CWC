@@ -132,8 +132,8 @@ export const prompt_for_referencing_files = async (params: {
         } else if (button === search_button) {
           current_selected_items = [...quick_pick.selectedItems]
           if (current_selected_items.length === 0) {
-            vscode.window.showInformationMessage(
-              t('common.info.select-files-to-search')
+            vscode.window.showWarningMessage(
+              t('common.warning.select-files-to-search')
             )
             return
           }
