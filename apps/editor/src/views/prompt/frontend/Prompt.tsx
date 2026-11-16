@@ -207,12 +207,6 @@ export const Prompt = () => {
     return undefined
   }
 
-  const handle_apply_click = () => {
-    post_message(vscode, {
-      command: 'APPLY'
-    })
-  }
-
   const handle_history_click = () => {
     post_message(vscode, {
       command: 'EXECUTE_COMMAND',
@@ -271,7 +265,6 @@ export const Prompt = () => {
     can_undo,
     has_changes_to_commit,
     target,
-    on_apply_click: handle_apply_click,
     on_undo_click: handle_undo_click,
     on_commit_click: handle_commit_action_click
   }
