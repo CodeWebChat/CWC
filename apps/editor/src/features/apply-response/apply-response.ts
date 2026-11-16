@@ -14,7 +14,11 @@ import {
   preview_handler,
   ongoing_preview_cleanup_promise
 } from './utils/preview-handler'
-import { process_response, ApplyResponseArgs } from './response-processor'
+import {
+  process_response,
+  ApplyResponseArgs,
+  get_apply_response_output_channel
+} from './response-processor'
 import { ResponseHistoryItem } from '@shared/types/response-history-item'
 import { PromptViewApiCallsManager } from '@/services/prompt-view-api-calls-manager'
 import { t } from '@/i18n'
@@ -365,6 +369,10 @@ export const setup_apply_response = (params: {
           return false
         }
       }
+
+      const output_channel = get_apply_response_output_channel()
+      output_channel.clear()
+      output_channel.append(response)
 
       in_progress = true
     } catch (err) {

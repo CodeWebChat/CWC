@@ -40,7 +40,7 @@ import {
 
 let _apply_response_output_channel: vscode.OutputChannel | undefined
 
-const get_apply_response_output_channel = () => {
+export const get_apply_response_output_channel = () => {
   if (!_apply_response_output_channel) {
     _apply_response_output_channel =
       vscode.window.createOutputChannel('CWC Apply Response')
@@ -405,8 +405,6 @@ export const process_response = async (params: {
       )
 
       const output_channel = get_apply_response_output_channel()
-      output_channel.clear()
-      output_channel.append(params.response)
       output_channel.show(true)
 
       return null

@@ -56,6 +56,11 @@ export const handle_restore_preview = async (
   }
 
   for (const file of files) {
+    const file_key = `${file.workspace_name ?? ''}:${file.file_path}`
+    if (file.file_state === 'deleted' && rename_sources.has(file_key)) {
+      continue
+    }
+
     const workspace_root = resolve_workspace_root({
       workspace_name: file.workspace_name,
       workspace_map,
@@ -118,9 +123,11 @@ export const handle_restore_preview = async (
       file_state:
         file.file_state === 'deleted'
           ? 'deleted'
-          : !file_exists
-            ? 'new'
-            : file.file_state,
+          : file.renamed_from
+            ? undefined
+            : !file_exists
+              ? 'new'
+              : file.file_state,
       is_checked: file.is_checked,
       diff_application_method: file.diff_application_method,
       is_pure_rename: file.is_pure_rename,
@@ -145,12 +152,14 @@ export const handle_restore_preview = async (
 
         if (!file.is_pure_rename && file.content !== undefined) {
           const file_uri = vscode.Uri.file(safe_path)
-          const document = await vscode.workspace.openTextDocument(file_uri)
           const final_content = preserve_trailing_newline(
             original_content,
             file.content
           )
-          await replace_document_content(document, final_content)
+          await vscode.workspace.fs.writeFile(
+            file_uri,
+            new Uint8Array(Buffer.from(final_content, 'utf8'))
+          )
           Logger.info({
             function_name: 'handle_restore_preview',
             message: 'Existing file replaced and saved after relocation',
@@ -158,11 +167,6 @@ export const handle_restore_preview = async (
           })
         }
       } else if (file.file_state === 'deleted') {
-        const file_key = `${file.workspace_name ?? ''}:${file.file_path}`
-        if (rename_sources.has(file_key)) {
-          continue
-        }
-
         if (file_exists) {
           try {
             await close_file_tabs(safe_path)
