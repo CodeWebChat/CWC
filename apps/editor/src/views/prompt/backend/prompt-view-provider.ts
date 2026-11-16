@@ -30,6 +30,7 @@ import {
 } from '@shared/types/prompt-types'
 import { Logger } from '@shared/utils/logger'
 import { get_error_message } from '@/utils/get-error-message'
+import { get_terminal_cwd } from '@/utils/get-terminal-cwd'
 import { ResponseHistoryItem } from '@shared/types/response-history-item'
 import { ProvidersManager } from '@/services/providers-manager'
 import { SharedContextState } from '@/context/shared-context-state'
@@ -48,7 +49,10 @@ import {
   estimate_token_count,
   check_for_updates
 } from './utils'
+import { is_response_applicable } from '@/utils/is-response-applicable'
+import { get_all_workspace_files } from '@/context/helpers/get-all-workspace-files'
 import * as path from 'path'
+import * as os from 'os'
 import { TasksStorage, NotesStorage } from '@/utils/global-workspace-storage'
 
 export class PromptViewProvider implements vscode.WebviewViewProvider {
@@ -87,6 +91,8 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
   public prompt_view_api_calls_manager!: PromptViewApiCallsManager
   public response_history: ResponseHistoryItem[] = []
   public message_listeners: ((message: BackendMessage) => void)[] = []
+  public can_apply_from_terminal: boolean = false
+  public clipboard_has_applicable_response = false
 
   public update_response_history() {
     this.extension_context.workspaceState.update(
@@ -238,6 +244,47 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
     setInterval(() => {
       this.check_for_updates()
     }, UPDATE_CHECK_INTERVAL)
+
+    this.extension_context.subscriptions.push(
+      vscode.window.onDidChangeWindowState(async (state) => {
+        if (state.focused) {
+          await this.check_clipboard_for_applicable_response()
+        }
+      })
+    )
+
+    const check_active_terminal = () => {
+      const cwd_path = get_terminal_cwd(vscode.window.activeTerminal)
+      const can_apply = Boolean(
+        cwd_path && cwd_path.startsWith(path.join(os.tmpdir(), 'cwc-cli-edit-'))
+      )
+
+      if (this.can_apply_from_terminal !== can_apply) {
+        this.can_apply_from_terminal = can_apply
+        if (this.webview_view) {
+          this.send_message({
+            command: 'CAN_APPLY_FROM_TERMINAL',
+            can_apply
+          })
+        }
+      }
+    }
+
+    this.extension_context.subscriptions.push(
+      vscode.window.onDidChangeActiveTerminal(check_active_terminal)
+    )
+    this.extension_context.subscriptions.push(
+      vscode.window.onDidOpenTerminal(check_active_terminal)
+    )
+    this.extension_context.subscriptions.push(
+      vscode.window.onDidCloseTerminal(check_active_terminal)
+    )
+    if (vscode.window.onDidChangeTerminalShellIntegration) {
+      this.extension_context.subscriptions.push(
+        vscode.window.onDidChangeTerminalShellIntegration(check_active_terminal)
+      )
+    }
+    check_active_terminal()
 
     this.websocket_server_instance.on_connection_status_change((connected) => {
       if (this.webview_view) {
@@ -546,6 +593,44 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
         }
       })
     )
+  }
+
+  async check_clipboard_for_applicable_response() {
+    try {
+      const clipboard_text = await vscode.env.clipboard.readText()
+      if (!clipboard_text) {
+        if (this.clipboard_has_applicable_response) {
+          this.clipboard_has_applicable_response = false
+          this.send_message({
+            command: 'CLIPBOARD_HAS_APPLICABLE_RESPONSE',
+            value: false
+          })
+        }
+        return
+      }
+
+      const is_single_root_folder_workspace =
+        (vscode.workspace.workspaceFolders?.length ?? 0) <= 1
+      const workspace_files = await get_all_workspace_files({
+        workspace_provider: this.workspace_provider
+      })
+
+      const is_applicable = is_response_applicable({
+        response: clipboard_text,
+        is_single_root_folder_workspace,
+        workspace_files
+      })
+
+      if (this.clipboard_has_applicable_response !== is_applicable) {
+        this.clipboard_has_applicable_response = is_applicable
+        this.send_message({
+          command: 'CLIPBOARD_HAS_APPLICABLE_RESPONSE',
+          value: is_applicable
+        })
+      }
+    } catch {
+      // Ignore
+    }
   }
 
   async check_for_updates(params?: { force?: boolean }) {
@@ -956,6 +1041,15 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
                 is_updating: this.is_updating
               }
             })
+          } else if (message.command === 'GET_CAN_APPLY_FROM_TERMINAL') {
+            this.send_message({
+              command: 'CAN_APPLY_FROM_TERMINAL',
+              can_apply: this.can_apply_from_terminal
+            })
+          } else if (
+            message.command === 'GET_CLIPBOARD_HAS_APPLICABLE_RESPONSE'
+          ) {
+            this.check_clipboard_for_applicable_response()
           }
         } catch (error) {
           Logger.error({

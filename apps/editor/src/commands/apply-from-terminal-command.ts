@@ -7,6 +7,7 @@ import { apply_response } from '@/features/apply-response/apply-response'
 import { t } from '@/i18n'
 import { generate_diff_markdown } from '../utils/agentic-cli-invocation/utils/generate-diff-markdown'
 import { Logger } from '@shared/utils/logger'
+import { get_terminal_cwd } from '@/utils/get-terminal-cwd'
 
 const build_diff_from_sandbox = async (
   sandbox_dir: string
@@ -93,23 +94,12 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
         return
       }
 
-      const creation_options = active_terminal.creationOptions as
-        | vscode.TerminalOptions
-        | undefined
-      const cwd = creation_options?.cwd
+      const cwd_path = get_terminal_cwd(active_terminal)
+      const is_cwc_cli = Boolean(
+        cwd_path && cwd_path.startsWith(path.join(os.tmpdir(), 'cwc-cli-edit-'))
+      )
 
-      let is_cwc_cli = false
-      let cwd_path = ''
-
-      if (cwd) {
-        cwd_path = typeof cwd === 'string' ? cwd : cwd.fsPath
-
-        if (cwd_path.startsWith(path.join(os.tmpdir(), 'cwc-cli-edit-'))) {
-          is_cwc_cli = true
-        }
-      }
-
-      if (is_cwc_cli) {
+      if (is_cwc_cli && cwd_path) {
         try {
           const diff_markdown = await build_diff_from_sandbox(cwd_path)
 

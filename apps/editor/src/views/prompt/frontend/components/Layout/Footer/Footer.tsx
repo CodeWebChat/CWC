@@ -18,7 +18,6 @@ export const Footer: React.FC<Props> = (props) => {
   const {
     can_undo,
     has_changes_to_commit,
-    target,
     on_apply_click,
     on_undo_click,
     on_commit_click
@@ -100,7 +99,6 @@ export const Footer: React.FC<Props> = (props) => {
           <CompactableActionButton
             is_compact={compact_step >= 4}
             on_click={on_apply_click}
-            disabled={target === 'API'}
             codicon="sparkle"
             label={t('footer.action.apply')}
           />

@@ -400,10 +400,6 @@ export const process_response = async (params: {
     )
 
     if (files.length === 0) {
-      vscode.window.showWarningMessage(
-        t('command.apply-response-command.warning.no-valid-response')
-      )
-
       const output_channel = get_apply_response_output_channel()
       output_channel.show(true)
 

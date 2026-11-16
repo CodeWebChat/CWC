@@ -147,7 +147,7 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
       }
     ),
     reference_in_prompt_command({ prompt_view_provider, workspace_provider }),
-    apply_from_clipboard_command(),
+    apply_from_clipboard_command({ prompt_view_provider }),
     ...code_at_cursor_commands({
       workspace_provider,
       open_editors_provider,

@@ -123,6 +123,11 @@ export const Main: React.FC<Props> = (props) => {
     number | undefined
   >()
   const [completed_tasks, set_completed_tasks] = useState<string[]>([])
+  const [can_apply_from_terminal, set_can_apply_from_terminal] = useState(false)
+  const [
+    clipboard_has_applicable_response,
+    set_clipboard_has_applicable_response
+  ] = useState(false)
 
   useEffect(() => {
     const handle_message = async (event: MessageEvent) => {
@@ -188,6 +193,12 @@ export const Main: React.FC<Props> = (props) => {
             [(message as any).prompt_type]: (message as any).name
           }))
           break
+        case 'CAN_APPLY_FROM_TERMINAL':
+          set_can_apply_from_terminal((message as any).can_apply)
+          break
+        case 'CLIPBOARD_HAS_APPLICABLE_RESPONSE':
+          set_clipboard_has_applicable_response((message as any).value)
+          break
       }
     }
 
@@ -200,7 +211,9 @@ export const Main: React.FC<Props> = (props) => {
       { command: 'GET_INSTRUCTIONS' },
       { command: 'GET_EDIT_FORMAT' },
       { command: 'GET_COMPLETED_TASKS' },
-      { command: 'GET_TERMINAL_INTERACTIVITY' }
+      { command: 'GET_TERMINAL_INTERACTIVITY' },
+      { command: 'GET_CAN_APPLY_FROM_TERMINAL' },
+      { command: 'GET_CLIPBOARD_HAS_APPLICABLE_RESPONSE' }
     ]
     initial_messages.forEach((message) => post_message(props.vscode, message))
 
@@ -788,6 +801,8 @@ export const Main: React.FC<Props> = (props) => {
       on_clear_completed_tasks={handle_clear_completed_tasks}
       has_update={props.has_update}
       targets_order={props.targets_order}
+      can_apply_from_terminal={can_apply_from_terminal}
+      clipboard_has_applicable_response={clipboard_has_applicable_response}
     />
   )
 }
