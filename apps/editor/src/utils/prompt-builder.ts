@@ -97,7 +97,7 @@ export namespace PromptBuilder {
         const tasks_str = params.completed_tasks
           .map((t) => `- [x] ${t}`)
           .join('\n')
-        top_sys += `# Completed tasks\n\n${tasks_str}\n\n`
+        top_sys += `# Past task instructions\n\n${tasks_str}\n\n`
       }
     }
 
@@ -122,10 +122,14 @@ export namespace PromptBuilder {
       )
       if (has_files) {
         if (params.files_context_part1) {
-          part1 = (top_sys ? top_sys : '') + `# Files\n\n${params.files_context_part1}`
+          part1 =
+            (top_sys ? top_sys : '') +
+            `# Files\n\n${params.files_context_part1}`
           part2 += `${params.files_context_part2 || ''}${active_file_context}`
         } else {
-          part2 += (top_sys ? top_sys : '') + `# Files\n\n${params.files_context_part2 || ''}${active_file_context}`
+          part2 +=
+            (top_sys ? top_sys : '') +
+            `# Files\n\n${params.files_context_part2 || ''}${active_file_context}`
         }
         full_prompt = part1 + part2
       } else {
@@ -160,8 +164,8 @@ export namespace PromptBuilder {
       const tasks_str = params.completed_tasks
         .map((t) => `- [x] ${t}`)
         .join('\n')
-      part2 += `# Completed tasks\n\n${tasks_str}\n\n`
-      full_prompt += `# Completed tasks\n\n${tasks_str}\n\n`
+      part2 += `# Past task instructions\n\n${tasks_str}\n\n`
+      full_prompt += `# Past task instructions\n\n${tasks_str}\n\n`
     }
 
     if (part1.length > 0 || part2.length > 0 || full_prompt.length > 0) {

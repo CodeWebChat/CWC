@@ -93,6 +93,7 @@ export const agentic_search = async (params: {
         build_prompt: async () => {
           while (true) {
             let current_query = query
+            let additional_instructions = ''
 
             if (
               first_run &&
@@ -125,9 +126,9 @@ export const agentic_search = async (params: {
 
               first_run = false
 
-              if (additional_instructions_result.value.trim() !== '') {
-                current_query = `${query}\n\nAdditional instructions:\n${additional_instructions_result.value}`
-              }
+              current_query = `## Instructions\n\n${query.trim()}`
+              additional_instructions =
+                additional_instructions_result.value.trim()
             } else {
               const query_result = await prompt_for_search_term(query, {
                 show_back_button: true,
@@ -165,11 +166,14 @@ export const agentic_search = async (params: {
               LAST_AGENTIC_SEARCH_QUERY_STATE_KEY,
               {
                 instructions: params.current_instructions,
-                query: current_query
+                query
               }
             )
 
-            const instructions_to_process = [current_query]
+            const instructions_to_process = [
+              current_query,
+              additional_instructions
+            ]
             if (params.completed_tasks) {
               instructions_to_process.push(...params.completed_tasks)
             }
@@ -183,7 +187,8 @@ export const agentic_search = async (params: {
               })
 
             const processed_query = processed_queries[0]
-            const processed_completed_tasks = processed_queries.slice(1)
+            const processed_additional_instructions = processed_queries[1]
+            const processed_completed_tasks = processed_queries.slice(2)
 
             const final_query = skill_definitions
               ? `${processed_query}\n\n${skill_definitions}`
@@ -201,7 +206,11 @@ export const agentic_search = async (params: {
               params.workspace_provider
             )
 
-            return build_agent_prompt(final_query, processed_completed_tasks)
+            return build_agent_prompt(
+              final_query,
+              processed_completed_tasks,
+              processed_additional_instructions
+            )
           }
         }
       })
