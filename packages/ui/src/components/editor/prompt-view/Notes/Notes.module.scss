@@ -1,0 +1,41 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  border: 0.5px solid var(--cwc-border-color);
+  background-color: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  padding: 5px 7px;
+  border-radius: 10px;
+  cursor: text;
+  box-sizing: border-box;
+
+  &:hover {
+    border-color: var(--cwc-border-color-hover);
+  }
+
+  &:focus-within {
+    border-color: var(--vscode-focusBorder);
+  }
+}
+
+.textarea {
+  outline: none;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.4;
+  min-height: calc(4 * 1.4em);
+  position: relative;
+
+  &--empty::before {
+    content: attr(data-placeholder);
+    position: absolute;
+    color: var(--vscode-input-placeholderForeground);
+    pointer-events: none;
+  }
+}

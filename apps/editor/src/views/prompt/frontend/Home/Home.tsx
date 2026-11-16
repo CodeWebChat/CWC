@@ -14,7 +14,7 @@ import { Tasks as UiTasks } from '@ui/components/editor/prompt-view/Tasks'
 import { use_tasks } from './hooks/use-tasks'
 import { use_notes } from './hooks/use-notes'
 import { use_has_scrolled_past_target_button } from './hooks/use-has-scrolled-past-mode-button'
-import { Textarea as UiTextarea } from '@ui/components/editor/common/Textarea'
+import { Notes as UiNotes } from '@ui/components/editor/prompt-view/Notes'
 import { use_keyboard_shortcuts } from './hooks/use-keyboard-shortcuts'
 import {
   ApiPromptType,
@@ -253,12 +253,10 @@ export const Home: React.FC<Props> = (props) => {
 
   const notes_section = (
     <div className={styles.inner__notes}>
-      <UiTextarea
+      <UiNotes
         value={notes_for_root}
         on_change={(v) => handle_note_change(active_root, v)}
         placeholder={t('home.notes.placeholder')}
-        min_rows={4}
-        blur_on_enter={false}
       />
     </div>
   )
