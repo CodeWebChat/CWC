@@ -11,7 +11,7 @@ export const accept_checkpoint = async (params: {
   extension_context: vscode.ExtensionContext
   checkpoint: Checkpoint
   history_for_checkpoint: ResponseHistoryItem[]
-  created_at_for_preview?: number
+  created_at_for_code_review?: number
 }) => {
   const checkpoints = await load_checkpoints_metadata(params.extension_context)
 
@@ -44,8 +44,8 @@ export const accept_checkpoint = async (params: {
       return
     }
     checkpoint_to_update.trigger = 'response-accepted'
-    checkpoint_to_update.response_preview_item_created_at =
-      params.created_at_for_preview
+    checkpoint_to_update.code_review_item_created_at =
+      params.created_at_for_code_review
 
     try {
       const history_file_path = vscode.Uri.joinPath(

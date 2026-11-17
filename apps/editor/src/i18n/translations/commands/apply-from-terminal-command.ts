@@ -1,22 +1,22 @@
 export const translations = {
   'command.apply-from-terminal-command.disabled-during-preview': {
-    en: 'Applying from terminal is disabled during an active response preview.',
-    pl: 'Aplikowanie z terminala jest niedostępne podczas aktywnego podglądu odpowiedzi.',
-    'zh-cn': '在活动响应预览期间禁用从终端应用。',
-    ja: 'アクティブな応答プレビュー中はターミナルからの適用が無効になります。',
-    'zh-tw': '在活動回應預覽期間，已停用從終端機套用。',
-    de: 'Das Anwenden vom Terminal ist während einer aktiven Antwortvorschau deaktiviert.',
-    es: 'La aplicación desde la terminal está deshabilitada durante una vista previa de respuesta activa.',
-    fr: "L'application depuis le terminal est désactivée pendant un aperçu de réponse actif.",
+    en: 'Applying from terminal is disabled during an active code review.',
+    pl: 'Aplikowanie z terminala jest niedostępne podczas aktywnego przeglądu kodu.',
+    'zh-cn': '在活动代码审查期间禁用从终端应用。',
+    ja: 'アクティブなコードレビュー中はターミナルからの適用が無効になります。',
+    'zh-tw': '在活動程式碼審查期間，已停用從終端機套用。',
+    de: 'Das Anwenden vom Terminal ist während eines aktiven Code-Reviews deaktiviert.',
+    es: 'La aplicación desde la terminal está deshabilitada durante una revisión de código activa.',
+    fr: "L'application depuis le terminal est désactivée pendant une revue de code active.",
     'pt-br':
-      'A aplicação a partir do terminal está desativada durante uma prévia de resposta ativa.',
-    ru: 'Применение из терминала отключено во время активного предварительного просмотра ответа.',
-    ko: '활성 응답 미리보기 중에는 터미널에서 적용할 수 없습니다.',
-    it: "L'applicazione dal terminale è disabilitata durante l'anteprima di una risposta attiva.",
-    tr: 'Aktif yanıt önizlemesi sırasında terminalden uygulama devre dışıdır.',
-    cs: 'Použití z terminálu je během aktivního náhledu odpovědi zakázáno.',
-    hu: 'A terminálból való alkalmazás letiltva van aktív válasz előnézet közben.',
-    bg: 'Прилагането от терминала е деактивирано по време на активен преглед на отговор.'
+      'A aplicação a partir do terminal está desativada durante uma revisão de código ativa.',
+    ru: 'Применение из терминала отключено во время активной проверки кода.',
+    ko: '활성 코드 리뷰 중에는 터미널에서 적용할 수 없습니다.',
+    it: "L'applicazione dal terminale è disabilitata durante una revisione del codice attiva.",
+    tr: 'Aktif kod incelemesi sırasında terminalden uygulama devre dışıdır.',
+    cs: 'Použití z terminálu je během aktivní revize kódu zakázáno.',
+    hu: 'A terminálból való alkalmazás letiltva van aktív kódellenőrzés közben.',
+    bg: 'Прилагането от терминала е деактивирано по време на активен преглед на код.'
   },
   'command.apply-from-terminal-command.warning.no-active-terminal': {
     en: 'No active terminal session.',

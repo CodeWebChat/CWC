@@ -7,7 +7,7 @@ import {
   CliConfigurationDetails,
   WebConfigurationDetails
 } from '@shared/types/response-history-item'
-import { handle_restore_preview } from './handlers/restore-preview-handler'
+import { handle_restore_code_review } from './handlers/restore-code-review-handler'
 import {
   FileItem,
   DiffItem,
@@ -23,7 +23,7 @@ import {
 import { apply_file_relocations } from '../utils/file-operations'
 import { handle_fast_replace } from './handlers/fast-replace-handler'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
-import { FileInPreview } from '@shared/types/file-in-preview'
+import { FileInCodeReview } from '@shared/types/file-in-code-review'
 import { update_undo_button_state } from '../utils/state-manager'
 import { check_for_conflict_markers } from '../utils/file-checks'
 import { handle_search_replace } from './handlers/search-replace-handler'
@@ -48,7 +48,7 @@ export const get_apply_response_output_channel = () => {
   return _apply_response_output_channel
 }
 
-export type PreviewData = {
+export type CodeReviewData = {
   original_states: OriginalFileState[]
   response: string
 }
@@ -60,7 +60,7 @@ export type ApplyResponseArgs = {
     file_path: string
     position: { line: number; character: number }
   }
-  files_with_content?: FileInPreview[]
+  files_with_content?: FileInCodeReview[]
   created_at?: number
   api_configuration_details?: ApiConfigurationDetails
   cli_configuration_details?: CliConfigurationDetails
@@ -77,11 +77,11 @@ export const process_response = async (params: {
   prompt_view_provider: PromptViewProvider
   workspace_provider: WorkspaceProvider
   websocket_manager: WebSocketManager
-}): Promise<PreviewData | null> => {
+}): Promise<CodeReviewData | null> => {
   const on_progress = (progress: number) => {
     params.prompt_view_provider.send_message({
       command: 'SHOW_PROGRESS',
-      title: t('common.progress.response-preview'),
+      title: t('common.progress.code-review'),
       subtitle: t('command.apply-response-command.progress.applying-edits'),
       progress
     })
@@ -90,33 +90,33 @@ export const process_response = async (params: {
   if (params.args?.files_with_content) {
     const files = params.args.files_with_content.filter(
       (f) => f.type === 'file'
-    ) as FileInPreview[]
+    ) as FileInCodeReview[]
     if (files.length > 0) {
       params.workspace_provider.pause_file_watcher()
       let result: { success: boolean; original_states?: OriginalFileState[] }
       try {
-        result = await handle_restore_preview(files)
+        result = await handle_restore_code_review(files)
       } finally {
         params.workspace_provider.resume_file_watcher()
       }
       if (result.success && result.original_states) {
         const augmented_states = result.original_states.map((state) => {
-          const file_in_preview = files.find(
+          const file_in_code_review = files.find(
             (f) =>
               f.file_path === state.file_path &&
               f.workspace_name === state.workspace_name
           )
           return {
             ...state,
-            ai_content: file_in_preview?.ai_content,
+            ai_content: file_in_code_review?.ai_content,
             proposed_content:
-              file_in_preview?.proposed_content ?? file_in_preview?.content,
-            current_content: file_in_preview?.content,
-            is_checked: file_in_preview?.is_checked,
-            apply_failed: file_in_preview?.apply_failed,
+              file_in_code_review?.proposed_content ?? file_in_code_review?.content,
+            current_content: file_in_code_review?.content,
+            is_checked: file_in_code_review?.is_checked,
+            apply_failed: file_in_code_review?.apply_failed,
             applied_with_patch_repair:
-              file_in_preview?.applied_with_patch_repair,
-            added_in_preview: file_in_preview?.added_in_preview
+              file_in_code_review?.applied_with_patch_repair,
+            added_in_code_review: file_in_code_review?.added_in_code_review
           }
         })
         update_undo_button_state({
@@ -148,7 +148,7 @@ export const process_response = async (params: {
 
     const workspace_roots = params.workspace_provider.get_workspace_roots()
 
-    const files_for_preview: {
+    const files_for_code_review: {
       file_path: string
       absolute_path: string
       is_checked: boolean
@@ -205,7 +205,7 @@ export const process_response = async (params: {
         }
 
         local_files.sort((a, b) => natural_sort(a.file_path, b.file_path))
-        files_for_preview.push(...local_files)
+        files_for_code_review.push(...local_files)
       }
     }
 
@@ -213,7 +213,7 @@ export const process_response = async (params: {
       command: 'HIDE_PROGRESS'
     })
 
-    const files_to_prompt = files_for_preview.map((f) => ({
+    const files_to_prompt = files_for_code_review.map((f) => ({
       path: f.absolute_path,
       checked: f.is_checked
     }))

@@ -293,7 +293,7 @@ export class WorkspaceProvider
         const is_now_preview = !!tab.isPreview
 
         if (was_preview && !is_now_preview) {
-          this._handle_file_out_preview(file_path)
+          this._handle_file_out_code_review(file_path)
         }
 
         this._preview_tabs.set(file_path, is_now_preview)
@@ -307,7 +307,7 @@ export class WorkspaceProvider
     }
   }
 
-  private _handle_file_out_preview(file_path: string) {
+  private _handle_file_out_code_review(file_path: string) {
     const workspace_root = this.get_workspace_root_for_file(file_path)
     if (!workspace_root) return
 

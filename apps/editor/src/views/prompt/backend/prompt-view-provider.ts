@@ -898,8 +898,8 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
             message.command === 'CANCEL_PATCH_REPAIR_FILE_IN_PREVIEW'
           ) {
             handlers.handle_cancel_patch_repair_file_in_preview(this, message)
-          } else if (message.command === 'RESPONSE_PREVIEW') {
-            await handlers.handle_response_preview(message)
+          } else if (message.command === 'CODE_REVIEW') {
+            await handlers.handle_code_review(message)
           } else if (message.command === 'REMOVE_RESPONSE_HISTORY_ITEM') {
             this.response_history = this.response_history.filter(
               (item) => item.created_at !== message.created_at

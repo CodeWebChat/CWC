@@ -10,7 +10,7 @@ import { get_checkpoint_path, get_incremented_description } from '../utils'
 import { create_workspace_snapshot } from '@/utils/workspace-snapshot'
 import { Logger } from '@shared/utils/logger'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
-import { response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
+import { code_review_promise_resolve } from '@/features/apply-response/utils/code-review'
 import { t } from '@/i18n'
 import { get_error_message } from '@/utils/get-error-message'
 import { save_checkpoints_metadata } from '../utils/checkpoints-metadata'
@@ -144,7 +144,7 @@ export const create_checkpoint = async (params: {
         })
       }
 
-      if (trigger === 'manual' && !response_preview_promise_resolve) {
+      if (trigger === 'manual' && !code_review_promise_resolve) {
         try {
           const history_file_path = vscode.Uri.joinPath(
             vscode.Uri.file(checkpoint_dir_path),

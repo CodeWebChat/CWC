@@ -200,7 +200,7 @@ export const use_prompt = (vscode: any) => {
         set_is_modern_ui(message.is_modern_ui)
       } else if (message.command === 'API_CONFIGURATIONS') {
         set_api_configurations((message as any).configurations)
-      } else if (message.command === 'RESPONSE_PREVIEW_FINISHED') {
+      } else if (message.command === 'CODE_REVIEW_FINISHED') {
         setTimeout(() => {
           set_chat_input_focus_key((k) => k + 1)
         }, 100)

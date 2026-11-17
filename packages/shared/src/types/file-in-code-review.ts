@@ -1,4 +1,4 @@
-export type FileInPreview = {
+export type FileInCodeReview = {
   type: 'file'
   file_path: string
   is_checked: boolean
@@ -16,24 +16,24 @@ export type FileInPreview = {
   apply_progress?: number
   apply_tokens_per_second?: number
   applied_with_patch_repair?: boolean
-  added_in_preview?: boolean
+  added_in_code_review?: boolean
   is_pure_rename?: boolean
   renamed_from?: string
   renamed_from_workspace?: string
 }
 
-export type TextContentInPreview = {
+export type TextContentInCodeReview = {
   type: 'text'
   content: string
 }
 
-export type InlineFileInPreview = {
+export type InlineFileInCodeReview = {
   type: 'inline-file'
   content: string
   language?: string
 }
 
-export type ItemInPreview =
-  | FileInPreview
-  | TextContentInPreview
-  | InlineFileInPreview
+export type ItemInCodeReview =
+  | FileInCodeReview
+  | TextContentInCodeReview
+  | InlineFileInCodeReview

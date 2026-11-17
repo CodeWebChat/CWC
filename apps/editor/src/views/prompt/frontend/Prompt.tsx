@@ -8,7 +8,7 @@ import { Home } from './Home'
 import styles from './Prompt.module.scss'
 import cn from 'classnames'
 import { post_message } from './utils/post-message'
-import { ResponsePreview as UiResponsePreview } from '@ui/components/editor/prompt-view/ResponsePreview'
+import { CodeReview as UiCodeReview } from '@ui/components/editor/prompt-view/CodeReview'
 import { Modal as UiModal } from '@ui/components/editor/prompt-view/modals/Modal'
 import { ProgressModal as UiProgressModal } from '@ui/components/editor/prompt-view/modals/ProgressModal'
 import { QRCodeModal as UiQRCodeModal } from '@ui/components/editor/prompt-view/modals/QRCodeModal'
@@ -17,13 +17,13 @@ import { use_panel } from './hooks/use-prompt'
 import { LayoutContext } from './contexts/LayoutContext'
 import { ResponseHistoryItem } from '@shared/types/response-history-item'
 import { Layout } from './components/Layout/Layout'
-import { ResponsePreviewFooter as UiResponsePreviewFooter } from '@ui/components/editor/prompt-view/ResponsePreviewFooter'
+import { CodeReviewFooter as UiCodeReviewFooter } from '@ui/components/editor/prompt-view/CodeReviewFooter'
 import { RecentDonations as UiRecentDonations } from '@ui/components/editor/prompt-view/RecentDonations/RecentDonations'
 import { use_recent_donations } from './hooks/use-recent-donations'
 import { RecentDonationsFooter } from './components/recent-donations/RecentDonationsFooter'
 import { use_modal_manager } from './hooks/use-modal-manager'
 import { use_response_history } from './hooks/use-response-history'
-import { use_preview_manager } from './hooks/use-preview-manager'
+import { use_code_review_manager } from './hooks/use-code-review-manager'
 import { use_editor_sync } from './hooks/use-editor-sync'
 import { use_web_configuration_editing } from './hooks/use-web-configuration-editing'
 import { use_api_configuration_editing } from './hooks/use-api-configuration-editing'
@@ -110,7 +110,7 @@ export const Prompt = () => {
     cli_configuration_details,
     web_configuration_details,
     is_from_agentic_cli
-  } = use_preview_manager(vscode)
+  } = use_code_review_manager(vscode)
 
   const {
     response_history,
@@ -190,7 +190,7 @@ export const Prompt = () => {
           padding: '4px 12px 4px 18px'
         }}
       >
-        You have not yet opened a folder.
+        {t('configurations.no-folder-opened')}
       </div>
     )
   }
@@ -461,11 +461,11 @@ export const Prompt = () => {
               footer_slot={
                 <div className={styles['edit-web-configuration-footer']}>
                   <UiButton on_click={edit_web_configuration_save_handler}>
-                    Save
+                    {t('configurations.save')}
                   </UiButton>
                 </div>
               }
-              title="Edit Chatbot"
+              title={t('configurations.edit-chatbot')}
               header_slot={
                 <UiTextButton
                   on_click={handle_preview_web_configuration}
@@ -474,7 +474,7 @@ export const Prompt = () => {
                     (web_prompt_type === 'edit' && selected_files.length === 0)
                   }
                 >
-                  Preview
+                  {t('code-review.title')}
                 </UiTextButton>
               }
             >
@@ -514,11 +514,11 @@ export const Prompt = () => {
               footer_slot={
                 <div className={styles['edit-web-configuration-footer']}>
                   <UiButton on_click={edit_api_configuration_save_handler}>
-                    Save
+                    {t('configurations.save')}
                   </UiButton>
                 </div>
               }
-              title="Edit Model"
+              title={t('configurations.edit-model')}
             >
               <EditApiConfigurationForm
                 api_configuration={updating_api_configuration}
@@ -560,11 +560,11 @@ export const Prompt = () => {
               footer_slot={
                 <div className={styles['edit-web-configuration-footer']}>
                   <UiButton on_click={edit_cli_configuration_save_handler}>
-                    Save
+                    {t('configurations.save')}
                   </UiButton>
                 </div>
               }
-              title="Edit Agent"
+              title={t('configurations.edit-agent')}
             >
               <EditCliConfigurationForm
                 cli_configuration={updating_cli_configuration}
@@ -612,15 +612,15 @@ export const Prompt = () => {
         {items_in_preview && (
           <div className={styles.slot}>
             <UiPage
-              title="Response Preview"
+              title={t('code-review.title')}
               on_back_click={() => {
-                post_message(vscode, { command: 'RESPONSE_PREVIEW', files: [] })
+                post_message(vscode, { command: 'CODE_REVIEW', files: [] })
               }}
               footer_slot={
-                <UiResponsePreviewFooter
+                <UiCodeReviewFooter
                   on_back={() => {
                     post_message(vscode, {
-                      command: 'RESPONSE_PREVIEW',
+                      command: 'CODE_REVIEW',
                       files: []
                     })
                   }}
@@ -634,7 +634,7 @@ export const Prompt = () => {
                     }
                     set_selected_history_item_created_at(undefined)
                     post_message(vscode, {
-                      command: 'RESPONSE_PREVIEW',
+                      command: 'CODE_REVIEW',
                       files: [],
                       created_at: preview_item_created_at
                     })
@@ -646,7 +646,7 @@ export const Prompt = () => {
                     set_response_history([])
                     set_selected_history_item_created_at(undefined)
                     post_message(vscode, {
-                      command: 'RESPONSE_PREVIEW',
+                      command: 'CODE_REVIEW',
                       files: accepted_files,
                       created_at: preview_item_created_at
                     })
@@ -662,21 +662,21 @@ export const Prompt = () => {
                 />
               }
             >
-              <UiResponsePreview
+              <UiCodeReview
                 items={items_in_preview}
                 raw_instructions={raw_instructions}
                 translations={{
                   failed_to_apply_changes_to_file: t(
-                    'response-preview.failed-to-apply-changes-to-file'
+                    'code-review.failed-to-apply-changes-to-file'
                   ),
                   files_failed_to_apply_changes: t(
-                    'response-preview.files-failed-to-apply-changes'
+                    'code-review.files-failed-to-apply-changes'
                   ),
                   files_applied_with_fallback: t(
-                    'response-preview.files-applied-with-fallback'
+                    'code-review.files-applied-with-fallback'
                   ),
-                  fix: t('response-preview.fix'),
-                  fix_all: t('response-preview.fix-all')
+                  fix: t('code-review.fix'),
+                  fix_all: t('code-review.fix-all')
                 }}
                 api_configuration_details={api_configuration_details}
                 cli_configuration_details={cli_configuration_details}
@@ -770,7 +770,7 @@ export const Prompt = () => {
                       post_message(vscode, { command: 'PREVIEW_SWITCH_CHOICE' })
                     }}
                   >
-                    Close
+                    {t('configurations.close')}
                   </UiButton>
                   <UiButton
                     on_click={() => {
@@ -781,7 +781,7 @@ export const Prompt = () => {
                       })
                     }}
                   >
-                    Switch
+                    {t('configurations.switch')}
                   </UiButton>
                 </>
               }

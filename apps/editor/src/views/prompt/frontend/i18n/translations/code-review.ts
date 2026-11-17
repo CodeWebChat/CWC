@@ -1,5 +1,19 @@
-export const response_preview = {
-  'response-preview.failed-to-apply-changes-to-file': {
+export const code_review = {
+  'code-review.title': {
+    en: 'Code Review',
+    pl: 'Przegląd kodu',
+    zh: '代码审查',
+    es: 'Revisión de código',
+    de: 'Code-Überprüfung',
+    fr: 'Revue de code',
+    ja: 'コードレビュー',
+    ko: '코드 리뷰',
+    pt: 'Revisão de código',
+    ru: 'Обзор кода',
+    it: 'Revisione del codice',
+    tr: 'Kod İncelemesi'
+  },
+  'code-review.failed-to-apply-changes-to-file': {
     en: 'Failed to apply changes to the file',
     pl: 'Nie udało się zastosować zmian w pliku',
     zh: '无法将更改应用到文件',
@@ -13,7 +27,7 @@ export const response_preview = {
     it: 'Impossibile applicare le modifiche al file',
     tr: 'Değişiklikler dosyaya uygulanamadı'
   },
-  'response-preview.files-failed-to-apply-changes': {
+  'code-review.files-failed-to-apply-changes': {
     en: '{error_count} of {total_count} files failed to apply changes',
     pl: 'Nie udało się zastosować zmian w {error_count} z {total_count} plików',
     zh: '{total_count} 个文件中有 {error_count} 个无法应用更改',
@@ -27,7 +41,7 @@ export const response_preview = {
     it: 'Impossibile applicare le modifiche a {error_count} di {total_count} file',
     tr: '{total_count} dosyadan {error_count} tanesine değişiklikler uygulanamadı'
   },
-  'response-preview.files-applied-with-fallback': {
+  'code-review.files-applied-with-fallback': {
     en: '{count} of {total_count} files applied with fallback method',
     pl: 'Zastosowano metodą awaryjną w {count} z {total_count} plików',
     zh: '{total_count} 个文件中有 {count} 个使用了备用方法应用',
@@ -41,7 +55,7 @@ export const response_preview = {
     it: '{count} di {total_count} file applicati con metodo alternativo',
     tr: '{total_count} dosyadan {count} tanesi yedek yöntemle uygulandı'
   },
-  'response-preview.fix': {
+  'code-review.fix': {
     en: 'Fix',
     pl: 'Napraw',
     zh: '修复',
@@ -55,7 +69,7 @@ export const response_preview = {
     it: 'Correggi',
     tr: 'Düzelt'
   },
-  'response-preview.fix-all': {
+  'code-review.fix-all': {
     en: 'Fix all',
     pl: 'Napraw wszystkie',
     zh: '全部修复',

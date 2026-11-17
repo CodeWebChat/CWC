@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { use_compacting } from '@shared/hooks'
 import { Button } from '../../common/Button'
-import styles from './ResponsePreviewFooter.module.scss'
+import styles from './CodeReviewFooter.module.scss'
 
 type Props = {
   on_back: () => void
@@ -10,7 +10,7 @@ type Props = {
   is_accept_disabled: boolean
 }
 
-export const ResponsePreviewFooter: React.FC<Props> = (props) => {
+export const CodeReviewFooter: React.FC<Props> = (props) => {
   const { container_ref, compact_step } = use_compacting()
   const [is_accept_focused, set_is_accept_focused] = useState(false)
 

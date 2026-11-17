@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import * as os from 'os'
 import * as fs from 'fs'
 import * as path from 'path'
-import { get_response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
+import { get_code_review_promise_resolve } from '@/features/apply-response/utils/code-review'
 import { apply_response } from '@/features/apply-response/apply-response'
 import { t } from '@/i18n'
 import { generate_diff_markdown } from '../utils/agentic-cli-invocation/utils/generate-diff-markdown'
@@ -79,7 +79,7 @@ export const apply_from_terminal_command = (): vscode.Disposable => {
   return vscode.commands.registerCommand(
     'codeWebChat.applyFromTerminal',
     async () => {
-      if (get_response_preview_promise_resolve()) {
+      if (get_code_review_promise_resolve()) {
         vscode.window.showInformationMessage(
           t('command.apply-from-terminal-command.disabled-during-preview')
         )

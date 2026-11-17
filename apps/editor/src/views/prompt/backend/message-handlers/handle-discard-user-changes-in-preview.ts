@@ -1,4 +1,4 @@
-import { discard_user_changes_in_preview } from '@/features/apply-response/utils/preview'
+import { discard_user_changes_in_preview } from '@/features/apply-response/utils/code-review'
 import { DiscardUserChangesInPreviewMessage } from '../../types/messages'
 
 export const handle_discard_user_changes_in_preview = async (

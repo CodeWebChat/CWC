@@ -88,7 +88,7 @@ export const prepare_files_from_original_states = async (params: {
         !file_exists &&
         state.content !== '')
 
-    const previewable_file: PreviewableFile = {
+    const reviewable_file: PreviewableFile = {
       type: 'file',
       file_path: state.file_path,
       content: current_content,
@@ -108,14 +108,14 @@ export const prepare_files_from_original_states = async (params: {
       apply_failed: state.apply_failed,
       ai_content: state.ai_content,
       applied_with_patch_repair: state.applied_with_patch_repair,
-      added_in_preview: state.added_in_preview,
+      added_in_code_review: state.added_in_code_review,
       is_pure_rename: state.is_pure_rename,
       renamed_from: state.file_path_to_restore,
       renamed_from_workspace: state.restore_workspace_name
     }
 
     prepared_files.push({
-      previewable_file,
+      reviewable_file,
       sanitized_path: sanitized_file_path,
       original_content: original_content_for_diff,
       original_uri,
@@ -154,7 +154,7 @@ export const prepare_files_from_original_states = async (params: {
         new_content: restored_current_content
       })
 
-      const restored_previewable_file: PreviewableFile = {
+      const restored_reviewable_file: PreviewableFile = {
         type: 'file',
         file_path: state.file_path_to_restore,
         content: restored_current_content,
@@ -168,7 +168,7 @@ export const prepare_files_from_original_states = async (params: {
       }
 
       prepared_files.push({
-        previewable_file: restored_previewable_file,
+        reviewable_file: restored_reviewable_file,
         sanitized_path: restored_sanitized_file_path,
         original_content: state.content,
         original_uri: restored_original_uri,
