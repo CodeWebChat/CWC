@@ -224,6 +224,92 @@ export namespace CommitMessageDetails {
     }
   }
 
+  export const clean_up_stale_data = (params: {
+    extension_context: vscode.ExtensionContext
+    repository: {
+      rootUri: vscode.Uri
+      state: {
+        indexChanges: any[]
+        workingTreeChanges: any[]
+        mergeChanges: any[]
+      }
+    }
+  }) => {
+    const workspace_root = params.repository.rootUri.fsPath
+    const all_prompts = load_all(params.extension_context)
+    if (!all_prompts[workspace_root]) return
+
+    const current_changes = new Set<string>()
+    const all_git_changes = [
+      ...(params.repository.state.indexChanges || []),
+      ...(params.repository.state.workingTreeChanges || []),
+      ...(params.repository.state.mergeChanges || [])
+    ]
+
+    for (const change of all_git_changes) {
+      if (change.uri) {
+        const relative_path = normalize_path(
+          path.relative(workspace_root, change.uri.fsPath)
+        )
+        current_changes.add(relative_path)
+      }
+      if (change.originalUri) {
+        const original_relative_path = normalize_path(
+          path.relative(workspace_root, change.originalUri.fsPath)
+        )
+        current_changes.add(original_relative_path)
+      }
+    }
+
+    let changed = false
+    const original_length = all_prompts[workspace_root].length
+
+    all_prompts[workspace_root] = all_prompts[workspace_root]
+      .map((p) => {
+        const filter_fn = (f: string) => {
+          const rel_path = path.isAbsolute(f)
+            ? normalize_path(path.relative(workspace_root, f))
+            : normalize_path(f)
+          return current_changes.has(rel_path)
+        }
+
+        const filtered_files = p.files.filter(filter_fn)
+        const filtered_selected_files = (p.selected_files || []).filter(
+          filter_fn
+        )
+
+        if (
+          filtered_files.length !== p.files.length ||
+          filtered_selected_files.length !== (p.selected_files || []).length
+        ) {
+          changed = true
+          return {
+            ...p,
+            files: filtered_files,
+            selected_files: filtered_selected_files
+          }
+        }
+        return p
+      })
+      .filter((p) => p.files.length > 0)
+
+    if (all_prompts[workspace_root].length !== original_length) {
+      changed = true
+    }
+
+    if (all_prompts[workspace_root].length === 0) {
+      delete all_prompts[workspace_root]
+      changed = true
+    }
+
+    if (changed) {
+      save_all({
+        extension_context: params.extension_context,
+        prompts: all_prompts
+      })
+    }
+  }
+
   export const remove_committed_files = (params: {
     extension_context: vscode.ExtensionContext
     workspace_root: string

@@ -35,19 +35,26 @@ export const setup_git_discard_file_watcher = (
             )
             current_changes.add(relative_path)
           }
+          if (change.originalUri) {
+            const original_relative_path = normalize_path(
+              path.relative(workspace_root, change.originalUri.fsPath)
+            )
+            current_changes.add(original_relative_path)
+          }
         }
 
         const previous_changes = repo_states.get(workspace_root)
 
         if (previous_changes) {
-          for (const prev_change of previous_changes) {
-            if (!current_changes.has(prev_change)) {
-              CommitMessageDetails.remove_file_path({
-                extension_context,
-                file_path: prev_change,
-                workspace_root
-              })
-            }
+          const has_removed_files = Array.from(previous_changes).some(
+            (prev_change) => !current_changes.has(prev_change)
+          )
+
+          if (has_removed_files) {
+            CommitMessageDetails.clean_up_stale_data({
+              extension_context,
+              repository: repo
+            })
           }
         }
 

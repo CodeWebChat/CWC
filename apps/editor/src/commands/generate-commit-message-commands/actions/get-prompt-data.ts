@@ -24,6 +24,12 @@ export const get_prompt_data = async (params: {
 }) => {
   await vscode.workspace.saveAll()
   await params.repository.status()
+
+  CommitMessageDetails.clean_up_stale_data({
+    extension_context: params.extension_context,
+    repository: params.repository
+  })
+
   const current_empty_stage =
     (params.repository.state.indexChanges || []).length === 0
   const was_empty_stage = current_empty_stage || !!params.files_staged_by_action

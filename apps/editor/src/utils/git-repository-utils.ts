@@ -23,6 +23,7 @@ export type GitRepository = {
   state: {
     indexChanges: any[]
     workingTreeChanges: any[]
+    mergeChanges: any[]
   }
   add: (files: string[]) => Promise<void>
   status: () => Promise<void>
