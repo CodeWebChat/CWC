@@ -331,7 +331,7 @@ export const history_command = (params: {
               params.extension_context.workspaceState.get<Checkpoint>(
                 TEMPORARY_CHECKPOINT_STATE_KEY
               )
-            if (!checkpoints.some((c) => !c.is_pinned) && !temp_checkpoint) {
+            if (checkpoints.length === 0 && !temp_checkpoint) {
               vscode.window.showInformationMessage(
                 t('command.history-command.info.nothing-to-delete')
               )

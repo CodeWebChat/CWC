@@ -12,13 +12,8 @@ export const clear_all_checkpoints = async (
 ) => {
   const clear_task = async () => {
     const checkpoints = await get_checkpoints(extension_context)
-    const checkpoints_to_keep: Checkpoint[] = []
 
     for (const checkpoint of checkpoints) {
-      if (checkpoint.is_pinned) {
-        checkpoints_to_keep.push(checkpoint)
-        continue
-      }
       try {
         const checkpoint_path = get_checkpoint_path(
           checkpoint.timestamp,
@@ -60,7 +55,7 @@ export const clear_all_checkpoints = async (
       undefined
     )
 
-    await save_checkpoints_metadata(extension_context, checkpoints_to_keep)
+    await save_checkpoints_metadata(extension_context, [])
   }
   await vscode.window.withProgress(
     {
