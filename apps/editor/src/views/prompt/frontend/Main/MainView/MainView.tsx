@@ -161,6 +161,8 @@ type Props = {
   on_clear_completed_tasks: () => void
   has_update?: boolean
   targets_order: Target[]
+  can_apply_from_terminal: boolean
+  clipboard_has_applicable_response: boolean
 }
 
 const chatbot_to_icon: Record<keyof typeof CHATBOTS, Icon.Variant> = {
@@ -430,6 +432,46 @@ export const MainView: React.FC<Props> = (props) => {
                 on_click: !props.setup_progress!.has_provider
                   ? props.on_manage_providers
                   : props.on_manage_models
+              }
+            ]}
+          />
+          <UiSpacer height={6} />
+        </>
+      )}
+
+      {props.target === 'WEB' && props.clipboard_has_applicable_response && (
+        <>
+          <UiStatusBar
+            icon="codicon-clippy"
+            label={t('prompt-field.clipboard-has-applicable-response')}
+            actions={[
+              {
+                id: 'apply',
+                icon: 'codicon-sparkle',
+                label: t('prompt-field.action.apply'),
+                title: t('prompt-field.action.apply'),
+                on_click: () =>
+                  props.on_quick_action_click('codeWebChat.applyFromClipboard')
+              }
+            ]}
+          />
+          <UiSpacer height={6} />
+        </>
+      )}
+
+      {props.target === 'CLI' && props.can_apply_from_terminal && (
+        <>
+          <UiStatusBar
+            icon="codicon-terminal"
+            label={t('prompt-field.apply-from-terminal')}
+            actions={[
+              {
+                id: 'apply',
+                icon: 'codicon-sparkle',
+                label: t('prompt-field.action.apply'),
+                title: t('prompt-field.action.apply'),
+                on_click: () =>
+                  props.on_quick_action_click('codeWebChat.applyFromTerminal')
               }
             ]}
           />

@@ -1,5 +1,6 @@
 import { translations as generate_commit_message_command } from './generate-commit-message-command'
 import { translations as code_at_cursor_command } from './code-at-cursor-command'
+import { translations as apply_from_clipboard_command } from './apply-from-clipboard-command'
 import { translations as apply_response_command } from './apply-response-command'
 import { translations as restore_context_command } from './restore-context-command'
 import { translations as save_context_command } from './save-context-command'
@@ -31,6 +32,7 @@ export const translations = {
   ...apply_from_terminal_command,
   ...generate_commit_message_command,
   ...code_at_cursor_command,
+  ...apply_from_clipboard_command,
   ...apply_response_command,
   ...restore_context_command,
   ...save_context_command,

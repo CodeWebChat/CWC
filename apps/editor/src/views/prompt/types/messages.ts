@@ -694,9 +694,27 @@ export interface SaveTargetsOrderMessage extends BaseMessage {
   targets_order: Target[]
 }
 
+export interface GetCanApplyFromTerminalMessage extends BaseMessage {
+  command: 'GET_CAN_APPLY_FROM_TERMINAL'
+}
+
+export interface GetClipboardHasApplicableResponseMessage extends BaseMessage {
+  command: 'GET_CLIPBOARD_HAS_APPLICABLE_RESPONSE'
+}
+
 export interface TargetsOrderMessage extends BaseMessage {
   command: 'TARGETS_ORDER'
   targets_order: Target[]
+}
+
+export interface CanApplyFromTerminalMessage extends BaseMessage {
+  command: 'CAN_APPLY_FROM_TERMINAL'
+  can_apply: boolean
+}
+
+export interface ClipboardHasApplicableResponseMessage extends BaseMessage {
+  command: 'CLIPBOARD_HAS_APPLICABLE_RESPONSE'
+  value: boolean
 }
 
 export type FrontendMessage =
@@ -818,6 +836,8 @@ export type FrontendMessage =
   | GetUpdateInfoMessage
   | GetTargetsOrderMessage
   | SaveTargetsOrderMessage
+  | GetCanApplyFromTerminalMessage
+  | GetClipboardHasApplicableResponseMessage
 
 // === FROM BACKEND TO FRONTEND ===
 export interface InstructionsMessage extends BaseMessage {
@@ -1164,3 +1184,5 @@ export type BackendMessage =
   | CompletedTasksMessage
   | UpdateInfoMessage
   | TargetsOrderMessage
+  | CanApplyFromTerminalMessage
+  | ClipboardHasApplicableResponseMessage

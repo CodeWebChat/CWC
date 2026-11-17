@@ -71,42 +71,5 @@ export const translations = {
     cs: 'V terminálovém sandboxu nebyly nalezeny žádné změny.',
     hu: 'Nem találhatók változások a terminál homokozójában.',
     bg: 'Не са намерени промени в пясъчника на терминала.'
-  },
-  'command.apply-from-terminal-command.info.agent-started-edits': {
-    en: 'Agent started making edits in sandbox. Apply to the workspace once finished.',
-    pl: 'Agent rozpoczął wprowadzanie zmian w piaskownicy. Zastosuj do obszaru roboczego po zakończeniu.',
-    'zh-cn': '代理已开始在沙盒中进行编辑。完成后请应用到工作区。',
-    ja: 'エージェントがサンドボックスで編集を開始しました。完了したらワークスペースに適用してください。',
-    'zh-tw': '代理已開始在沙盒中進行編輯。完成後請套用到工作區。',
-    de: 'Der Agent hat mit der Bearbeitung in der Sandbox begonnen. Nach Abschluss auf den Arbeitsbereich anwenden.',
-    es: 'El agente comenzó a realizar ediciones en el sandbox. Aplícalo al espacio de trabajo una vez finalizado.',
-    fr: "L'agent a commencé à effectuer des modifications dans la sandbox. Appliquez-les à l'espace de travail une fois terminé.",
-    'pt-br':
-      'O agente começou a fazer edições no sandbox. Aplique ao espaço de trabalho quando terminar.',
-    ru: 'Агент начал вносить изменения в песочнице. Примените их к рабочей области после завершения.',
-    ko: '에이전트가 샌드박스에서 편집을 시작했습니다. 완료되면 작업 영역에 적용하세요.',
-    it: "L'agente ha iniziato ad apportare modifiche nella sandbox. Applica all'area di lavoro una volta terminato.",
-    tr: 'Ajan sandbox üzerinde düzenleme yapmaya başladı. Tamamlandığında çalışma alanına uygulayın.',
-    cs: 'Agent začal provádět úpravy v sandboxu. Po dokončení je použijte na pracovní prostor.',
-    hu: 'Az ügynök megkezdte a szerkesztést a homokozóban. Ha végzett, alkalmazza a munkaterületre.',
-    bg: 'Агентът започна да прави редакции в пясъчника. Приложете към работното пространство, след като приключи.'
-  },
-  'command.apply-from-terminal-command.action.apply': {
-    en: 'Apply',
-    pl: 'Zastosuj',
-    'zh-cn': '应用',
-    ja: '適用',
-    'zh-tw': '套用',
-    de: 'Anwenden',
-    es: 'Aplicar',
-    fr: 'Appliquer',
-    'pt-br': 'Aplicar',
-    ru: 'Применить',
-    ko: '적용',
-    it: 'Applica',
-    tr: 'Uygula',
-    cs: 'Použít',
-    hu: 'Alkalmaz',
-    bg: 'Прилагане'
   }
 } as const
