@@ -97,7 +97,7 @@ export namespace PromptBuilder {
         const tasks_str = params.completed_tasks
           .map((t) => `- [x] ${t}`)
           .join('\n')
-        top_sys += `# Past task instructions\n\n${tasks_str}\n\n`
+        top_sys += `# Past tasks\n\n${tasks_str}\n\n`
       }
     }
 
@@ -164,8 +164,8 @@ export namespace PromptBuilder {
       const tasks_str = params.completed_tasks
         .map((t) => `- [x] ${t}`)
         .join('\n')
-      part2 += `# Past task instructions\n\n${tasks_str}\n\n`
-      full_prompt += `# Past task instructions\n\n${tasks_str}\n\n`
+      part2 += `# Past tasks\n\n${tasks_str}\n\n`
+      full_prompt += `# Past tasks\n\n${tasks_str}\n\n`
     }
 
     if (part1.length > 0 || part2.length > 0 || full_prompt.length > 0) {

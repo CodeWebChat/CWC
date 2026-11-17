@@ -155,17 +155,16 @@ export const PromptField: React.FC<PromptField.Props> = (props) => {
   const [is_checkbox_hovered, set_is_checkbox_hovered] = useState(false)
   const [is_completed_tasks_expanded, set_is_completed_tasks_expanded] =
     useState(false)
+  const { is_alt_pressed, is_left_alt_pressed_ref, handle_container_key_down } =
+    use_keyboard_shortcuts(props)
 
   const container_inner_ref = useRef<HTMLDivElement>(null)
   const tabs_ref = useRef<TabsRef>(null)
-
+  const is_mark_as_complete_disabled = !props.value.trim()
   const has_content =
     !!props.value ||
     !!(props.selected_files && props.selected_files.length > 0) ||
     props.completed_tasks.length > 0
-
-  const { is_alt_pressed, is_left_alt_pressed_ref, handle_container_key_down } =
-    use_keyboard_shortcuts(props)
 
   const {
     is_dropdown_open,
@@ -346,12 +345,20 @@ export const PromptField: React.FC<PromptField.Props> = (props) => {
                       className={styles['checkbox-wrapper']}
                       style={{ visibility: 'hidden' }}
                     >
-                      {is_alt_pressed ? (
+                      {is_alt_pressed && !is_mark_as_complete_disabled ? (
                         <KeycapWrapper char="C">
-                          <Checkbox checked={false} on_change={() => {}} />
+                          <Checkbox
+                            checked={false}
+                            disabled={is_mark_as_complete_disabled}
+                            on_change={() => {}}
+                          />
                         </KeycapWrapper>
                       ) : (
-                        <Checkbox checked={false} on_change={() => {}} />
+                        <Checkbox
+                          checked={false}
+                          disabled={is_mark_as_complete_disabled}
+                          on_change={() => {}}
+                        />
                       )}
                     </div>
                   )}
@@ -391,17 +398,18 @@ export const PromptField: React.FC<PromptField.Props> = (props) => {
                   onMouseEnter={() => set_is_checkbox_hovered(true)}
                   onMouseLeave={() => set_is_checkbox_hovered(false)}
                 >
-                  {is_checkbox_hovered && (
+                  {is_checkbox_hovered && !is_mark_as_complete_disabled && (
                     <Tooltip
                       message={props.translations.mark_as_complete}
                       position="right"
                       align="center"
                     />
                   )}
-                  {is_alt_pressed ? (
+                  {is_alt_pressed && !is_mark_as_complete_disabled ? (
                     <KeycapWrapper char="C">
                       <Checkbox
                         checked={false}
+                        disabled={is_mark_as_complete_disabled}
                         on_change={() => {
                           props.on_task_completed!()
                         }}
@@ -410,6 +418,7 @@ export const PromptField: React.FC<PromptField.Props> = (props) => {
                   ) : (
                     <Checkbox
                       checked={false}
+                      disabled={is_mark_as_complete_disabled}
                       on_change={() => {
                         props.on_task_completed!()
                       }}

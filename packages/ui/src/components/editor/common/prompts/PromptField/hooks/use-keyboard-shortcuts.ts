@@ -333,7 +333,7 @@ export const use_keyboard_shortcuts = (props: PromptField.Props) => {
       !e.metaKey &&
       !e.shiftKey
     ) {
-      if (props.on_task_completed) {
+      if (props.on_task_completed && props.value.trim()) {
         e.stopPropagation()
         e.preventDefault()
         props.on_task_completed()
