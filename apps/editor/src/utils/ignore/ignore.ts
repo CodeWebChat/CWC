@@ -1,8 +1,3 @@
-export type Ignore_Options = {
-  /** Match case-insensitively. Defaults to `true`, like the `ignore` package. */
-  ignore_case?: boolean
-}
-
 type Rule = {
   regex: RegExp
   negative: boolean
@@ -24,7 +19,6 @@ const has_trailing_backslash = (text: string): boolean => {
   return count % 2 === 1
 }
 
-// Trailing spaces are dropped unless the last one is escaped with a backslash.
 const trim_trailing_spaces = (line: string): string => {
   let end = line.length
   while (end > 0 && line[end - 1] === ' ') end--
@@ -38,8 +32,6 @@ const trim_trailing_spaces = (line: string): string => {
   return line.slice(0, end)
 }
 
-// Translates the bracket expression starting at `glob[start] === '['`.
-// Returns `undefined` when it is never closed, which makes the rule match nothing.
 const parse_bracket = (
   glob: string,
   start: number
@@ -58,9 +50,7 @@ const parse_bracket = (
   while (i < glob.length) {
     let char = glob[i]
 
-    // A `]` right after `[` or `[!` is a literal member, not the terminator
     if (char === ']' && !is_first) {
-      // A bracket expression never matches a path separator
       const source = negated
         ? `[^/${members}]`
         : members
@@ -84,7 +74,6 @@ const parse_bracket = (
         i++
         if (to === undefined) return undefined
       }
-      // An out-of-order range matches nothing (and is a syntax error in JS)
       if (char <= to) {
         members += `${escape_member(char)}-${escape_member(to)}`
       }
@@ -98,7 +87,6 @@ const parse_bracket = (
   return undefined
 }
 
-// Translates a glob (no leading slash, no trailing slash) to a regex source.
 const glob_to_source = (glob: string): string | undefined => {
   let source = ''
   let i = 0
@@ -118,11 +106,9 @@ const glob_to_source = (glob: string): string | undefined => {
 
       if (end - i >= 2 && at_segment_start && at_segment_end) {
         if (end === glob.length) {
-          // trailing `/**` matches everything inside, but not the folder itself
           source += `${ANY}+`
           i = end
         } else {
-          // `**/` matches zero or more directories
           source += `(?:${ANY}*/)?`
           i = end + 1
         }
@@ -154,7 +140,6 @@ const parse_rule = (raw: string, ignore_case: boolean): Rule | undefined => {
   const negative = body.startsWith('!')
   if (negative) body = body.slice(1)
 
-  // `\!foo` and `\#foo` are literal patterns
   body = body.replace(/^\\([!#])/, '$1')
 
   const dir_only = body.endsWith('/')
@@ -162,8 +147,6 @@ const parse_rule = (raw: string, ignore_case: boolean): Rule | undefined => {
 
   if (!body || has_trailing_backslash(body)) return undefined
 
-  // A separator at the beginning or middle anchors the pattern to the root,
-  // otherwise it can match at any depth.
   const anchored = body.includes('/')
   if (body.startsWith('/')) body = body.slice(1)
   if (!body) return undefined
@@ -180,18 +163,12 @@ const parse_rule = (raw: string, ignore_case: boolean): Rule | undefined => {
   }
 }
 
-/**
- * Minimal gitignore matcher.
- *
- * Paths must be relative to the directory the rules belong to. Pass a trailing
- * slash for directories (`dir/`), since a rule like `dir/` only matches those.
- */
 export class Ignore {
   private _rules: Rule[] = []
   private _cache = new Map<string, boolean>()
   private _ignore_case: boolean
 
-  constructor(options?: Ignore_Options) {
+  constructor(options?: { ignore_case?: boolean }) {
     this._ignore_case = options?.ignore_case ?? true
   }
 
@@ -214,8 +191,6 @@ export class Ignore {
     const is_dir = normalized.endsWith('/')
     const segments = normalized.split('/').filter(Boolean)
 
-    // Walk down from the top: once a parent directory is ignored, everything
-    // below it is ignored and can't be re-included.
     let current = ''
     for (let i = 0; i < segments.length; i++) {
       current = current ? `${current}/${segments[i]}` : segments[i]
@@ -232,7 +207,6 @@ export class Ignore {
     if (cached !== undefined) return cached
 
     let result = false
-    // The last matching rule wins
     for (let i = this._rules.length - 1; i >= 0; i--) {
       const rule = this._rules[i]
       if (rule.dir_only && !is_dir) continue
