@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import * as vscode from 'vscode'
-import ignore, { Ignore } from 'ignore'
 import { CONTEXT_SELECTED_PATHS_STATE_KEY } from '@/constants/state-keys'
 import { IGNORED_LOCK_FILES } from '@/constants/ignored-lock-files'
 import { natural_sort } from '@/utils/natural-sort'
@@ -10,6 +9,7 @@ import { display_token_count } from '@shared/utils/display-token-count'
 import { TokenCalculator } from './modules/token-calculator'
 import { normalize_path } from '@/utils/normalize-path'
 import { RangesStorage } from '@/utils/global-workspace-storage'
+import { Ignore } from '@/utils/ignore'
 
 export interface IWorkspaceProvider {
   get_workspace_roots(): string[]
@@ -50,9 +50,9 @@ export class WorkspaceProvider
   private _checked_items = new Map<string, vscode.TreeItemCheckboxState>()
   private _partially_selected_dirs = new Set<string>()
 
-  private _combined_gitignore = ignore()
-  private _user_ignore_patterns: Ignore = ignore()
-  private _user_allow_patterns: Ignore = ignore()
+  private _combined_gitignore = new Ignore()
+  private _user_ignore_patterns = new Ignore()
+  private _user_allow_patterns = new Ignore()
   private _watcher: vscode.FileSystemWatcher
   private _ranges_watcher: vscode.FileSystemWatcher
   private _global_ranges_watcher: vscode.FileSystemWatcher
@@ -1361,7 +1361,7 @@ export class WorkspaceProvider
       }
     }
 
-    this._combined_gitignore = ignore()
+    this._combined_gitignore = new Ignore()
 
     for (const gitignore_path of gitignore_files) {
       const workspace_root = this.get_workspace_root_for_file(gitignore_path)
@@ -1434,7 +1434,7 @@ export class WorkspaceProvider
   private _load_ignore_patterns() {
     const config = vscode.workspace.getConfiguration('codeWebChat')
     const patterns = config.get<string[]>('ignorePatterns')
-    this._user_ignore_patterns = ignore()
+    this._user_ignore_patterns = new Ignore()
     if (patterns) {
       this._user_ignore_patterns.add(patterns)
     }
@@ -1446,7 +1446,7 @@ export class WorkspaceProvider
     ])
 
     const allow_patterns = config.get<string[]>('allowPatterns')
-    this._user_allow_patterns = ignore()
+    this._user_allow_patterns = new Ignore()
     if (allow_patterns) {
       this._user_allow_patterns.add(allow_patterns)
     }
