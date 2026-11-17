@@ -119,21 +119,21 @@ export const get_prompt_data = async (params: {
     return normalize_path(path.relative(workspace_root, f))
   })
 
-  const prompt_diffs_only = await build_commit_message_prompt(
+  const prompt_diffs_only = await build_commit_message_prompt({
     diff,
-    params.repository,
-    [],
-    params.workspace_provider,
-    true
-  )
+    repository: params.repository,
+    context_files: [],
+    workspace_provider: params.workspace_provider,
+    diffs_only: true
+  })
 
-  const prompt_without_context = await build_commit_message_prompt(
+  const prompt_without_context = await build_commit_message_prompt({
     diff,
-    params.repository,
-    [],
-    params.workspace_provider,
-    false
-  )
+    repository: params.repository,
+    context_files: [],
+    workspace_provider: params.workspace_provider,
+    diffs_only: false
+  })
 
   let prompt_with_context:
     | { api_prompt: string; chatbot_prompt: string; cli_prompt: string }
@@ -147,12 +147,12 @@ export const get_prompt_data = async (params: {
     !params.skip_context_prompt &&
     setting !== 'never'
   ) {
-    prompt_with_context = await build_commit_message_prompt(
+    prompt_with_context = await build_commit_message_prompt({
       diff,
-      params.repository,
-      ordered_context_files,
-      params.workspace_provider
-    )
+      repository: params.repository,
+      context_files: ordered_context_files,
+      workspace_provider: params.workspace_provider
+    })
   }
 
   return {

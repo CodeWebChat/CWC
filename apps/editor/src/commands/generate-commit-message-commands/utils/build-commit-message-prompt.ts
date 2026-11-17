@@ -11,13 +11,13 @@ import {
 import { PromptBuilder } from '@/utils/prompt-builder'
 import { WorkspaceProvider } from '@/context/providers/workspace/workspace-provider'
 
-export const build_commit_message_prompt = async (
-  diff: string,
-  repository: GitRepository,
-  context_files: string[] = [],
-  workspace_provider?: WorkspaceProvider,
+export const build_commit_message_prompt = async (params: {
+  diff: string
+  repository: GitRepository
+  context_files?: string[]
+  workspace_provider?: WorkspaceProvider
   diffs_only?: boolean
-): Promise<{
+}): Promise<{
   api_prompt: string
   chatbot_prompt: string
   cli_prompt: string
@@ -28,7 +28,9 @@ export const build_commit_message_prompt = async (
     config.inspect<string>('commitMessageInstructions')?.defaultValue ||
     ''
 
-  const file_diffs = diff.split(/^diff --git /m).filter((d) => d.trim() !== '')
+  const file_diffs = params.diff
+    .split(/^diff --git /m)
+    .filter((d) => d.trim() !== '')
 
   let changes_content = ''
   let context_content = ''
@@ -98,14 +100,14 @@ export const build_commit_message_prompt = async (
 
         let is_ignored = false
 
-        if (file_path && workspace_provider) {
+        if (file_path && params.workspace_provider) {
           const absolute_path = vscode.Uri.joinPath(
-            repository.rootUri,
+            params.repository.rootUri,
             file_path
           ).fsPath
           if (
-            workspace_provider.is_ignored_by_patterns(absolute_path) ||
-            workspace_provider.is_excluded(file_path)
+            params.workspace_provider.is_ignored_by_patterns(absolute_path) ||
+            params.workspace_provider.is_excluded(file_path)
           ) {
             is_ignored = true
           }
@@ -139,7 +141,7 @@ export const build_commit_message_prompt = async (
         const should_include_full_content = !is_ignored
 
         if (
-          !diffs_only &&
+          !params.diffs_only &&
           !is_deleted &&
           file_path &&
           !is_binary &&
@@ -148,9 +150,12 @@ export const build_commit_message_prompt = async (
           try {
             let full_content = ''
             try {
-              full_content = await repository.show('', file_path)
+              full_content = await params.repository.show('', file_path)
             } catch {
-              const uri = vscode.Uri.joinPath(repository.rootUri, file_path)
+              const uri = vscode.Uri.joinPath(
+                params.repository.rootUri,
+                file_path
+              )
               const content = await vscode.workspace.fs.readFile(uri)
               if (!content.includes(0)) {
                 full_content = Buffer.from(content).toString('utf8')
@@ -189,22 +194,22 @@ export const build_commit_message_prompt = async (
   }
 
   const context_results = await Promise.all(
-    context_files.map(async (file_path) => {
-      if (workspace_provider) {
+    (params.context_files || []).map(async (file_path) => {
+      if (params.workspace_provider) {
         const absolute_path = vscode.Uri.joinPath(
-          repository.rootUri,
+          params.repository.rootUri,
           file_path
         ).fsPath
         if (
-          workspace_provider.is_ignored_by_patterns(absolute_path) ||
-          workspace_provider.is_excluded(file_path)
+          params.workspace_provider.is_ignored_by_patterns(absolute_path) ||
+          params.workspace_provider.is_excluded(file_path)
         ) {
           return ''
         }
       }
 
       try {
-        const uri = vscode.Uri.joinPath(repository.rootUri, file_path)
+        const uri = vscode.Uri.joinPath(params.repository.rootUri, file_path)
         const content_uint8 = await vscode.workspace.fs.readFile(uri)
         if (!content_uint8.includes(0)) {
           const full_content = Buffer.from(content_uint8).toString('utf8')
