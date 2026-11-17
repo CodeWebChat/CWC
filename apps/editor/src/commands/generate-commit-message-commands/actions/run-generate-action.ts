@@ -18,7 +18,8 @@ import {
   LAST_USE_CONTEXT_FILES_STATE_KEY,
   LAST_USED_AGENT_FOR_COMMIT_MESSAGE_STATE_KEY,
   LAST_SELECTED_WORKSPACE_FOR_COMMIT_MESSAGE_STATE_KEY,
-  LAST_ACCEPTED_COMMIT_MESSAGE_STATE_KEY
+  LAST_ACCEPTED_COMMIT_MESSAGE_STATE_KEY,
+  LAST_SELECTED_UNSTAGED_FILES_FOR_COMMIT_MESSAGE_STATE_KEY
 } from '@/constants/state-keys'
 import { get_prompt_data } from './get-prompt-data'
 import { display_token_count } from '@shared/utils/display-token-count'
@@ -63,10 +64,18 @@ export const run_generate_action = async (params: {
   let is_single_change_flow = false
   let show_quick_pick = false
   let current_action: string | undefined = undefined
-  const selection_state: { files?: string[] } = {}
 
   const repository = await get_repository_for_commit(params.source_control)
   if (!repository) return
+
+  const workspace_root = repository.rootUri.fsPath
+  const saved_selection_state = params.extension_context.workspaceState.get<
+    Record<string, string[]>
+  >(LAST_SELECTED_UNSTAGED_FILES_FOR_COMMIT_MESSAGE_STATE_KEY, {})
+
+  const selection_state: { files?: string[] } = {
+    files: saved_selection_state[workspace_root]
+  }
 
   while (true) {
     const data = await get_prompt_data({
@@ -84,6 +93,17 @@ export const run_generate_action = async (params: {
     })
 
     if (!data) return
+
+    if (data.was_empty_stage && selection_state.files) {
+      const saved = params.extension_context.workspaceState.get<
+        Record<string, string[]>
+      >(LAST_SELECTED_UNSTAGED_FILES_FOR_COMMIT_MESSAGE_STATE_KEY, {})
+      saved[workspace_root] = selection_state.files
+      await params.extension_context.workspaceState.update(
+        LAST_SELECTED_UNSTAGED_FILES_FOR_COMMIT_MESSAGE_STATE_KEY,
+        saved
+      )
+    }
 
     const {
       prompt_diffs_only,
@@ -702,7 +722,6 @@ export const run_generate_action = async (params: {
       }
     }
 
-    const workspace_root = repository.rootUri.fsPath
     const all_prompts =
       CommitMessageDetails.load_all(params.extension_context)[workspace_root] ||
       []
@@ -1124,6 +1143,17 @@ export const run_generate_action = async (params: {
       await params.extension_context.workspaceState.update(
         LAST_ACCEPTED_COMMIT_MESSAGE_STATE_KEY,
         commit_message_value
+      )
+    }
+
+    const saved = params.extension_context.workspaceState.get<
+      Record<string, string[]>
+    >(LAST_SELECTED_UNSTAGED_FILES_FOR_COMMIT_MESSAGE_STATE_KEY, {})
+    if (saved[workspace_root]) {
+      delete saved[workspace_root]
+      await params.extension_context.workspaceState.update(
+        LAST_SELECTED_UNSTAGED_FILES_FOR_COMMIT_MESSAGE_STATE_KEY,
+        saved
       )
     }
 

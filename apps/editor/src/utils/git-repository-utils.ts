@@ -251,10 +251,16 @@ export const prepare_staged_changes = async (params: {
       files_to_stage = params.repository.state.workingTreeChanges.map(
         (change: any) => change.uri.fsPath
       )
+      if (params.selection_state) {
+        params.selection_state.files = files_to_stage
+      }
     } else if (params.repository.state.workingTreeChanges.length === 1) {
       files_to_stage = [
         params.repository.state.workingTreeChanges[0].uri.fsPath
       ]
+      if (params.selection_state) {
+        params.selection_state.files = files_to_stage
+      }
     } else {
       let prompts_for_repo: CommitMessageDetails.Prompt[] = []
       if (params.extension_context) {
@@ -442,6 +448,10 @@ export const prepare_staged_changes = async (params: {
 
       let current_selected_fs_paths =
         params.selection_state?.files || items.map((i) => i.fsPath)
+
+      if (!items.some((i) => current_selected_fs_paths.includes(i.fsPath))) {
+        current_selected_fs_paths = items.map((i) => i.fsPath)
+      }
 
       while (true) {
         const selected = await new Promise<any[] | undefined | 'search'>(
