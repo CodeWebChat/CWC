@@ -44,7 +44,7 @@ export const use_modal_manager = () => {
         })
       } else if (message.command === 'SHOW_PREVIEW_ONGOING_MODAL') {
         set_is_preview_ongoing_modal_visible(true)
-      } else if (message.command === 'RESPONSE_PREVIEW_STARTED') {
+      } else if (message.command === 'CODE_REVIEW_STARTED') {
         set_progress_state(undefined)
       }
     }

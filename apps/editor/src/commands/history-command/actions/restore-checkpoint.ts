@@ -17,8 +17,8 @@ import { get_checkpoint_path } from '@/features/checkpoints/utils'
 import { restore_workspace_snapshot } from '@/utils/workspace-snapshot'
 import { Logger } from '@shared/utils/logger'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
-import { response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
-import { ongoing_preview_cleanup_promise } from '@/features/apply-response/utils/preview-handler'
+import { code_review_promise_resolve } from '@/features/apply-response/utils/code-review'
+import { ongoing_preview_cleanup_promise } from '@/features/apply-response/utils/code-review-handler'
 import { apply_response } from '@/features/apply-response/apply-response'
 import { CommitMessageDetails } from '@/utils/commit-message-details'
 import { t } from '@/i18n'
@@ -69,8 +69,8 @@ export const restore_checkpoint = async (params: {
 
       let temp_checkpoint: Checkpoint | undefined
       try {
-        if (response_preview_promise_resolve) {
-          response_preview_promise_resolve({ accepted_files: [] })
+        if (code_review_promise_resolve) {
+          code_review_promise_resolve({ accepted_files: [] })
           if (ongoing_preview_cleanup_promise) {
             await ongoing_preview_cleanup_promise
           }
@@ -174,7 +174,7 @@ export const restore_checkpoint = async (params: {
         if (loaded_history.length > 0) {
           params.prompt_view_provider.response_history = loaded_history
           params.prompt_view_provider.update_response_history()
-        } else if (params.checkpoint.trigger !== 'before-response-previewed') {
+        } else if (params.checkpoint.trigger !== 'before-code-reviewed') {
           params.prompt_view_provider.response_history = []
           params.prompt_view_provider.update_response_history()
         }
@@ -265,27 +265,27 @@ export const restore_checkpoint = async (params: {
 
         if (
           params.checkpoint.trigger === 'response-accepted' &&
-          params.checkpoint.response_preview_item_created_at &&
+          params.checkpoint.code_review_item_created_at &&
           loaded_history.length > 0
         ) {
-          const item_to_preview = loaded_history.find(
+          const item_to_review = loaded_history.find(
             (item) =>
               item.created_at ==
-              params.checkpoint.response_preview_item_created_at
+              params.checkpoint.code_review_item_created_at
           )
-          if (item_to_preview) {
+          if (item_to_review) {
             apply_response({
-              response: item_to_preview.response,
-              raw_instructions: item_to_preview.raw_instructions,
-              files_with_content: item_to_preview.files,
-              created_at: item_to_preview.created_at,
+              response: item_to_review.response,
+              raw_instructions: item_to_review.raw_instructions,
+              files_with_content: item_to_review.files,
+              created_at: item_to_review.created_at,
               api_configuration_details:
-                item_to_preview.api_configuration_details,
+                item_to_review.api_configuration_details,
               cli_configuration_details:
-                item_to_preview.cli_configuration_details,
+                item_to_review.cli_configuration_details,
               web_configuration_details:
-                item_to_preview.web_configuration_details,
-              is_from_agentic_cli: item_to_preview.is_from_agentic_cli
+                item_to_review.web_configuration_details,
+              is_from_agentic_cli: item_to_review.is_from_agentic_cli
             })
           }
         }

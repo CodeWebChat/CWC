@@ -1,13 +1,13 @@
 import { FC, useEffect, useState } from 'react'
 import cn from 'classnames'
-import { FileInPreview } from '@shared/types/file-in-preview'
+import { FileInCodeReview } from '@shared/types/file-in-code-review'
 import styles from './FileItem.module.scss'
 import { Checkbox } from '../../../../common/Checkbox'
 import { IconButton } from '../../../../common/IconButton'
 import { StatusBar } from '../../../StatusBar'
 
 type Props = {
-  file: FileInPreview
+  file: FileInCodeReview
   is_selected: boolean
   has_multiple_workspaces: boolean
   total_files_count: number
@@ -27,7 +27,7 @@ type FileMessage =
   | { type: 'warning'; text: string }
   | { type: 'loading'; text: string }
 
-const get_file_message = (file: FileInPreview): FileMessage | null => {
+const get_file_message = (file: FileInCodeReview): FileMessage | null => {
   if (file.is_applying) {
     let text = 'Applying...'
     if (file.apply_status === 'waiting') text = 'Waiting for server...'
@@ -213,7 +213,7 @@ export const FileItem: FC<Props> = (props) => {
                 )}
                 {props.file.file_state !== 'new' &&
                   props.file.file_state !== 'deleted' &&
-                  !props.file.added_in_preview &&
+                  !props.file.added_in_code_review &&
                   !props.is_from_agentic_cli && (
                     <IconButton
                       codicon_icon="sparkle"
@@ -264,7 +264,7 @@ export const FileItem: FC<Props> = (props) => {
           }
 
           const message_actions = []
-          if (!props.file.is_applying && !props.file.added_in_preview && !props.is_from_agentic_cli) {
+          if (!props.file.is_applying && !props.file.added_in_code_review && !props.is_from_agentic_cli) {
             message_actions.push({
               id: 'fix',
               icon: 'codicon-sparkle',

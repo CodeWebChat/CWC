@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
-import { FileInPreview } from '@shared/types/file-in-preview'
+import { FileInCodeReview } from '@shared/types/file-in-code-review'
 import { OriginalFileState } from '@/features/apply-response/types/original-file-state'
 import {
   get_workspace_map_and_default,
@@ -12,13 +12,13 @@ import { get_diff_stats } from './diff-utils'
 export const build_history_files = async (params: {
   original_states: OriginalFileState[]
 }): Promise<{
-  files_for_history: FileInPreview[]
+  files_for_history: FileInCodeReview[]
   total_lines_added: number
   total_lines_removed: number
 }> => {
   let total_lines_added = 0
   let total_lines_removed = 0
-  const files_for_history: FileInPreview[] = []
+  const files_for_history: FileInCodeReview[] = []
 
   const { workspace_map, default_workspace } = get_workspace_map_and_default()
 
@@ -92,7 +92,7 @@ export const build_history_files = async (params: {
       apply_failed: state.apply_failed,
       ai_content: state.ai_content,
       applied_with_patch_repair: state.applied_with_patch_repair,
-      added_in_preview: state.added_in_preview,
+      added_in_code_review: state.added_in_code_review,
       is_pure_rename: state.is_pure_rename,
       renamed_from: is_rename ? state.file_path_to_restore : undefined,
       renamed_from_workspace: is_rename

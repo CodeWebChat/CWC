@@ -2,17 +2,17 @@ import * as path from 'path'
 import * as vscode from 'vscode'
 import { PreviewDecision, PreviewResult, PreparedFile } from './types'
 
-export let response_preview_promise_resolve:
+export let code_review_promise_resolve:
   | ((decision: PreviewDecision) => void)
   | undefined
 
-export const get_response_preview_promise_resolve = () =>
-  response_preview_promise_resolve
+export const get_code_review_promise_resolve = () =>
+  code_review_promise_resolve
 
-export const set_response_preview_promise_resolve = (
+export const set_code_review_promise_resolve = (
   resolve: ((decision: PreviewDecision) => void) | undefined
 ) => {
-  response_preview_promise_resolve = resolve
+  code_review_promise_resolve = resolve
 }
 
 export const close_preview_diff_editors = async (
@@ -86,9 +86,9 @@ export const show_diff_with_actions = async (
   const left_doc_uri = vscode.Uri.parse(prepared_file.original_uri)
   const right_doc_uri = vscode.Uri.file(prepared_file.sanitized_path)
 
-  const title = path.basename(prepared_file.previewable_file.file_path)
+  const title = path.basename(prepared_file.reviewable_file.file_path)
 
-  if (prepared_file.previewable_file.file_state !== 'deleted') {
+  if (prepared_file.reviewable_file.file_state !== 'deleted') {
     await vscode.commands.executeCommand(
       'vscode.diff',
       left_doc_uri,
@@ -102,12 +102,12 @@ export const show_diff_with_actions = async (
     scroll_to_first_changed_line({
       right_doc_uri,
       original_content: prepared_file.original_content,
-      new_content: prepared_file.previewable_file.content
+      new_content: prepared_file.reviewable_file.content
     })
   }
 
   return new Promise<PreviewResult>((resolve) => {
-    response_preview_promise_resolve = async (decision) => {
+    code_review_promise_resolve = async (decision) => {
       let final_content = ''
       try {
         const right_doc = await vscode.workspace.openTextDocument(right_doc_uri)
@@ -134,6 +134,6 @@ export const show_diff_with_actions = async (
       })
     }
   }).finally(() => {
-    response_preview_promise_resolve = undefined
+    code_review_promise_resolve = undefined
   })
 }

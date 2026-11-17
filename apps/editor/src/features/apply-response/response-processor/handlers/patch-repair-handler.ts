@@ -4,7 +4,7 @@ import { create_safe_path } from '@/utils/path-sanitizer'
 import { PatchRepairItem } from '../../utils/response-parser'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { WorkspaceProvider } from '@/context/providers/workspace/workspace-provider'
-import { set_file_applied_with_patch_repair } from '../../utils/preview/workspace-listener'
+import { set_file_applied_with_patch_repair } from '../../utils/code-review/workspace-listener'
 import {
   get_workspace_map_and_default,
   resolve_workspace_root

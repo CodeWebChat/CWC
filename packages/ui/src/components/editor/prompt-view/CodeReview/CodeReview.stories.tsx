@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { ResponsePreview } from './ResponsePreview'
+import { CodeReview } from './CodeReview'
 
 export default {
-  component: ResponsePreview
+  component: CodeReview
 }
 
 const base_files = [
@@ -65,7 +65,7 @@ const log_action =
     console.log(action, ...args)
   }
 
-const InteractiveResponsePreview = (props: any) => {
+const InteractiveCodeReview = (props: any) => {
   const [items, set_items] = useState(
     props.items.map((f: any) =>
       f.type === 'file' ? { ...f, is_checked: true } : f
@@ -94,7 +94,7 @@ const InteractiveResponsePreview = (props: any) => {
   }
 
   return (
-    <ResponsePreview
+    <CodeReview
       {...props}
       items={items}
       on_toggle_file={handle_toggle_file}
@@ -108,20 +108,18 @@ const InteractiveResponsePreview = (props: any) => {
   )
 }
 
-export const Default = () => <InteractiveResponsePreview items={base_files} />
+export const Default = () => <InteractiveCodeReview items={base_files} />
 
 export const WithSingleFile = () => (
-  <InteractiveResponsePreview items={[base_files[0]]} />
+  <InteractiveCodeReview items={[base_files[0]]} />
 )
 
 export const WithFallbacks = () => (
-  <InteractiveResponsePreview
-    items={[...base_files, ...files_using_fallbacks]}
-  />
+  <InteractiveCodeReview items={[...base_files, ...files_using_fallbacks]} />
 )
 
 export const WithMultipleWorkspaces = () => (
-  <InteractiveResponsePreview
+  <InteractiveCodeReview
     items={[
       {
         ...base_files[0],
@@ -141,7 +139,7 @@ export const WithMultipleWorkspaces = () => (
 )
 
 export const WithText = () => (
-  <InteractiveResponsePreview
+  <InteractiveCodeReview
     items={[
       { type: 'text', content: 'This is a text item.' },
       ...base_files,
@@ -164,21 +162,21 @@ export const WithText = () => (
 )
 
 export const WithShortInstructions = () => (
-  <InteractiveResponsePreview
+  <InteractiveCodeReview
     items={base_files}
     raw_instructions="This is a short instruction."
   />
 )
 
 export const WithMediumInstructions = () => (
-  <InteractiveResponsePreview
+  <InteractiveCodeReview
     items={base_files}
     raw_instructions="This is a medium length instruction, it should have the default font size and it's here to demonstrate the behavior."
   />
 )
 
 export const WithLongInstructions = () => (
-  <InteractiveResponsePreview
+  <InteractiveCodeReview
     items={base_files}
     raw_instructions="This is a very long instruction, it is designed to be very long to test the small font size. It should wrap and clamp to three lines. We need to make sure this text is long enough to trigger the smaller font size. This should be more than 160 characters for sure."
   />

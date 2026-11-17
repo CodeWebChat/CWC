@@ -29,7 +29,7 @@ export const use_response_history = (vscode: any) => {
       const message = event.data
       if (message.command === 'RESPONSE_HISTORY') {
         set_response_history(message.history)
-      } else if (message.command === 'RESPONSE_PREVIEW_STARTED') {
+      } else if (message.command === 'CODE_REVIEW_STARTED') {
         if (message.created_at) {
           set_selected_history_item_created_at(message.created_at)
         }

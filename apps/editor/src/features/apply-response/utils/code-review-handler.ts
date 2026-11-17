@@ -9,7 +9,7 @@ import {
   WebConfigurationDetails
 } from '@shared/types/response-history-item'
 import { undo_files } from './file-operations'
-import { preview } from './preview'
+import { preview } from './code-review'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { update_undo_button_state } from './state-manager'
 import { CommitMessageDetails } from '@/utils/commit-message-details'
@@ -22,7 +22,7 @@ import {
 
 export let ongoing_preview_cleanup_promise: Promise<void> | null = null
 
-export const preview_handler = async (params: {
+export const code_review_handler = async (params: {
   selected_paths_before?: string[]
   original_states: OriginalFileState[]
   chat_response: string
@@ -52,7 +52,7 @@ export const preview_handler = async (params: {
       states: params.original_states
     })
 
-    const preview_result = await preview({
+    const code_review_result = await preview({
       original_states: params.original_states,
       prompt_view_provider: params.prompt_view_provider,
       raw_instructions: params.raw_instructions,
@@ -66,11 +66,11 @@ export const preview_handler = async (params: {
       is_from_agentic_cli: params.is_from_agentic_cli
     })
 
-    if (preview_result === null || preview_result.accepted_files.length === 0) {
-      if (preview_result?.created_at) {
+    if (code_review_result === null || code_review_result.accepted_files.length === 0) {
+      if (code_review_result?.created_at) {
         const history = params.prompt_view_provider.response_history
         const new_history = history.filter(
-          (item) => item.created_at !== preview_result.created_at
+          (item) => item.created_at !== code_review_result.created_at
         )
 
         params.prompt_view_provider.response_history = new_history
@@ -94,7 +94,7 @@ export const preview_handler = async (params: {
           )
         } catch (error) {
           Logger.error({
-            function_name: 'preview_handler',
+            function_name: 'code_review_handler',
             message: 'Error restoring original editor state',
             data: error
           })
@@ -125,19 +125,19 @@ export const preview_handler = async (params: {
       return false
     }
 
-    if (preview_result.rejected_states.length > 0) {
+    if (code_review_result.rejected_states.length > 0) {
       params.workspace_provider.pause_file_watcher()
       try {
         await undo_files({
-          original_states: preview_result.rejected_states
+          original_states: code_review_result.rejected_states
         })
         await sync_workspace_selection_for_states({
           workspace_provider: params.workspace_provider,
-          states: preview_result.rejected_states
+          states: code_review_result.rejected_states
         })
         await restore_selection_for_states({
           workspace_provider: params.workspace_provider,
-          states: preview_result.rejected_states,
+          states: code_review_result.rejected_states,
           selected_paths_before: params.selected_paths_before
         })
       } finally {
@@ -146,7 +146,7 @@ export const preview_handler = async (params: {
     }
 
     const accepted_states = params.original_states.filter((state) =>
-      preview_result.accepted_files.some(
+      code_review_result.accepted_files.some(
         (accepted) =>
           accepted.file_path === state.file_path &&
           accepted.workspace_name === state.workspace_name
@@ -154,7 +154,7 @@ export const preview_handler = async (params: {
     )
 
     if (accepted_states.length > 0) {
-      if (preview_result.created_at) {
+      if (code_review_result.created_at) {
         params.prompt_view_provider.response_history = []
         params.prompt_view_provider.update_response_history()
       }
@@ -162,7 +162,7 @@ export const preview_handler = async (params: {
       const { workspace_map, default_workspace } =
         get_workspace_map_and_default()
 
-      const newly_created_files = preview_result.accepted_files
+      const newly_created_files = code_review_result.accepted_files
         .filter((f) => f.file_state === 'new')
         .map((f) => {
           const workspace_root = resolve_workspace_root({
@@ -240,10 +240,10 @@ export const preview_handler = async (params: {
         raw_instructions: params.raw_instructions
       })
 
-      if (preview_result.active_editor_state) {
+      if (code_review_result.active_editor_state) {
         try {
           const uri = vscode.Uri.file(
-            preview_result.active_editor_state.file_path
+            code_review_result.active_editor_state.file_path
           )
           const file_exists = await vscode.workspace.fs.stat(uri).then(
             () => true,
@@ -255,7 +255,7 @@ export const preview_handler = async (params: {
             const editor = await vscode.window.showTextDocument(document, {
               preview: false
             })
-            const position = preview_result.active_editor_state.position
+            const position = code_review_result.active_editor_state.position
             editor.selection = new vscode.Selection(position, position)
             editor.revealRange(
               new vscode.Range(position, position),
@@ -264,7 +264,7 @@ export const preview_handler = async (params: {
           }
         } catch (error) {
           Logger.error({
-            function_name: 'preview_handler',
+            function_name: 'code_review_handler',
             message: 'Failed to restore active editor state',
             data: error
           })

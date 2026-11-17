@@ -6,10 +6,9 @@ import { prompt_field } from './prompt-field'
 import { recent_donations } from './recent-donations'
 import { main } from './main'
 import { selected_files } from './selected-files'
-
 import { footer } from './footer'
 import { modals } from './modals'
-import { response_preview } from './response-preview'
+import { code_review } from './code-review'
 
 export const translations = {
   ...header,
@@ -22,5 +21,5 @@ export const translations = {
   ...modals,
   ...main,
   ...selected_files,
-  ...response_preview
+  ...code_review
 }

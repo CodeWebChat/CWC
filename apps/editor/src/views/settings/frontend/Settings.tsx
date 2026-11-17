@@ -356,7 +356,7 @@ export const Settings = () => {
       {updating_web_configuration && (
         <UiModal on_close={edit_web_configuration_cancel_handler}>
           <UiModal.Form
-            title="Edit Chatbot"
+            title={t('web.edit-chatbot')}
             on_save={edit_web_configuration_save_handler}
             on_cancel={edit_web_configuration_cancel_handler}
           >
@@ -387,7 +387,7 @@ export const Settings = () => {
       {updating_cli_configuration && (
         <UiModal on_close={edit_cli_configuration_cancel_handler}>
           <UiModal.Form
-            title="Edit Agent"
+            title={t('web.edit-agent')}
             on_save={edit_cli_configuration_save_handler}
             on_cancel={edit_cli_configuration_cancel_handler}
           >
@@ -407,7 +407,7 @@ export const Settings = () => {
       {updating_api_configuration && (
         <UiModal on_close={edit_api_configuration_cancel_handler}>
           <UiModal.Form
-            title="Edit Model"
+            title={t('web.edit-model')}
             on_save={edit_api_configuration_save_handler}
             on_cancel={edit_api_configuration_cancel_handler}
           >
@@ -442,7 +442,7 @@ export const Settings = () => {
       {updating_provider && (
         <UiModal on_close={edit_provider_cancel_handler}>
           <UiModal.Form
-            title="Edit Provider"
+            title={t('web.edit-provider')}
             on_save={edit_provider_save_handler}
             on_cancel={edit_provider_cancel_handler}
             custom_footer_left={

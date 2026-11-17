@@ -1,5 +1,5 @@
 import { EditFormat } from '@shared/types/edit-format'
-import { FileInPreview, ItemInPreview } from '@shared/types/file-in-preview'
+import { FileInCodeReview, ItemInCodeReview } from '@shared/types/file-in-code-review'
 import {
   ResponseHistoryItem,
   ApiConfigurationDetails,
@@ -346,9 +346,9 @@ export interface RequestCurrentlyOpenFileTextMessage extends BaseMessage {
   command: 'REQUEST_CURRENTLY_OPEN_FILE_TEXT'
 }
 
-export interface ResponsePreviewMessage extends BaseMessage {
-  command: 'RESPONSE_PREVIEW'
-  files: FileInPreview[]
+export interface CodeReviewMessage extends BaseMessage {
+  command: 'CODE_REVIEW'
+  files: FileInCodeReview[]
   created_at?: number
 }
 
@@ -442,7 +442,7 @@ export interface ApplyResponseFromHistoryMessage extends BaseMessage {
   command: 'APPLY_RESPONSE_FROM_HISTORY'
   response: string
   raw_instructions?: string
-  files?: FileInPreview[]
+  files?: FileInCodeReview[]
   created_at: number
   api_configuration_details?: ApiConfigurationDetails
   cli_configuration_details?: CliConfigurationDetails
@@ -767,7 +767,7 @@ export type FrontendMessage =
   | TogglePinnedApiConfigurationMessage
   | GetVersionMessage
   | RequestCurrentlyOpenFileTextMessage
-  | ResponsePreviewMessage
+  | CodeReviewMessage
   | GetSendWithShiftEnterMessage
   | ToggleFileInPreviewMessage
   | RemoveFileFromPreviewMessage
@@ -993,9 +993,9 @@ export interface SendWithShiftEnterMessage extends BaseMessage {
   enabled: boolean
 }
 
-export interface ResponsePreviewStartedMessage extends BaseMessage {
-  command: 'RESPONSE_PREVIEW_STARTED'
-  items: ItemInPreview[]
+export interface CodeReviewStartedMessage extends BaseMessage {
+  command: 'CODE_REVIEW_STARTED'
+  items: ItemInCodeReview[]
   raw_instructions?: string
   created_at?: number
   api_configuration_details?: ApiConfigurationDetails
@@ -1004,8 +1004,8 @@ export interface ResponsePreviewStartedMessage extends BaseMessage {
   is_from_agentic_cli?: boolean
 }
 
-export interface ResponsePreviewFinishedMessage extends BaseMessage {
-  command: 'RESPONSE_PREVIEW_FINISHED'
+export interface CodeReviewFinishedMessage extends BaseMessage {
+  command: 'CODE_REVIEW_FINISHED'
 }
 
 export interface WorkspaceStateMessage extends BaseMessage {
@@ -1057,7 +1057,7 @@ export interface ShowNeverClosingModalMessage extends BaseMessage {
 
 export interface UpdateFileInPreviewMessage extends BaseMessage {
   command: 'UPDATE_FILE_IN_PREVIEW'
-  file: FileInPreview
+  file: FileInCodeReview
 }
 
 export interface CurrentlyOpenFileTextMessage extends BaseMessage {
@@ -1147,8 +1147,8 @@ export type BackendMessage =
   | VersionMessage
   | SendWithShiftEnterMessage
   | CanUndoChangedMessage
-  | ResponsePreviewStartedMessage
-  | ResponsePreviewFinishedMessage
+  | CodeReviewStartedMessage
+  | CodeReviewFinishedMessage
   | WorkspaceStateMessage
   | SelectedWebConfigurationChangedMessage
   | SelectedApiConfigurationChangedMessage

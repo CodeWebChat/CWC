@@ -16,7 +16,7 @@ import {
 } from './temp-file-manager'
 import { close_preview_diff_editors, show_diff_with_actions } from './vscode-ui'
 import { PreparedFile, PreviewableFile } from './types'
-import { ItemInPreview } from '@shared/types/file-in-preview'
+import { ItemInCodeReview } from '@shared/types/file-in-code-review'
 import { WorkspaceProvider } from '@/context/providers/workspace/workspace-provider'
 import { get_workspace_map_and_default } from '../workspace'
 
@@ -72,15 +72,15 @@ export const preview = async (params: {
       is_single_root_folder_workspace
     })
 
-    const items_for_preview: ItemInPreview[] = []
+    const items_for_preview: ItemInCodeReview[] = []
 
     if (response_items.length > 0) {
       const prepared_files_map = new Map<string, PreparedFile>()
       for (const pf of prepared_files) {
         const key = is_single_root_folder_workspace
-          ? pf.previewable_file.file_path
-          : `${pf.previewable_file.workspace_name || ''}:${
-              pf.previewable_file.file_path
+          ? pf.reviewable_file.file_path
+          : `${pf.reviewable_file.workspace_name || ''}:${
+              pf.reviewable_file.file_path
             }`
         prepared_files_map.set(key, pf)
       }
@@ -104,7 +104,7 @@ export const preview = async (params: {
             : `${item.workspace_name || ''}:${item.file_path}`
           const prepared_file = prepared_files_map.get(key)
           if (prepared_file) {
-            items_for_preview.push(prepared_file.previewable_file)
+            items_for_preview.push(prepared_file.reviewable_file)
             prepared_files_map.delete(key)
           }
           if (item.type === 'diff' && item.new_file_path) {
@@ -113,17 +113,17 @@ export const preview = async (params: {
               : `${item.workspace_name || ''}:${item.new_file_path}`
             const new_prepared_file = prepared_files_map.get(new_key)
             if (new_prepared_file) {
-              items_for_preview.push(new_prepared_file.previewable_file)
+              items_for_preview.push(new_prepared_file.reviewable_file)
               prepared_files_map.delete(new_key)
             }
           }
         }
       }
       items_for_preview.push(
-        ...[...prepared_files_map.values()].map((pf) => pf.previewable_file)
+        ...[...prepared_files_map.values()].map((pf) => pf.reviewable_file)
       )
     } else {
-      items_for_preview.push(...prepared_files.map((p) => p.previewable_file))
+      items_for_preview.push(...prepared_files.map((p) => p.reviewable_file))
     }
 
     if (params.prompt_view_provider) {
@@ -131,7 +131,7 @@ export const preview = async (params: {
         command: 'HIDE_PROGRESS'
       })
       params.prompt_view_provider.send_message({
-        command: 'RESPONSE_PREVIEW_STARTED',
+        command: 'CODE_REVIEW_STARTED',
         items: items_for_preview,
         raw_instructions: params.raw_instructions,
         created_at: params.created_at,
@@ -165,7 +165,7 @@ export const preview = async (params: {
 
     let current_index = 0
     const first_non_deleted_index = preview_items.findIndex(
-      (item) => item.file.previewable_file.file_state !== 'deleted'
+      (item) => item.file.reviewable_file.file_state !== 'deleted'
     )
     if (first_non_deleted_index !== -1) {
       current_index = first_non_deleted_index
@@ -191,7 +191,7 @@ export const preview = async (params: {
         }
       }
 
-      preview_item.file.previewable_file.content = result.new_content
+      preview_item.file.reviewable_file.content = result.new_content
       const { decision } = result
 
       if ('accepted_files' in decision) {
@@ -212,25 +212,25 @@ export const preview = async (params: {
 
         const accepted_files = prepared_files
           .filter((pf) => {
-            const identifier = `${pf.previewable_file.workspace_name || ''}:${
-              pf.previewable_file.file_path
+            const identifier = `${pf.reviewable_file.workspace_name || ''}:${
+              pf.reviewable_file.file_path
             }`
             return accepted_file_identifiers.has(identifier)
           })
-          .map((pf) => pf.previewable_file)
+          .map((pf) => pf.reviewable_file)
 
         const rejected_states = prepared_files
           .filter((pf) => {
-            const identifier = `${pf.previewable_file.workspace_name || ''}:${
-              pf.previewable_file.file_path
+            const identifier = `${pf.reviewable_file.workspace_name || ''}:${
+              pf.reviewable_file.file_path
             }`
             return !accepted_file_identifiers.has(identifier)
           })
           .map((item) => {
             return params.original_states.find(
               (state) =>
-                state.file_path === item.previewable_file.file_path &&
-                state.workspace_name === item.previewable_file.workspace_name
+                state.file_path === item.reviewable_file.file_path &&
+                state.workspace_name === item.reviewable_file.workspace_name
             )
           })
           .filter((state): state is OriginalFileState => state !== undefined)
@@ -265,8 +265,8 @@ export const preview = async (params: {
         const jump_target = decision.jump_to
         const new_index = preview_items.findIndex(
           (item) =>
-            item.file.previewable_file.file_path === jump_target.file_path &&
-            item.file.previewable_file.workspace_name ===
+            item.file.reviewable_file.file_path === jump_target.file_path &&
+            item.file.reviewable_file.workspace_name ===
               jump_target.workspace_name
         )
 
@@ -284,7 +284,7 @@ export const preview = async (params: {
 
     const accepted_files = preview_items
       .filter((item) => item.status === 'accepted')
-      .map((item) => item.file.previewable_file)
+      .map((item) => item.file.reviewable_file)
 
     const rejected_items = preview_items.filter(
       (item) => item.status === 'rejected'
@@ -293,8 +293,8 @@ export const preview = async (params: {
       .map((item) => {
         return params.original_states.find(
           (state) =>
-            state.file_path === item.file.previewable_file.file_path &&
-            state.workspace_name === item.file.previewable_file.workspace_name
+            state.file_path === item.file.reviewable_file.file_path &&
+            state.workspace_name === item.file.reviewable_file.workspace_name
         )
       })
       .filter((state): state is OriginalFileState => state !== undefined)
@@ -308,7 +308,7 @@ export const preview = async (params: {
     if (params.prompt_view_provider) {
       params.prompt_view_provider.cancel_all_patch_repairs()
       params.prompt_view_provider.send_message({
-        command: 'RESPONSE_PREVIEW_FINISHED'
+        command: 'CODE_REVIEW_FINISHED'
       })
     }
   }

@@ -1,4 +1,4 @@
-import { FileInPreview } from './file-in-preview'
+import { FileInCodeReview } from './file-in-code-review'
 
 export type ApiConfigurationDetails = {
   provider: string
@@ -23,7 +23,7 @@ export type ResponseHistoryItem = {
   created_at: number
   lines_added?: number
   lines_removed?: number
-  files?: FileInPreview[]
+  files?: FileInCodeReview[]
   api_configuration_details?: ApiConfigurationDetails
   cli_configuration_details?: CliConfigurationDetails
   web_configuration_details?: WebConfigurationDetails

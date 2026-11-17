@@ -8,12 +8,12 @@ import {
 import { restore_checkpoint } from '@/commands/history-command/actions/restore-checkpoint'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { WorkspaceProvider } from '@/context/providers/workspace/workspace-provider'
-import { get_response_preview_promise_resolve } from './utils/preview'
-import { build_history_files } from './utils/preview/build-history-files'
+import { get_code_review_promise_resolve } from './utils/code-review'
+import { build_history_files } from './utils/code-review/build-history-files'
 import {
-  preview_handler,
+  code_review_handler,
   ongoing_preview_cleanup_promise
-} from './utils/preview-handler'
+} from './utils/code-review-handler'
 import {
   process_response,
   ApplyResponseArgs,
@@ -25,7 +25,7 @@ import { t } from '@/i18n'
 import {
   preview_document_provider,
   CwcPreviewProvider
-} from './utils/preview/virtual-document-provider'
+} from './utils/code-review/virtual-document-provider'
 import { get_all_workspace_files } from '@/context/helpers/get-all-workspace-files'
 import { parse_response, PatchRepairItem } from './utils/response-parser'
 import { Checkpoint } from '@/features/checkpoints/types'
@@ -72,8 +72,8 @@ export const setup_apply_response = (params: {
       )
 
       const checkpoints = await get_checkpoints(params.extension_context)
-      const preview_checkpoints = checkpoints.filter(
-        (c) => c.trigger === 'before-response-previewed'
+      const code_review_checkpoints = checkpoints.filter(
+        (c) => c.trigger === 'before-code-reviewed'
       )
 
       for (const tab_group of vscode.window.tabGroups.all) {
@@ -94,8 +94,8 @@ export const setup_apply_response = (params: {
         }
       }
 
-      preview_checkpoints.reverse()
-      for (const cp of preview_checkpoints) {
+      code_review_checkpoints.reverse()
+      for (const cp of code_review_checkpoints) {
         try {
           await restore_checkpoint({
             checkpoint: cp,
@@ -105,7 +105,7 @@ export const setup_apply_response = (params: {
             options: { skip_confirmation: true, hide_notification: true }
           })
         } catch (err) {
-          console.error('Failed to restore interrupted preview checkpoint', err)
+          console.error('Failed to restore interrupted code review checkpoint', err)
         } finally {
           await delete_checkpoint({
             extension_context: params.extension_context,
@@ -171,16 +171,16 @@ export const setup_apply_response = (params: {
         return false
       }
 
-      while (in_progress && !get_response_preview_promise_resolve()) {
+      while (in_progress && !get_code_review_promise_resolve()) {
         await new Promise((resolve) => setTimeout(resolve, 100))
       }
 
-      const resolve_fn = get_response_preview_promise_resolve()
+      const resolve_fn = get_code_review_promise_resolve()
 
       if (!resolve_fn) {
         params.prompt_view_provider.send_message({
           command: 'SHOW_PROGRESS',
-          title: t('common.progress.response-preview'),
+          title: t('common.progress.code-review'),
           subtitle: t('common.progress.preparing'),
           delay_visibility: true
         })
@@ -351,7 +351,7 @@ export const setup_apply_response = (params: {
         if (choice === 'Switch') {
           params.prompt_view_provider.send_message({
             command: 'SHOW_PROGRESS',
-            title: t('common.progress.response-preview'),
+            title: t('common.progress.code-review'),
             subtitle: t('common.progress.preparing')
           })
           args = { ...args, created_at: created_at_for_switch }
@@ -399,7 +399,7 @@ export const setup_apply_response = (params: {
 
     try {
       if (!is_intelligent_file_search_results) {
-        // Save current tab groups before entering preview
+        // Save current tab groups before entering code review
         saved_tab_groups = capture_tab_groups()
 
         const has_valid_blocks =
@@ -411,7 +411,7 @@ export const setup_apply_response = (params: {
         if (has_valid_blocks && !is_code_at_cursor) {
           params.prompt_view_provider.send_message({
             command: 'SHOW_PROGRESS',
-            title: t('common.progress.response-preview'),
+            title: t('common.progress.code-review'),
             subtitle: t('common.progress.creating-checkpoint')
           })
 
@@ -419,7 +419,7 @@ export const setup_apply_response = (params: {
             workspace_provider: params.workspace_provider,
             extension_context: params.extension_context,
             prompt_view_provider: params.prompt_view_provider,
-            trigger: 'before-response-previewed',
+            trigger: 'before-code-reviewed',
             description: args?.raw_instructions,
             hide_notification: true
           })
@@ -429,7 +429,7 @@ export const setup_apply_response = (params: {
       const selected_paths_before_apply =
         params.workspace_provider.get_all_selected_paths()
 
-      const preview_data = await process_response({
+      const code_review_data = await process_response({
         args,
         response: response!,
         response_items,
@@ -439,18 +439,18 @@ export const setup_apply_response = (params: {
         websocket_manager: params.websocket_manager
       })
 
-      if (!preview_data) {
+      if (!code_review_data) {
         params.prompt_view_provider.send_message({
           command: 'HIDE_PROGRESS'
         })
       }
 
-      if (preview_data) {
-        let created_at_for_preview = args?.created_at
+      if (code_review_data) {
+        let created_at_for_code_review = args?.created_at
         if (!args?.files_with_content) {
           const { files_for_history, total_lines_added, total_lines_removed } =
             await build_history_files({
-              original_states: preview_data.original_states
+              original_states: code_review_data.original_states
             })
           const history = params.prompt_view_provider.response_history
 
@@ -463,11 +463,11 @@ export const setup_apply_response = (params: {
             item_to_update.lines_added = total_lines_added
             item_to_update.lines_removed = total_lines_removed
           } else {
-            created_at_for_preview = Date.now()
+            created_at_for_code_review = Date.now()
             const new_item: ResponseHistoryItem = {
-              response: preview_data.response,
+              response: code_review_data.response,
               raw_instructions: args?.raw_instructions,
-              created_at: created_at_for_preview,
+              created_at: created_at_for_code_review,
               lines_added: total_lines_added,
               lines_removed: total_lines_removed,
               files: files_for_history,
@@ -486,16 +486,16 @@ export const setup_apply_response = (params: {
         const history_for_checkpoint = [
           ...params.prompt_view_provider.response_history
         ]
-        const changes_accepted = await preview_handler({
+        const changes_accepted = await code_review_handler({
           selected_paths_before: selected_paths_before_apply,
-          original_states: preview_data.original_states,
-          chat_response: preview_data.response,
+          original_states: code_review_data.original_states,
+          chat_response: code_review_data.response,
           prompt_view_provider: params.prompt_view_provider,
           workspace_provider: params.workspace_provider,
           extension_context: params.extension_context,
           original_editor_state: args?.original_editor_state,
           raw_instructions: args?.raw_instructions,
-          created_at: created_at_for_preview,
+          created_at: created_at_for_code_review,
           api_configuration_details: args?.api_configuration_details,
           cli_configuration_details: args?.cli_configuration_details,
           web_configuration_details: args?.web_configuration_details,
@@ -510,7 +510,7 @@ export const setup_apply_response = (params: {
               extension_context: params.extension_context,
               checkpoint: before_checkpoint,
               history_for_checkpoint,
-              created_at_for_preview
+              created_at_for_code_review
             })
           }
 

@@ -20,7 +20,7 @@ import {
 } from './actions/delete-checkpoint-with-undo'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { get_checkpoint_path } from '@/features/checkpoints/utils'
-import { get_response_preview_promise_resolve } from '@/features/apply-response/utils/preview'
+import { get_code_review_promise_resolve } from '@/features/apply-response/utils/code-review'
 import { simplify_prompt_symbols } from '@shared/utils/simplify-prompt-symbols'
 
 dayjs.extend(relativeTime)
@@ -37,7 +37,7 @@ export const history_command = (params: {
   const create_new_checkpoint_command = vscode.commands.registerCommand(
     'codeWebChat.createNewCheckpoint',
     async () => {
-      if (get_response_preview_promise_resolve()) {
+      if (get_code_review_promise_resolve()) {
         vscode.window.showInformationMessage(
           t('command.history-command.disabled-during-preview')
         )
@@ -69,7 +69,7 @@ export const history_command = (params: {
   const history_cmd = vscode.commands.registerCommand(
     'codeWebChat.history',
     async (args?: { highlight_checkpoint?: Checkpoint }) => {
-      if (get_response_preview_promise_resolve()) {
+      if (get_code_review_promise_resolve()) {
         vscode.window.showWarningMessage(
           t('command.history-command.disabled-during-preview')
         )

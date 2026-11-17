@@ -13,7 +13,7 @@ export interface CheckpointTab {
 export type CheckpointTrigger =
   | 'manual'
   | 'response-accepted'
-  | 'before-response-previewed'
+  | 'before-code-reviewed'
   | 'before-checkpoint-restored'
   | 'temporary'
   | 'commit'
@@ -25,7 +25,7 @@ export interface Checkpoint {
   is_pinned?: boolean
   git_data?: Record<string, GitCheckpointData>
   uses_git: boolean
-  response_preview_item_created_at?: number
+  code_review_item_created_at?: number
   selected_files: string[]
   active_tabs: CheckpointTab[]
 }

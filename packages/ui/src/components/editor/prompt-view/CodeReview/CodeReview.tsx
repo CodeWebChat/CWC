@@ -1,5 +1,5 @@
 import { FC, useRef, useState, useMemo, useEffect } from 'react'
-import { FileInPreview, ItemInPreview } from '@shared/types/file-in-preview'
+import { FileInCodeReview, ItemInCodeReview } from '@shared/types/file-in-code-review'
 import {
   ApiConfigurationDetails,
   CliConfigurationDetails,
@@ -7,13 +7,13 @@ import {
 } from '@shared/types/response-history-item'
 import { simplify_prompt_symbols } from '@shared/utils/simplify-prompt-symbols'
 import cn from 'classnames'
-import styles from './ResponsePreview.module.scss'
+import styles from './CodeReview.module.scss'
 import { TextItem, InlineFileItem, FileItem } from './components'
 import { Scrollable } from '../../common/Scrollable'
 import { StatusBar } from '../StatusBar'
 
 type Props = {
-  items: ItemInPreview[]
+  items: ItemInCodeReview[]
   has_multiple_workspaces: boolean
   on_focus_file: (file: { file_path: string; workspace_name?: string }) => void
   on_go_to_file: (file: { file_path: string; workspace_name?: string }) => void
@@ -58,7 +58,7 @@ type Props = {
   }
 }
 
-export const ResponsePreview: FC<Props> = (props) => {
+export const CodeReview: FC<Props> = (props) => {
   const [last_clicked_file_index, set_last_clicked_file_index] = useState(
     () => {
       const first_non_deleted = props.items.findIndex(
@@ -113,17 +113,17 @@ export const ResponsePreview: FC<Props> = (props) => {
     })
   }
 
-  const files_in_preview = useMemo(
-    () => props.items.filter((i) => i.type === 'file') as FileInPreview[],
+  const files_in_code_review = useMemo(
+    () => props.items.filter((i) => i.type === 'file') as FileInCodeReview[],
     [props.items]
   )
 
   const applying_files = useMemo(
     () =>
-      files_in_preview.filter(
+      files_in_code_review.filter(
         (f) => f.type === 'file' && f.is_applying
-      ) as FileInPreview[],
-    [files_in_preview]
+      ) as FileInCodeReview[],
+    [files_in_code_review]
   )
 
   const prev_applying_count = useRef(0)
@@ -136,26 +136,26 @@ export const ResponsePreview: FC<Props> = (props) => {
 
   const aggressive_fallback_count = useMemo(
     () =>
-      files_in_preview.filter(
+      files_in_code_review.filter(
         (f) =>
           f.type === 'file' &&
           f.diff_application_method === 'search_and_replace' &&
           !f.applied_with_patch_repair &&
           !f.is_applying
       ).length,
-    [files_in_preview]
+    [files_in_code_review]
   )
 
   const error_count = useMemo(
     () =>
-      files_in_preview.filter(
+      files_in_code_review.filter(
         (f) =>
           f.type === 'file' &&
           f.apply_failed &&
           !f.applied_with_patch_repair &&
           !f.is_applying
       ).length,
-    [files_in_preview]
+    [files_in_code_review]
   )
 
   useEffect(() => {
@@ -167,7 +167,7 @@ export const ResponsePreview: FC<Props> = (props) => {
     ) {
       set_is_fixing_all(true)
       set_has_attempted_auto_fix(true)
-      const files_to_fix = files_in_preview
+      const files_to_fix = files_in_code_review
         .filter(
           (f) =>
             f.type === 'file' && f.apply_failed && !f.applied_with_patch_repair
@@ -182,11 +182,11 @@ export const ResponsePreview: FC<Props> = (props) => {
     error_count,
     is_fixing_all,
     has_attempted_auto_fix,
-    files_in_preview,
+    files_in_code_review,
     props.is_from_agentic_cli
   ])
 
-  const get_status_text = (file: FileInPreview) => {
+  const get_status_text = (file: FileInCodeReview) => {
     if (file.apply_status === 'waiting') return 'Waiting for server...'
     if (file.apply_status === 'thinking') return 'Thinking...'
     if (file.apply_status === 'receiving') return 'Receiving...'
@@ -301,10 +301,10 @@ export const ResponsePreview: FC<Props> = (props) => {
             theme="error"
             icon="codicon-error"
             label={
-              files_in_preview.length > 1
+              files_in_code_review.length > 1
                 ? props.translations.files_failed_to_apply_changes
                     .replace('{error_count}', String(error_count))
-                    .replace('{total_count}', String(files_in_preview.length))
+                    .replace('{total_count}', String(files_in_code_review.length))
                 : props.translations.failed_to_apply_changes_to_file
             }
             actions={
@@ -319,7 +319,7 @@ export const ResponsePreview: FC<Props> = (props) => {
                           : props.translations.fix,
                       on_click: () => {
                         set_is_fixing_all(true)
-                        const files_to_fix = files_in_preview
+                        const files_to_fix = files_in_code_review
                           .filter(
                             (f) =>
                               f.type === 'file' &&
@@ -347,7 +347,7 @@ export const ResponsePreview: FC<Props> = (props) => {
               icon="codicon-warning"
               label={props.translations.files_applied_with_fallback
                 .replace('{count}', String(aggressive_fallback_count))
-                .replace('{total_count}', String(files_in_preview.length))}
+                .replace('{total_count}', String(files_in_code_review.length))}
             />
           </div>
         )}
@@ -362,7 +362,7 @@ export const ResponsePreview: FC<Props> = (props) => {
                   file={file}
                   is_selected={index === last_clicked_file_index}
                   has_multiple_workspaces={props.has_multiple_workspaces}
-                  total_files_count={files_in_preview.length}
+                  total_files_count={files_in_code_review.length}
                   is_from_agentic_cli={props.is_from_agentic_cli}
                   on_click={() => {
                     set_last_clicked_file_index(index)

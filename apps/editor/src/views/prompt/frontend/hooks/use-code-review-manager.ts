@@ -6,10 +6,10 @@ import {
   CliConfigurationDetails,
   WebConfigurationDetails
 } from '@shared/types/response-history-item'
-import { ItemInPreview } from '@shared/types/file-in-preview'
+import { ItemInCodeReview } from '@shared/types/file-in-code-review'
 
-export const use_preview_manager = (vscode: any) => {
-  const [items_in_preview, set_items_in_preview] = useState<ItemInPreview[]>()
+export const use_code_review_manager = (vscode: any) => {
+  const [items_in_preview, set_items_in_preview] = useState<ItemInCodeReview[]>()
   const [raw_instructions, set_raw_instructions] = useState<string>()
   const [preview_item_created_at, set_preview_item_created_at] =
     useState<number>()
@@ -36,7 +36,7 @@ export const use_preview_manager = (vscode: any) => {
   useEffect(() => {
     const handle_message = (event: MessageEvent<BackendMessage>) => {
       const message = event.data
-      if (message.command === 'RESPONSE_PREVIEW_STARTED') {
+      if (message.command === 'CODE_REVIEW_STARTED') {
         set_items_in_preview(message.items)
         set_raw_instructions(message.raw_instructions)
         set_preview_item_created_at(message.created_at)
@@ -115,7 +115,7 @@ export const use_preview_manager = (vscode: any) => {
           }
           return items
         })
-      } else if (message.command === 'RESPONSE_PREVIEW_FINISHED') {
+      } else if (message.command === 'CODE_REVIEW_FINISHED') {
         set_items_in_preview(undefined)
         set_raw_instructions(undefined)
         set_preview_item_created_at(undefined)
