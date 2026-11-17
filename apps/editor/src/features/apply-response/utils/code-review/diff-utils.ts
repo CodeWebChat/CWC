@@ -1,4 +1,4 @@
-import { diffLines } from 'diff'
+import { diff_lines } from '@/utils/diff-lines'
 
 export const get_diff_stats = (params: {
   original_content: string
@@ -14,8 +14,10 @@ export const get_diff_stats = (params: {
     return { lines_added: 0, lines_removed: 0 }
   }
 
-  const changes = diffLines(original_content_processed, new_content_processed, {
-    ignoreWhitespace: true
+  const changes = diff_lines({
+    old_str: original_content_processed,
+    new_str: new_content_processed,
+    ignore_whitespace: true
   })
 
   let lines_added = 0
