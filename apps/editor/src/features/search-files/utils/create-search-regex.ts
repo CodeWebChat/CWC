@@ -1,8 +1,12 @@
-export const create_search_regex = (search_term: string): RegExp => {
+export const create_search_regex = (
+  search_term: string,
+  options?: { is_phrase_search?: boolean }
+): RegExp => {
   let actual_term = search_term
   let is_exact_match = false
 
   if (
+    !options?.is_phrase_search &&
     actual_term.length >= 2 &&
     actual_term.startsWith('"') &&
     actual_term.endsWith('"')

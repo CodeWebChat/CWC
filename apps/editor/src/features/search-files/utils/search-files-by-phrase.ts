@@ -13,7 +13,9 @@ export const search_files_by_phrase = async (params: {
   get_file_content?: (file_path: string) => Promise<string | undefined>
 }): Promise<string[]> => {
   const matched_files: string[] = []
-  const positive_regex = create_search_regex(params.search_term)
+  const positive_regex = create_search_regex(params.search_term, {
+    is_phrase_search: true
+  })
 
   let processed = 0
   for (const file_path of params.files) {

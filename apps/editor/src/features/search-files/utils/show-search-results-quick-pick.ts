@@ -205,7 +205,11 @@ export const show_search_results_quick_pick = async (params: {
           let selection: vscode.Range | undefined
           if (params.search_mode === 'phrase' && params.search_term) {
             const text = doc.getText()
-            const regexes = [create_search_regex(params.search_term)]
+            const regexes = [
+              create_search_regex(params.search_term, {
+                is_phrase_search: true
+              })
+            ]
 
             for (const regex of regexes) {
               const match = regex.exec(text)
