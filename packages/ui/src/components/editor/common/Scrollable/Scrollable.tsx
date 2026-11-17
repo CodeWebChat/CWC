@@ -8,7 +8,7 @@ import {
 } from 'react'
 import styles from './Scrollable.module.scss'
 import SimpleBar from 'simplebar-react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 
 type Props = {
   children: ReactNode

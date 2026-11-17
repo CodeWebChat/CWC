@@ -1,4 +1,4 @@
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { use_compacting } from '@shared/hooks'
 import { Button as UiButton } from '@ui/components/editor/common/Button'
 import styles from './RecentDonationsFooter.module.scss'

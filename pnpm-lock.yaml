@@ -214,9 +214,6 @@ importers:
       '@cwc/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      classnames:
-        specifier: 2.5.1
-        version: 2.5.1
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -269,9 +266,6 @@ importers:
       axios:
         specifier: 1.21.0
         version: 1.21.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      classnames:
-        specifier: 2.5.1
-        version: 2.5.1
       dayjs:
         specifier: 1.11.10
         version: 1.11.10
@@ -429,9 +423,6 @@ importers:
       '@vscode/codicons':
         specifier: 0.0.46-51
         version: 0.0.46-51
-      classnames:
-        specifier: 2.5.1
-        version: 2.5.1
       dayjs:
         specifier: 1.11.10
         version: 1.11.10
@@ -2977,9 +2968,6 @@ packages:
 
   classnames@2.3.1:
     resolution: {integrity: sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==}
-
-  classnames@2.5.1:
-    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
 
   clean-stack@2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
@@ -9098,8 +9086,6 @@ snapshots:
   cjs-module-lexer@1.4.3: {}
 
   classnames@2.3.1: {}
-
-  classnames@2.5.1: {}
 
   clean-stack@2.2.0: {}
 

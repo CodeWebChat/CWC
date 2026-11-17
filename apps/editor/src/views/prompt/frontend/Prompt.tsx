@@ -6,7 +6,7 @@ import { EditWebConfigurationForm } from '@/views/shared/forms/EditWebConfigurat
 import { TextButton as UiTextButton } from '@ui/components/editor/common/TextButton'
 import { Home } from './Home'
 import styles from './Prompt.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { post_message } from './utils/post-message'
 import { CodeReview as UiCodeReview } from '@ui/components/editor/prompt-view/CodeReview'
 import { Modal as UiModal } from '@ui/components/editor/prompt-view/modals/Modal'

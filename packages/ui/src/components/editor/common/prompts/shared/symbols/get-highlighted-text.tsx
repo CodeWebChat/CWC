@@ -1,4 +1,4 @@
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './prompt-symbols.module.scss'
 import pfStyles from '../../PromptField/PromptField.module.scss'
 import { SelectionState } from '../../PromptField'

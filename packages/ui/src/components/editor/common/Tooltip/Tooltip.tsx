@@ -1,5 +1,5 @@
 import React from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './Tooltip.module.scss'
 
 type Props = {

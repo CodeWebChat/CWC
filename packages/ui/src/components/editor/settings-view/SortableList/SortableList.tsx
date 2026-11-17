@@ -1,5 +1,5 @@
 import styles from './SortableList.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { ReactSortable } from 'react-sortablejs'
 import { IconButton } from '../../common/IconButton'
 

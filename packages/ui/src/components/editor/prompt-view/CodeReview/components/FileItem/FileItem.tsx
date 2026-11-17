@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { FileInCodeReview } from '@shared/types/file-in-code-review'
 import styles from './FileItem.module.scss'
 import { Checkbox } from '../../../../common/Checkbox'
@@ -264,7 +264,11 @@ export const FileItem: FC<Props> = (props) => {
           }
 
           const message_actions = []
-          if (!props.file.is_applying && !props.file.added_in_code_review && !props.is_from_agentic_cli) {
+          if (
+            !props.file.is_applying &&
+            !props.file.added_in_code_review &&
+            !props.is_from_agentic_cli
+          ) {
             message_actions.push({
               id: 'fix',
               icon: 'codicon-sparkle',

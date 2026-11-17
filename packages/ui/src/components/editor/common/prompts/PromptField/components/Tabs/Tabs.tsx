@@ -1,6 +1,6 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { ReactSortable } from 'react-sortablejs'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './Tabs.module.scss'
 import { Tooltip } from '../../../../Tooltip'
 

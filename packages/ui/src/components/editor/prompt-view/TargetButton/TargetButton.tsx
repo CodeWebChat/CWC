@@ -1,5 +1,5 @@
 import styles from './TargetButton.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { AsciiArtEffect } from '../AsciiArtEffect'
 import { KeycapWrapper } from '../KeycapWrapper'
 

@@ -1,4 +1,4 @@
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './Group.module.scss'
 import { GROUP_TITLE_HEIGHT } from '../../../../constants/sizes'
 

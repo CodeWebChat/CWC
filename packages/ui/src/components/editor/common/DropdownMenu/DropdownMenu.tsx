@@ -1,5 +1,5 @@
 import { useState, useLayoutEffect, useRef } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { Scrollable } from '../Scrollable'
 import styles from './DropdownMenu.module.scss'
 

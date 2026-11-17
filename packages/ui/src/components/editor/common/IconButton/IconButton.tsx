@@ -1,5 +1,5 @@
 import styles from './IconButton.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { Icon as UiIcon } from '../Icon'
 
 type Props = {

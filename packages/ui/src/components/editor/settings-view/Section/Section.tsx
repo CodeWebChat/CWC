@@ -1,6 +1,6 @@
 import styles from './Section.module.scss'
 import { forwardRef, useRef, useState, useEffect } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { SECTION_HEADER_HEIGHT } from '../../../../constants/sizes'
 
 type Props = {

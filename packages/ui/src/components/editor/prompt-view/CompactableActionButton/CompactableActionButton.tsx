@@ -1,4 +1,4 @@
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './CompactableActionButton.module.scss'
 import { Icon as UiIcon } from '../../common/Icon'
 

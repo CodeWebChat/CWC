@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { DropdownMenu } from '../DropdownMenu'
 import styles from './Dropdown.module.scss'
 

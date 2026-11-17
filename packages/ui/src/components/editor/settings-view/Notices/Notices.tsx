@@ -1,6 +1,6 @@
 import styles from './Notices.module.scss'
 import React from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 
 type NoticeProps = {
   message: React.ReactNode

@@ -1,7 +1,7 @@
 import styles from '../Tasks.module.scss'
 import React from 'react'
 import { ReactSortable } from 'react-sortablejs'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { Task } from '@shared/types/task'
 
 export type SortableTask = Task & {

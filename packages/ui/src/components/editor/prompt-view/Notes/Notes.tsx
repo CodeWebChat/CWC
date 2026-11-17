@@ -1,5 +1,5 @@
 import React from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './Notes.module.scss'
 import {
   get_caret_position_from_div,

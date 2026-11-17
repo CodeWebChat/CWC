@@ -1,5 +1,5 @@
 import styles from './PromptInstructions.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { IconButton } from '../../common/IconButton'
 import { useState } from 'react'
 import { SortableList } from '../SortableList'

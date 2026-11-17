@@ -1,6 +1,6 @@
 import styles from './RecentDonations.module.scss'
 import { useEffect, useRef, useState } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { Scrollable } from '../../common/Scrollable'
 import { Fieldset as UiFieldset } from '../Fieldset'
 import { TextButton } from '../../common/TextButton'

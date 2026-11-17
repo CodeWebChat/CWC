@@ -1,4 +1,4 @@
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './NavigationSection.module.scss'
 
 type Props = {

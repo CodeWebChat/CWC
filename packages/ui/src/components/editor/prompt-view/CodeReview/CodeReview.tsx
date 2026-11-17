@@ -1,12 +1,15 @@
 import { FC, useRef, useState, useMemo, useEffect } from 'react'
-import { FileInCodeReview, ItemInCodeReview } from '@shared/types/file-in-code-review'
+import {
+  FileInCodeReview,
+  ItemInCodeReview
+} from '@shared/types/file-in-code-review'
 import {
   ApiConfigurationDetails,
   CliConfigurationDetails,
   WebConfigurationDetails
 } from '@shared/types/response-history-item'
 import { simplify_prompt_symbols } from '@shared/utils/simplify-prompt-symbols'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './CodeReview.module.scss'
 import { TextItem, InlineFileItem, FileItem } from './components'
 import { Scrollable } from '../../common/Scrollable'
@@ -304,7 +307,10 @@ export const CodeReview: FC<Props> = (props) => {
               files_in_code_review.length > 1
                 ? props.translations.files_failed_to_apply_changes
                     .replace('{error_count}', String(error_count))
-                    .replace('{total_count}', String(files_in_code_review.length))
+                    .replace(
+                      '{total_count}',
+                      String(files_in_code_review.length)
+                    )
                 : props.translations.failed_to_apply_changes_to_file
             }
             actions={

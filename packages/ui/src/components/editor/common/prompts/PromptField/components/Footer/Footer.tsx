@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, RefObject } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './Footer.module.scss'
 import { Icon } from '../../../../Icon'
 import { DropdownMenu } from '../../../../DropdownMenu'

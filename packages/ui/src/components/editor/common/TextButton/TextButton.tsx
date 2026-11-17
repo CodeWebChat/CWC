@@ -1,5 +1,5 @@
 import styles from './TextButton.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 
 type Props = {
   children: React.ReactNode

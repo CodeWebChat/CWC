@@ -1,6 +1,6 @@
 import styles from './Item.module.scss'
 import React, { useState } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { IconButton } from '../../common/IconButton/IconButton'
 
 type Props = {

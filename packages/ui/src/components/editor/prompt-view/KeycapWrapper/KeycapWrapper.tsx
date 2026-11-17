@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react'
 import styles from './KeycapWrapper.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 
 export namespace KeycapWrapper {
   export type Props = {

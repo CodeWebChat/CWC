@@ -1,4 +1,4 @@
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import { Scrollable } from '../../../common/Scrollable'
 import styles from './Modal.module.scss'
 

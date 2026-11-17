@@ -1392,7 +1392,6 @@
     "@mozilla/readability": "0.6.0",
     "@vscode/codicons": "0.0.46-51",
     "axios": "1.21.0",
-    "classnames": "2.5.1",
     "dayjs": "1.11.10",
     "dotenv": "16.4.5",
     "glob": "14.0.4",

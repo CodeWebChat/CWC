@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './CompletedTasks.module.scss'
 import { Checkbox } from '../../../../Checkbox/Checkbox'
 import { get_highlighted_text } from '../../../shared/symbols'

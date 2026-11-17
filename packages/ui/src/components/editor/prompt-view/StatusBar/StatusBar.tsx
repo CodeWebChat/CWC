@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 import styles from './StatusBar.module.scss'
 import { KeycapWrapper } from '../KeycapWrapper'
 import { Tooltip } from '../../common/Tooltip'

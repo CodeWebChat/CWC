@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import styles from './IconAccentButton.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 
 export namespace IconAccentButton {
   export type Props = {

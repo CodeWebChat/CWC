@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '../../common/Button'
 import styles from './UpdateAvailable.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 
 type Props = {
   on_update: () => void

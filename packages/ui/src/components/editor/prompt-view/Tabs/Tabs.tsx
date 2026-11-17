@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 import styles from './Tabs.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 
 export namespace Tabs {
   export type Tab = {

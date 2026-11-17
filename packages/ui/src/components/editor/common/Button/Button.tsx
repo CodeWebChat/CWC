@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from 'react'
 import styles from './Button.module.scss'
-import cn from 'classnames'
+import cn from '@shared/utils/classnames'
 
 type Props = {
   on_click?: (
