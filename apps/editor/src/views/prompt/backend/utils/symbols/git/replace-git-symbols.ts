@@ -158,7 +158,11 @@ export const replace_changes_symbol = async (params: {
         continue
       }
 
-      const multi_root_match = branch_spec.match(/^([^/]+)\/(.+)$/)
+      const is_multi_root_workspace =
+        (vscode.workspace.workspaceFolders?.length ?? 0) > 1
+      const multi_root_match = is_multi_root_workspace
+        ? branch_spec.match(/^([^/]+)\/(.+)$/)
+        : null
 
       if (multi_root_match) {
         const [, folder_name, branch_name] = multi_root_match

@@ -166,7 +166,7 @@ export const handle_changes_item = async (
 
         const cwd = selected_workspace.folder.uri.fsPath
         const folder_name = selected_workspace.folder.name
-        const is_multi_root = workspace_with_branches.length > 1
+        const is_multi_root = workspace_folders.length > 1
 
         let is_active = true
 
@@ -291,7 +291,7 @@ export const handle_changes_item = async (
         }
 
         const formatted_branch =
-          workspace_with_branches.length > 1
+          workspace_folders.length > 1
             ? `${selected_workspace.folder.name}/${selected_branch.label}`
             : selected_branch.label
 
