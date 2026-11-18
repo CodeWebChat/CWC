@@ -36,9 +36,20 @@ const launch_browser = (
 
 export const handle_run_browser = async () => {
   if (vscode.env.remoteName) {
-    vscode.window.showWarningMessage(
-      t('views.prompt.handlers.handle-run-browser.remote-not-supported')
-    )
+    const action = t('views.prompt.handlers.handle-run-browser.forward-port')
+    vscode.window
+      .showWarningMessage(
+        t('views.prompt.handlers.handle-run-browser.remote-not-supported'),
+        action
+      )
+      .then((selection) => {
+        if (selection === action) {
+          vscode.commands.executeCommand(
+            'codeWebChat.settings',
+            'section:web:group:remote-machines'
+          )
+        }
+      })
     return
   }
 

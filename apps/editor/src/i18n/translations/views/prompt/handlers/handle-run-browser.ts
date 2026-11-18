@@ -1,4 +1,22 @@
 export const translations = {
+  'views.prompt.handlers.handle-run-browser.forward-port': {
+    en: 'Forward port',
+    pl: 'Przekieruj port',
+    'zh-cn': '转发端口',
+    ja: 'ポートを転送',
+    'zh-tw': '轉發通訊埠',
+    de: 'Port weiterleiten',
+    es: 'Reenviar puerto',
+    fr: 'Transférer le port',
+    'pt-br': 'Encaminhar porta',
+    ru: 'Переадресовать порт',
+    ko: '포트 포워딩',
+    it: 'Inoltra porta',
+    tr: 'Bağlantı noktasını yönlendir',
+    cs: 'Přesměrovat port',
+    hu: 'Port továbbítása',
+    bg: 'Пренасочване на порт'
+  },
   'views.prompt.handlers.handle-run-browser.remote-not-supported': {
     en: 'Running the browser in a remote environment is not supported.',
     pl: 'Uruchamianie przeglądarki w środowisku zdalnym nie jest obsługiwane.',
