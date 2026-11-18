@@ -1,4 +1,3 @@
-import * as vscode from 'vscode'
 import { ApplyResponseFromHistoryMessage } from '@/views/prompt/types/messages'
 
 import { apply_response } from '@/features/apply-response/apply-response'
