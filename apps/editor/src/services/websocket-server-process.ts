@@ -11,7 +11,6 @@ interface BrowserClient {
   version: string
   id: string
   user_agent: string
-  profile_name?: string
   is_alive: boolean
 }
 
@@ -155,7 +154,6 @@ class WebSocketServer {
   private _handle_browser_connection(ws: WebSocket, url: URL) {
     const version = url.searchParams.get('version') || 'unknown'
     const user_agent = url.searchParams.get('user_agent') || 'unknown'
-    const profile_name = url.searchParams.get('profile_name') || undefined
     const id = url.searchParams.get('browser_id') || crypto.randomUUID()
 
     const client: BrowserClient = {
@@ -163,7 +161,6 @@ class WebSocketServer {
       version,
       id,
       user_agent,
-      profile_name,
       is_alive: true
     }
     this.browser_clients.set(id, client)
@@ -322,8 +319,7 @@ class WebSocketServer {
     return Array.from(this.browser_clients.values()).map((c) => ({
       id: c.id,
       version: c.version,
-      user_agent: c.user_agent,
-      profile_name: c.profile_name
+      user_agent: c.user_agent
     }))
   }
 

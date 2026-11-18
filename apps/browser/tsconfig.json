@@ -1,16 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["chrome", "webextension-polyfill", "node", "jest"],
+    "types": ["chrome", "node", "jest"],
     "paths": {
       "@/*": ["./src/*"],
-      "@shared/*": ["../../packages/shared/src/*"],
-      "@ui/*": ["../../packages/ui/src/*"]
+      "@shared/*": ["../../packages/shared/src/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "../../packages/shared/src/**/*",
-    "../../packages/ui/src/**/*"
-  ]
+  "include": ["src/**/*", "../../packages/shared/src/**/*"]
 }

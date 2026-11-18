@@ -1,29 +1,16 @@
 {
   "name": "browser",
-  "type": "module",
   "scripts": {
-    "build": "tsc --noEmit && node scripts/build.mjs && tsx scripts/create-firefox-build.ts && tsx scripts/create-zip-archives.ts",
-    "watch": "node scripts/build.mjs --watch",
+    "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit",
-    "bump": "node scripts/bump.cjs",
-    "publish:firefox": "tsx scripts/publish-firefox.ts",
-    "publish:chrome": "tsx scripts/publish-chrome.ts"
+    "bump": "node scripts/bump.cjs"
   },
   "devDependencies": {
     "@types/node": "22.x",
-    "@types/react": "18.2.79",
-    "@types/react-dom": "18.2.25",
-    "@types/webextension-polyfill": "0.12.6",
     "baseline-browser-mapping": "2.11.35",
-    "sass-embedded": "1.89.2",
-    "tsx": "4.23.15",
-    "vite": "8.3.6",
-    "webextension-polyfill": "0.12.0"
+    "vite": "8.3.6"
   },
   "dependencies": {
-    "@cwc/ui": "workspace:*",
-    "@cwc/shared": "workspace:*",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "@cwc/shared": "workspace:*"
   }
 }

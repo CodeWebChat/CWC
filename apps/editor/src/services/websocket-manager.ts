@@ -364,26 +364,12 @@ export class WebSocketManager {
 
     const items = this.connected_browsers
       .map((b) => ({
-        label: b.profile_name || this._get_browser_name(b.user_agent),
-        description: b.profile_name
-          ? this._get_browser_name(b.user_agent)
-          : undefined,
-        id: b.id,
-        _has_profile: !!b.profile_name
+        label: this._get_browser_name(b.user_agent),
+        id: b.id
       }))
-      .sort((a, b) => {
-        if (a._has_profile && !b._has_profile) return -1
-        if (!a._has_profile && b._has_profile) return 1
-        if (a._has_profile && b._has_profile) {
-          return a.label.localeCompare(b.label)
-        }
-        return a.id.localeCompare(b.id)
-      })
-      .map((item) => ({
-        label: item.label,
-        description: item.description,
-        id: item.id
-      }))
+      .sort(
+        (a, b) => a.label.localeCompare(b.label) || a.id.localeCompare(b.id)
+      )
 
     return new Promise<string | undefined>((resolve) => {
       const quick_pick = vscode.window.createQuickPick<

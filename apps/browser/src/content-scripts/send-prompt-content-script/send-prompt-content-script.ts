@@ -1,4 +1,3 @@
-import browser from 'webextension-polyfill'
 import { Chat } from '@shared/types/websocket-message'
 import { Chatbot } from './types/chatbot'
 import { Message } from '@/types/messages'
@@ -170,7 +169,7 @@ const initialize_chat = async (params: { message: string; chat: Chat }) => {
     document.addEventListener('keydown', handle_key_press)
     setTimeout(resolve, 2000)
   })
-  browser.runtime
+  chrome.runtime
     .sendMessage<Message>({
       action: 'chat-initialized'
     })
@@ -192,7 +191,7 @@ const main = async () => {
     const storage_key = `chat-init:${batch_id}`
     let storage: any
     try {
-      storage = await browser.storage.local.get(storage_key)
+      storage = await chrome.storage.local.get(storage_key)
     } catch (e) {
       console.debug('Failed to get chat init data', e)
       return
@@ -245,7 +244,7 @@ const main = async () => {
     })
 
     try {
-      await browser.storage.local.remove(storage_key)
+      await chrome.storage.local.remove(storage_key)
     } catch (e) {
       console.debug('Failed to remove chat init data', e)
     }

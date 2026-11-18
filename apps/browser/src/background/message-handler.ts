@@ -3,7 +3,6 @@ import {
   InitializeChatMessage,
   ApplyResponseMessage
 } from '@shared/types/websocket-message'
-import browser from 'webextension-polyfill'
 import { send_message_to_server } from './websocket'
 import { is_message } from '@/utils/is-message'
 import { CHATBOTS } from '@shared/constants/chatbots'
@@ -32,7 +31,7 @@ export const handle_messages = (message: WebSocketMessage) => {
 }
 
 const check_browser_focus = async (): Promise<boolean> => {
-  const windows = await browser.windows.getAll()
+  const windows = await chrome.windows.getAll()
   return windows.some((win) => win.focused)
 }
 
@@ -61,7 +60,7 @@ const process_next_chat = async () => {
 
   const batch_id = crypto.randomUUID()
 
-  await browser.storage.local.set({
+  await chrome.storage.local.set({
     [`chat-init:${batch_id}`]: {
       text: current_chat_message.text,
       current_chat: {
@@ -89,9 +88,6 @@ const process_next_chat = async () => {
     }
   })
 
-  const { 'selected-firefox-container': selected_firefox_container_id } =
-    await browser.storage.local.get('selected-firefox-container')
-
   let target_url = ''
   // OpenRouter is a special case—model handling via search params
   if (current_chat_message.url === 'https://openrouter.ai/chat') {
@@ -118,9 +114,9 @@ const process_next_chat = async () => {
     current_chat_message.inject_apply_response_button
   ) {
     try {
-      const tab = await browser.tabs.get(last_opened_tab_id)
+      const tab = await chrome.tabs.get(last_opened_tab_id)
       if (tab.active) {
-        await browser.tabs.update(last_opened_tab_id, {
+        await chrome.tabs.update(last_opened_tab_id, {
           url: target_url,
           active: true
         })
@@ -134,11 +130,10 @@ const process_next_chat = async () => {
   }
 
   if (!tab_reused) {
-    const create_tab_options: any = { active: true, url: target_url }
-    if (selected_firefox_container_id) {
-      create_tab_options.cookieStoreId = selected_firefox_container_id
-    }
-    const new_tab = await browser.tabs.create(create_tab_options)
+    const new_tab = await chrome.tabs.create({
+      active: true,
+      url: target_url
+    })
     last_opened_tab_id = new_tab.id
     last_opened_tab_client_id = current_chat_message.client_id
     last_opened_tab_chatbot = current_chat_message.chatbot
@@ -152,7 +147,7 @@ const process_next_chat = async () => {
     console.warn(
       `Chat initialization timeout for ${current_chat_message.url}. Moving to next chat.`
     )
-    browser.storage.local.remove(`chat-init:${batch_id}`).catch((e) => {
+    chrome.storage.local.remove(`chat-init:${batch_id}`).catch((e) => {
       console.error('Failed to clean up chat init data on timeout', e)
     })
     chat_queue.shift()
@@ -218,8 +213,8 @@ const handle_chat_initialized = async () => {
 }
 
 export const setup_message_listeners = () => {
-  browser.windows.onFocusChanged.addListener((window_id) => {
-    if (window_id !== browser.windows.WINDOW_ID_NONE) {
+  chrome.windows.onFocusChanged.addListener((window_id) => {
+    if (window_id !== chrome.windows.WINDOW_ID_NONE) {
       if (is_waiting_for_focus) {
         is_waiting_for_focus = false
         setTimeout(() => {
@@ -229,7 +224,7 @@ export const setup_message_listeners = () => {
     }
   })
 
-  browser.runtime.onMessage.addListener(
+  chrome.runtime.onMessage.addListener(
     (message: any, sender: any, _: any): any => {
       if (is_message(message)) {
         if (message.action === 'chat-initialized') {

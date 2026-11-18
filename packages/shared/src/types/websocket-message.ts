@@ -10,7 +10,6 @@ export type ConnectedBrowser = {
   id: string
   version: string
   user_agent: string
-  profile_name?: string
 }
 
 export type InitializeChatMessage = {

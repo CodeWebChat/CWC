@@ -1,4 +1,3 @@
-import browser from 'webextension-polyfill'
 import { apply_response_icon } from '../constants/apply-response-icon'
 import { apply_response_button_title } from '../constants/dictionary'
 import {
@@ -53,7 +52,7 @@ export function add_apply_response_button(params: {
         console.error('Error reading CWC session data', error)
       }
 
-      browser.runtime
+      chrome.runtime
         .sendMessage<Message>({
           action: 'apply-response',
           client_id,
@@ -93,7 +92,7 @@ export function observe_for_responses(params: {
     }
 
     if (!has_sent_finished_responding) {
-      browser.runtime
+      chrome.runtime
         .sendMessage<Message>({
           action: 'finished-responding'
         })

@@ -16,21 +16,15 @@ Serves two purposes:
 > [!IMPORTANT]
 > Prompt text is never submitted or response accepted automatically.
 
-## Stores
+## Store
 
 - [Chrome Web Store](https://chromewebstore.google.com/detail/autofill-for-code-web-chat/ljookipcanaglfaocjbgdicfbdhhjffp)
-- [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/autofill-for-code-web-chat/)
 
 ## Permissions
 
 The extension functions with minimal permissions.
 
 - `storage` - Used to temporarily store prompts for [a content script](https://github.com/CodeWebChat/CWC/tree/dev/apps/browser/src/content-scripts/send-prompt-content-script), and to save extension settings.
-- `alarms` (Chrome only) - Used to implement a keep-alive mechanism for the background service worker to ensure the WebSocket connection stays active.
+- `alarms` - Used to implement a keep-alive mechanism for the background service worker to ensure the WebSocket connection stays active.
 
 The extension requests no host permissions. It connects to the local WebSocket server managed by the VS Code extension (`ws://localhost:55155`, or `55156` when a forwarded remote port had to be shifted).
-
-Firefox only:
-
-- `contextualIdentities` - Required for Firefox Containers support.
-- `cookies` (optional) - Required for Firefox Containers support.

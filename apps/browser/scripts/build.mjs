@@ -8,7 +8,7 @@ const { build } = await import('vite')
 
 const app_dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
-const targets = ['background', 'send-prompt-content-script', 'popup']
+const targets = ['background', 'send-prompt-content-script']
 
 const is_watch = process.argv.includes('--watch')
 const mode = is_watch ? 'development' : 'production'

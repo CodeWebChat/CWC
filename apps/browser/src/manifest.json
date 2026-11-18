@@ -12,14 +12,7 @@
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },
-  "permissions": [
-    "storage",
-    "alarms"
-  ],
-  "action": {
-    "default_title": "Autofill for Code Web Chat",
-    "default_popup": "popup.html"
-  },
+  "permissions": ["storage", "alarms"],
   "background": {
     "service_worker": "background.js"
   },
@@ -49,9 +42,7 @@
         "https://chat.z.ai/",
         "https://zchat.z.ai/"
       ],
-      "js": [
-        "send-prompt-content-script.js"
-      ]
+      "js": ["send-prompt-content-script.js"]
     }
   ]
 }

@@ -1,12 +1,11 @@
 import { WebSocketMessage } from '@shared/types/websocket-message'
 import { handle_messages } from './message-handler'
 import { DEFAULT_PORT, CLIENT_TYPE } from '@shared/constants/websocket'
-import browser from 'webextension-polyfill'
 
 const FORWARDED_PORTS_BY_CLIENT_KEY = 'forwarded-ports-by-client'
 
 const ports_to_check = async (): Promise<number[]> => {
-  const storage = await browser.storage.local.get('forwarded-ports')
+  const storage = await chrome.storage.local.get('forwarded-ports')
   const forwarded_ports = (storage['forwarded-ports'] as number[]) || []
   return [DEFAULT_PORT, ...forwarded_ports]
 }
@@ -34,7 +33,7 @@ const update_forwarded_ports = (params: {
 }) => {
   forwarded_ports_queue = forwarded_ports_queue
     .then(async () => {
-      const storage = await browser.storage.local.get(
+      const storage = await chrome.storage.local.get(
         FORWARDED_PORTS_BY_CLIENT_KEY
       )
       const by_client: Record<string, number[]> = {
@@ -58,7 +57,7 @@ const update_forwarded_ports = (params: {
       }
 
       const union = [...new Set(Object.values(by_client).flat())]
-      await browser.storage.local.set({
+      await chrome.storage.local.set({
         [FORWARDED_PORTS_BY_CLIENT_KEY]: by_client,
         'forwarded-ports': union
       })
@@ -133,30 +132,21 @@ export const connect_websocket = async (port: number): Promise<void> => {
   }
 
   try {
-    const manifest = browser.runtime.getManifest()
+    const manifest = chrome.runtime.getManifest()
     const version = manifest.version
     const user_agent = navigator.userAgent
 
-    const storage = await browser.storage.local.get([
-      'browser-profile-name',
-      'browser-id'
-    ])
-    const profile_name = (
-      storage['browser-profile-name'] as string | undefined
-    )?.trim()
+    const storage = await chrome.storage.local.get('browser-id')
 
     let browser_id = storage['browser-id'] as string | undefined
     if (!browser_id) {
       browser_id = crypto.randomUUID()
-      await browser.storage.local.set({ 'browser-id': browser_id })
+      await chrome.storage.local.set({ 'browser-id': browser_id })
     }
 
     if (is_busy(c)) return
 
-    let ws_url = `ws://localhost:${port}?client_type=${CLIENT_TYPE.BROWSER}&version=${version}&user_agent=${encodeURIComponent(user_agent)}&browser_id=${encodeURIComponent(browser_id)}`
-    if (profile_name) {
-      ws_url += `&profile_name=${encodeURIComponent(profile_name)}`
-    }
+    const ws_url = `ws://localhost:${port}?client_type=${CLIENT_TYPE.BROWSER}&version=${version}&user_agent=${encodeURIComponent(user_agent)}&browser_id=${encodeURIComponent(browser_id)}`
 
     const ws = new WebSocket(ws_url)
     c.ws = ws
@@ -239,25 +229,7 @@ export const connect_websocket = async (port: number): Promise<void> => {
   }
 }
 
-const reset_all_connections = async () => {
-  const ports = await ports_to_check()
-  for (const port of ports) {
-    const c = get_connection(port)
-    if (c.retry_timer) {
-      clearTimeout(c.retry_timer)
-      c.retry_timer = null
-    }
-    const old_ws = c.ws
-    c.ws = null
-    old_ws?.close()
-    connect_websocket(port)
-  }
-}
-
-browser.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName === 'local' && changes['browser-profile-name']) {
-    reset_all_connections()
-  }
+chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'local' && changes['forwarded-ports']) {
     const new_ports = (changes['forwarded-ports'].newValue as number[]) || []
     const old_ports = (changes['forwarded-ports'].oldValue as number[]) || []
