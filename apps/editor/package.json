@@ -2,7 +2,7 @@
   "name": "gemini-coder",
   "displayName": "Code Web Chat",
   "description": "Markdown prompts for chatbots, APIs, and CLIs with seamless integration",
-  "version": "2026.1118.485",
+  "version": "2026.1118.486",
   "scripts": {
     "build": "tsx scripts/build.mts && tsx scripts/package.mts",
     "compile": "tsx scripts/build.mts",
