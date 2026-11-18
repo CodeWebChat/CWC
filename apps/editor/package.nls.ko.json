@@ -62,5 +62,6 @@
   "codeWebChat.checkForUpdates.title": "업데이트 확인",
   "codeWebChat.installSpecificVersion.title": "특정 버전 설치...",
   "codeWebChat.applyFromTerminal.title": "터미널에서 적용",
+  "codeWebChat.uninstallBrowser.title": "브라우저 제거",
   "codeWebChat.category": "CWC"
 }

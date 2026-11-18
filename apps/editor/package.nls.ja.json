@@ -62,5 +62,6 @@
   "codeWebChat.checkForUpdates.title": "更新を確認",
   "codeWebChat.installSpecificVersion.title": "特定のバージョンをインストール...",
   "codeWebChat.applyFromTerminal.title": "ターミナルから適用",
+  "codeWebChat.uninstallBrowser.title": "ブラウザをアンインストール",
   "codeWebChat.category": "CWC"
 }

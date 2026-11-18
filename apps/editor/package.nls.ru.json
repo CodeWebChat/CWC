@@ -62,5 +62,6 @@
   "codeWebChat.checkForUpdates.title": "Проверить обновления",
   "codeWebChat.installSpecificVersion.title": "Установить конкретную версию...",
   "codeWebChat.applyFromTerminal.title": "Применить из терминала",
+  "codeWebChat.uninstallBrowser.title": "Удалить браузер",
   "codeWebChat.category": "CWC"
 }

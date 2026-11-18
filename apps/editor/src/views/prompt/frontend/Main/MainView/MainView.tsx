@@ -153,7 +153,6 @@ type Props = {
   on_skill_click?: (agent: string, repo: string, skill_name: string) => void
   on_saved_context_click?: (context_type: string, context_name: string) => void
   on_accuracy_boost_click?: () => void
-  on_install_browser_extension: () => void
   on_agentic_search: () => void
   on_clear_context: () => void
   completed_tasks: string[]
@@ -409,32 +408,14 @@ export const MainView: React.FC<Props> = (props) => {
         is_connected={props.is_connected}
         is_closed={browser_connection.is_closed}
         on_close={browser_connection.handle_close}
-        on_install={props.on_install_browser_extension}
+        on_run_browser={props.on_run_browser}
         translations={{
           connected: t('main.browser-connection.connected'),
           not_connected: t('main.browser-connection.not-connected'),
-          install: t('main.browser-connection.install'),
+          run_browser: t('main.browser-connection.run-browser'),
           hide: t('main.browser-connection.hide')
         }}
       />
-
-      {props.target === 'WEB' && !props.is_connected && (
-        <>
-          <UiStatusBar
-            icon="codicon-beaker"
-            label={t('main.run-browser.enable')}
-            actions={[
-              {
-                id: 'run',
-                label: t('main.run-browser.run'),
-                icon: 'codicon-play',
-                on_click: props.on_run_browser
-              }
-            ]}
-          />
-          <UiSpacer height={6} />
-        </>
-      )}
 
       {is_api_warning_visible && (
         <>
@@ -676,8 +657,8 @@ export const MainView: React.FC<Props> = (props) => {
                 label=""
                 actions={[
                   {
-                    id: 'install',
-                    icon: 'codicon-add',
+                    id: 'run',
+                    icon: 'codicon-play',
                     label: '',
                     title: '',
                     on_click: () => {}

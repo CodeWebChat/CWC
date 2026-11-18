@@ -62,5 +62,6 @@
   "codeWebChat.checkForUpdates.title": "检查更新",
   "codeWebChat.installSpecificVersion.title": "安装指定版本...",
   "codeWebChat.applyFromTerminal.title": "从终端应用",
+  "codeWebChat.uninstallBrowser.title": "卸载浏览器",
   "codeWebChat.category": "CWC"
 }

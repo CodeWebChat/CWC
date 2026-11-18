@@ -84,8 +84,8 @@ export const Header: React.FC<Props> = (props) => {
                         label=""
                         actions={[
                           {
-                            id: 'install',
-                            icon: 'codicon-add',
+                            id: 'run',
+                            icon: 'codicon-play',
                             label: '',
                             title: '',
                             on_click: () => {}
@@ -285,8 +285,8 @@ export const Header: React.FC<Props> = (props) => {
                 label=""
                 actions={[
                   {
-                    id: 'install',
-                    icon: 'codicon-add',
+                    id: 'run',
+                    icon: 'codicon-play',
                     label: '',
                     title: '',
                     on_click: () => {}

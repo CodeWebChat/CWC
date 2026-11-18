@@ -573,12 +573,6 @@ export const Main: React.FC<Props> = (props) => {
     })
   }
 
-  const handle_install_browser_extension = () => {
-    post_message(props.vscode, {
-      command: 'INSTALL_BROWSER_EXTENSION'
-    })
-  }
-
   const handle_api_configuration_click = (id: string) => {
     const instruction = get_current_instructions()
 
@@ -794,7 +788,6 @@ export const Main: React.FC<Props> = (props) => {
           command: 'SHOW_ACCURACY_BOOST_INFO'
         })
       }}
-      on_install_browser_extension={handle_install_browser_extension}
       on_agentic_search={props.on_agentic_search}
       on_clear_context={handle_clear_context}
       completed_tasks={completed_tasks}

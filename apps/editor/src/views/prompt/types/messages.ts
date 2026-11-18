@@ -666,10 +666,6 @@ export interface ShowAccuracyBoostInfoMessage extends BaseMessage {
   command: 'SHOW_ACCURACY_BOOST_INFO'
 }
 
-export interface InstallBrowserExtensionMessage extends BaseMessage {
-  command: 'INSTALL_BROWSER_EXTENSION'
-}
-
 export interface GetCompletedTasksMessage extends BaseMessage {
   command: 'GET_COMPLETED_TASKS'
 }
@@ -821,7 +817,6 @@ export type FrontendMessage =
   | GetIsModernUiMessage
   | GetTokenCountMessage
   | PreviewPromptMessage
-  | InstallBrowserExtensionMessage
   | PreviewChangesSymbolMessage
   | PreviewCommitSymbolMessage
   | PreviewSkillSymbolMessage

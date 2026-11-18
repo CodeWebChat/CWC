@@ -430,6 +430,11 @@
         "title": "%codeWebChat.applyFromTerminal.title%",
         "category": "%codeWebChat.category%",
         "icon": "$(terminal)"
+      },
+      {
+        "command": "codeWebChat.uninstallBrowser",
+        "title": "%codeWebChat.uninstallBrowser.title%",
+        "category": "%codeWebChat.category%"
       }
     ],
     "submenus": [

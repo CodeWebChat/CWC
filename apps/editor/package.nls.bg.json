@@ -62,5 +62,6 @@
   "codeWebChat.checkForUpdates.title": "Проверка за актуализации",
   "codeWebChat.installSpecificVersion.title": "Инсталирай специфична версия...",
   "codeWebChat.applyFromTerminal.title": "Приложи от терминала",
+  "codeWebChat.uninstallBrowser.title": "Деинсталирай браузъра",
   "codeWebChat.category": "CWC"
 }

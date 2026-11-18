@@ -62,5 +62,6 @@
   "codeWebChat.checkForUpdates.title": "Frissítések keresése",
   "codeWebChat.installSpecificVersion.title": "Konkrét verzió telepítése...",
   "codeWebChat.applyFromTerminal.title": "Alkalmazás terminálból",
+  "codeWebChat.uninstallBrowser.title": "Böngésző eltávolítása",
   "codeWebChat.category": "CWC"
 }

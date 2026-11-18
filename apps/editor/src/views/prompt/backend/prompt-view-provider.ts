@@ -988,8 +988,6 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
             await handlers.handle_preview_prompt({
               prompt_view_provider: this
             })
-          } else if (message.command === 'INSTALL_BROWSER_EXTENSION') {
-            await handlers.handle_install_browser_extension()
           } else if (message.command === 'PREVIEW_CHANGES_SYMBOL') {
             await handlers.handle_preview_changes_symbol(message)
           } else if (message.command === 'PREVIEW_COMMIT_SYMBOL') {

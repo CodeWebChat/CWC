@@ -62,5 +62,6 @@
   "codeWebChat.checkForUpdates.title": "Controlla aggiornamenti",
   "codeWebChat.installSpecificVersion.title": "Installa versione specifica...",
   "codeWebChat.applyFromTerminal.title": "Applica dal terminale",
+  "codeWebChat.uninstallBrowser.title": "Disinstalla browser",
   "codeWebChat.category": "CWC"
 }

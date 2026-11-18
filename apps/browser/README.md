@@ -16,10 +16,6 @@ Serves two purposes:
 > [!IMPORTANT]
 > Prompt text is never submitted or response accepted automatically.
 
-## Store
-
-- [Chrome Web Store](https://chromewebstore.google.com/detail/autofill-for-code-web-chat/ljookipcanaglfaocjbgdicfbdhhjffp)
-
 ## Permissions
 
 The extension functions with minimal permissions.

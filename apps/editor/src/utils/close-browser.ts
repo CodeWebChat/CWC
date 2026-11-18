@@ -24,7 +24,8 @@ export const close_browser = async () => {
     return
   }
 
-  const chrome_dir_prefix = path.join(os.homedir(), '.cwc', 'chrome') + path.sep
+  const chrome_dir_prefix =
+    path.join(os.homedir(), '.cwc', 'browser', 'chrome') + path.sep
 
   try {
     if (process.platform === 'win32') {

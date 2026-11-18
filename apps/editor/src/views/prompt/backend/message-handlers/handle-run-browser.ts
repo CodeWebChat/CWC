@@ -57,9 +57,10 @@ export const handle_run_browser = async () => {
   }
 
   const cwc_dir = path.join(os.homedir(), '.cwc')
+  const browser_dir = path.join(cwc_dir, 'browser')
 
-  if (!fs.existsSync(cwc_dir)) {
-    fs.mkdirSync(cwc_dir, { recursive: true })
+  if (!fs.existsSync(browser_dir)) {
+    fs.mkdirSync(browser_dir, { recursive: true })
   }
 
   const scheme = vscode.env.uriScheme
@@ -70,8 +71,8 @@ export const handle_run_browser = async () => {
     'browser',
     'out'
   )
-  const user_data_dir = path.join(cwc_dir, 'profiles', 'Default')
-  const cached_path_file = path.join(cwc_dir, '.chrome-157-path')
+  const user_data_dir = path.join(browser_dir, 'profiles', 'Default')
+  const cached_path_file = path.join(browser_dir, '.chrome-157-path')
 
   if (fs.existsSync(cached_path_file)) {
     const executable_path = fs.readFileSync(cached_path_file, 'utf-8').trim()
@@ -104,7 +105,7 @@ export const handle_run_browser = async () => {
         const installed_browser = await install({
           browser: Browser.CHROME,
           buildId: build_id,
-          cacheDir: cwc_dir,
+          cacheDir: browser_dir,
           downloadProgressCallback: (downloaded_bytes, total_bytes) => {
             if (token.isCancellationRequested) {
               throw new Error('Download cancelled')

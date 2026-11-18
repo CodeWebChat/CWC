@@ -62,5 +62,6 @@
   "codeWebChat.checkForUpdates.title": "Güncellemeleri Kontrol Et",
   "codeWebChat.installSpecificVersion.title": "Belirli Bir Sürümü Yükle...",
   "codeWebChat.applyFromTerminal.title": "Terminalden Uygula",
+  "codeWebChat.uninstallBrowser.title": "Tarayıcıyı Kaldır",
   "codeWebChat.category": "CWC"
 }

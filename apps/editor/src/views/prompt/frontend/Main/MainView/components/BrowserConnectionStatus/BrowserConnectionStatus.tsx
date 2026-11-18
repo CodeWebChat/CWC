@@ -9,10 +9,10 @@ type Props = {
   translations: {
     connected: string
     not_connected: string
-    install: string
+    run_browser: string
     hide: string
   }
-  on_install: () => void
+  on_run_browser: () => void
   on_close: () => void
 }
 
@@ -24,11 +24,11 @@ export const BrowserConnectionStatus: React.FC<Props> = (props) => {
   const actions = []
   if (!props.is_connected) {
     actions.push({
-      id: 'install',
-      icon: 'codicon-add',
-      label: props.translations.install,
-      title: props.translations.install,
-      on_click: props.on_install
+      id: 'run',
+      icon: 'codicon-play',
+      label: props.translations.run_browser,
+      title: props.translations.run_browser,
+      on_click: props.on_run_browser
     })
   } else {
     actions.push({

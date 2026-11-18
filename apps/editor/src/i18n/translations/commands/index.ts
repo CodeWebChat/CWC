@@ -12,7 +12,6 @@ import { translations as set_ranges_command } from './set-ranges-command'
 import { translations as new_file_command } from './new-file-command'
 import { translations as new_folder_command } from './new-folder-command'
 import { translations as rename_command } from './rename-command'
-import { translations as install_browser_extension_command } from './install-browser-extension-command'
 import { translations as select_modified_files_command } from './select-modified-files-command'
 import { translations as select_files_of_commit_command } from './select-files-of-commit-command'
 import { translations as history_command } from './history-command'
@@ -25,11 +24,13 @@ import { translations as reference_in_prompt_command } from './reference-in-prom
 import { translations as check_for_updates_command } from './check-for-updates-command'
 import { translations as install_specific_version_command } from './install-specific-version-command'
 import { translations as apply_from_terminal_command } from './apply-from-terminal-command'
+import { translations as uninstall_browser_command } from './uninstall-browser-command'
 
 export const translations = {
   ...check_for_updates_command,
   ...install_specific_version_command,
   ...apply_from_terminal_command,
+  ...uninstall_browser_command,
   ...generate_commit_message_command,
   ...code_at_cursor_command,
   ...apply_from_clipboard_command,
@@ -44,7 +45,6 @@ export const translations = {
   ...new_file_command,
   ...new_folder_command,
   ...rename_command,
-  ...install_browser_extension_command,
   ...select_modified_files_command,
   ...select_files_of_commit_command,
   ...history_command,
