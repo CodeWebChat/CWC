@@ -1,4 +1,4 @@
-import { create_zip } from './utils'
+import { create_zip } from './utils/create-zip'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
