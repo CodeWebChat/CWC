@@ -367,12 +367,25 @@ check_node_version() {
 try_nvm() { type nvm >/dev/null 2>&1 && nvm install 22 && nvm use 22; }
 try_fnm() { command -v fnm >/dev/null 2>&1 && eval "$(fnm env)" && fnm install 22 && fnm use 22; }
 try_n()   { command -v n >/dev/null 2>&1 && n 22; }
+try_install_nvm() {
+  local nvm_url="https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh"
+  if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+    if command -v curl >/dev/null 2>&1; then
+      curl -fsSL "$nvm_url" | PROFILE=/dev/null bash
+    elif command -v wget >/dev/null 2>&1; then
+      wget -qO- "$nvm_url" | PROFILE=/dev/null bash
+    else
+      return 1
+    fi
+  fi
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && nvm install 22 && nvm use 22
+}
 
 if ! check_node_version; then
   export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-  if ! { try_nvm || try_fnm || try_n; } >/dev/null 2>&1; then
+  if ! { try_nvm || try_fnm || try_n || try_install_nvm; } >/dev/null 2>&1; then
     echo "$msg_error $msg_node_required"
     exit 1
   fi
