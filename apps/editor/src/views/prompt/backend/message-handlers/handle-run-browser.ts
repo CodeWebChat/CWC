@@ -11,14 +11,14 @@ import {
 } from '@puppeteer/browsers'
 import { t } from '@/i18n'
 
-const launch_browser = (
-  executable_path: string,
-  user_data_dir: string,
+const launch_browser = (params: {
+  executable_path: string
+  user_data_dir: string
   extension_path: string
-) => {
+}) => {
   const args = [
-    `--user-data-dir=${user_data_dir}`,
-    `--load-extension=${extension_path}`,
+    `--user-data-dir=${params.user_data_dir}`,
+    `--load-extension=${params.extension_path}`,
     '--disable-infobars',
     '--no-first-run'
   ]
@@ -29,7 +29,7 @@ const launch_browser = (
     args.push('--password-store=basic')
   }
 
-  const child = spawn(executable_path, args, {
+  const child = spawn(params.executable_path, args, {
     detached: true,
     stdio: 'ignore'
   })
@@ -75,7 +75,7 @@ export const handle_run_browser = async () => {
   if (fs.existsSync(cached_path_file)) {
     const executable_path = fs.readFileSync(cached_path_file, 'utf-8').trim()
     if (fs.existsSync(executable_path)) {
-      launch_browser(executable_path, user_data_dir, extension_path)
+      launch_browser({ executable_path, user_data_dir, extension_path })
       return
     }
   }
@@ -131,7 +131,7 @@ export const handle_run_browser = async () => {
         }
 
         fs.writeFileSync(cached_path_file, executable_path)
-        launch_browser(executable_path, user_data_dir, extension_path)
+        launch_browser({ executable_path, user_data_dir, extension_path })
       } catch (error: any) {
         if (error.message === 'Download cancelled') {
           return
