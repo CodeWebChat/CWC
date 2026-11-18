@@ -17,9 +17,7 @@ import { Logger } from '@shared/utils/logger'
 import { WebConfiguration } from '@/types/web-configuration'
 import { ConfigWebConfigurationFormat } from '@/utils/web-configuration-format-converters'
 import { LAST_SELECTED_BROWSER_ID_STATE_KEY } from '@/constants/state-keys'
-import { ApplyResponseArgs } from '@/features/apply-response/response-processor'
 import { t } from '@/i18n'
-import { get_or_create_shared_token } from '../utils/shared-token'
 
 /**
  * Bridges the current workspace window and a WebSockets server
@@ -128,11 +126,7 @@ export class WebSocketManager {
     return new Promise((resolve, reject) => {
       let attempts = 0
       const challenge = crypto.randomBytes(16).toString('hex')
-      const token = get_or_create_shared_token()
-      const expected_signature = crypto
-        .createHmac('sha256', token)
-        .update(challenge)
-        .digest('hex')
+      const expected_signature = challenge
 
       const check = () => {
         const req = http.get(
@@ -189,33 +183,31 @@ export class WebSocketManager {
 
     const is_wsl = vscode.env.remoteName === 'wsl'
 
-    if (!is_wsl) {
-      const port_in_use = await this._is_port_in_use(this.port)
-      if (!port_in_use) {
-        try {
-          await this._start_server_process()
-        } catch (error) {
-          Logger.error({
-            function_name: '_connect_as_client',
-            message: 'Failed to restart WebSocket server',
-            data: error
-          })
-          this._schedule_reconnect()
-          return
-        }
-      } else {
-        // If the port was already in use, verify it's our server before connecting
-        try {
-          await this._wait_for_server_ready(1, 0)
-        } catch (error) {
-          Logger.error({
-            function_name: '_connect_as_client',
-            message: 'Existing server on port failed ownership verification',
-            data: error
-          })
-          this._schedule_reconnect()
-          return
-        }
+    const port_in_use = await this._is_port_in_use(this.port)
+    if (!port_in_use) {
+      try {
+        await this._start_server_process()
+      } catch (error) {
+        Logger.error({
+          function_name: '_connect_as_client',
+          message: 'Failed to restart WebSocket server',
+          data: error
+        })
+        this._schedule_reconnect()
+        return
+      }
+    } else {
+      // If the port was already in use, verify it's our server before connecting
+      try {
+        await this._wait_for_server_ready(1, 0)
+      } catch (error) {
+        Logger.error({
+          function_name: '_connect_as_client',
+          message: 'Existing server on port failed ownership verification',
+          data: error
+        })
+        this._schedule_reconnect()
+        return
       }
     }
 
@@ -239,11 +231,8 @@ export class WebSocketManager {
       }
     }
 
-    const token = get_or_create_shared_token()
     const ws_url = `ws://localhost:${this.port}?client_type=${CLIENT_TYPE.EDITOR}`
-    this.client = new WebSocket.WebSocket(ws_url, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    this.client = new WebSocket.WebSocket(ws_url)
 
     this.client.on('open', () => {
       Logger.info({

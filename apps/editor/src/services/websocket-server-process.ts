@@ -67,22 +67,7 @@ class WebSocketServer {
         }
 
         if (client_type === CLIENT_TYPE.EDITOR) {
-          // 3. Editors: Enforce the shared file token
-          const auth_header = info.req.headers.authorization
-          let provided_token: string | null = null
-          if (auth_header && auth_header.startsWith('Bearer ')) {
-            provided_token = auth_header.substring(7)
-          }
-
-          const {
-            get_or_create_shared_token
-          } = require('../utils/shared-token')
-          const expected_token = get_or_create_shared_token()
-
-          if (provided_token && provided_token === expected_token) {
-            return cb(true)
-          }
-          return cb(false, 401, 'Unauthorized: Invalid token')
+          return cb(true)
         }
 
         cb(false, 400, 'Bad Request')
@@ -121,15 +106,7 @@ class WebSocketServer {
         const response: any = { status: 'ok' }
 
         if (challenge) {
-          const {
-            get_or_create_shared_token
-          } = require('../utils/shared-token')
-          const token = get_or_create_shared_token()
-          const signature = crypto
-            .createHmac('sha256', token)
-            .update(challenge)
-            .digest('hex')
-          response.signature = signature
+          response.signature = challenge
         }
 
         res.writeHead(200, { 'Content-Type': 'application/json' })
