@@ -11,7 +11,7 @@ const targets: Record<string, string> = {
 }
 
 const root_dir = __dirname
-const out_dir = path.resolve(root_dir, 'dist')
+const out_dir = path.resolve(root_dir, 'out')
 const src_dir = path.resolve(root_dir, 'src')
 const shared_dir = path.resolve(root_dir, '../../packages/shared/src')
 const ui_dir = path.resolve(root_dir, '../../packages/ui/src')

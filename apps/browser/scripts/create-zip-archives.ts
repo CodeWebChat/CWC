@@ -66,8 +66,8 @@ const delete_old_zip_archives = (current_version: string) => {
 
 const main = async () => {
   const base_dir = path.join(__dirname, '..')
-  const dist_dir = path.join(base_dir, 'dist')
-  const firefox_dist_dir = path.join(base_dir, 'dist-firefox')
+  const dist_dir = path.join(base_dir, 'out')
+  const firefox_dist_dir = path.join(base_dir, 'out-firefox')
   const version = get_version()
 
   try {

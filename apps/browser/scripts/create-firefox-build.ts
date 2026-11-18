@@ -31,17 +31,17 @@ firefox_manifest.optional_permissions = ['cookies'] // Needed by Firefox Contain
 
 delete firefox_manifest.host_permissions
 
-const firefox_dist_dir = path.join(__dirname, '..', 'dist-firefox')
+const firefox_dist_dir = path.join(__dirname, '..', 'out-firefox')
 fs.rmSync(firefox_dist_dir, { recursive: true, force: true })
 fs.mkdirSync(firefox_dist_dir)
 
-const dist_dir = path.join(__dirname, '..', 'dist')
+const dist_dir = path.join(__dirname, '..', 'out')
 fs.cpSync(dist_dir, firefox_dist_dir, { recursive: true })
 
 const firefox_manifest_path = path.join(
   __dirname,
   '..',
-  'dist-firefox',
+  'out-firefox',
   'manifest.json'
 )
 fs.writeFileSync(

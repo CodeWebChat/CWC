@@ -33,7 +33,6 @@ $ProgressPreference = "SilentlyContinue"
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue
 $targetScheme = $editor
 $tagName = $tag
-$installAll = $false
 $selectedIndex = -1
 
 $msg_error="Error:"
@@ -407,15 +406,10 @@ $idx = [Array]::IndexOf(@($availableEditors.Scheme), $targetScheme)
 
 if ($targetScheme -and $idx -ge 0) {
     $selectedIndex = $idx
-} elseif ($targetScheme -eq "all") {
-    $installAll = $true
 } else {
     Write-Host ""
     for ($i = 0; $i -lt $availableEditors.Count; $i++) {
         Write-Host "$($i + 1)) $($availableEditors[$i].Name)"
-    }
-    if ($availableEditors.Count -gt 1) {
-        Write-Host "a) $msg_all_editors"
     }
     Write-Host "q) $msg_quit`n"
 
@@ -425,11 +419,6 @@ if ($targetScheme -and $idx -ge 0) {
         Write-Host $msg_cancelled
         Pause
         exit 0
-    } elseif ($choice -eq 'a') {
-        if ($availableEditors.Count -le 1) {
-            Fail $msg_invalid
-        }
-        $installAll = $true
     } else {
         if ($choice -notmatch '^[0-9]+$' -or [int]$choice -lt 1 -or [int]$choice -gt $availableEditors.Count) {
             Fail $msg_invalid
@@ -501,12 +490,8 @@ if (!(Test-Path $cwcDir)) {
     New-Item -ItemType Directory -Path $cwcDir | Out-Null
 }
 
-if ($installAll) {
-    $repoDir = Join-Path $cwcDir "repository"
-} else {
-    $editor = $availableEditors[$selectedIndex]
-    $repoDir = Join-Path $cwcDir "repository-$($editor.Scheme)"
-}
+$editor = $availableEditors[$selectedIndex]
+$repoDir = Join-Path $cwcDir "repository-$($editor.Scheme)"
 
 $updated = $false
 if (Test-Path (Join-Path $repoDir ".git")) {
@@ -539,7 +524,7 @@ if (-not $updated) {
 Set-Location $repoDir
 
 $depsOk = Invoke-Step "$msg_step_deps..." {
-    pnpm --filter gemini-coder install *>$null
+    pnpm --filter gemini-coder --filter browser install *>$null
     if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
 }
 
@@ -564,7 +549,7 @@ if (-not $depsOk) {
     Set-Location $repoDir
 
     $null = Invoke-Step "$msg_step_deps..." {
-        pnpm --filter gemini-coder install *>$null
+        pnpm --filter gemini-coder --filter browser install *>$null
         if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
     } $msg_step_deps
 }
@@ -572,7 +557,7 @@ if (-not $depsOk) {
 Remove-Item "apps/editor/*.vsix" -Force -ErrorAction SilentlyContinue
 
 $null = Invoke-Step "$msg_step_build..." {
-    pnpm --filter gemini-coder build *>$null
+    pnpm --filter gemini-coder --filter browser build *>$null
     if ($LASTEXITCODE -ne 0) { throw "pnpm build failed" }
 } $msg_step_build
 
@@ -584,22 +569,17 @@ if (!$vsixFile) {
     Fail $msg_vsix_error
 }
 
-$indices = if ($installAll) { 0..($availableEditors.Count - 1) } else { $selectedIndex }
-foreach ($i in $indices) {
-    $editor = $availableEditors[$i]
-
-    $ok = Invoke-Step "$msg_step_install $($editor.Name)..." {
-        & $editor.Cmd --install-extension $vsixFile.FullName --force *>$null
-        if ($LASTEXITCODE -ne 0) { throw "Extension install failed" }
-    }
+$ok = Invoke-Step "$msg_step_install $($editor.Name)..." {
+    & $editor.Cmd --install-extension $vsixFile.FullName --force *>$null
+    if ($LASTEXITCODE -ne 0) { throw "Extension install failed" }
+}
     
-    if ($ok) {
-        if (-not $updated) {
-            Write-Host "$msg_success $($editor.Name)!"
-        }
-    } else {
-        Write-Host "$msg_error $msg_install_fail $($editor.Name)." -ForegroundColor Red
+if ($ok) {
+    if (-not $updated) {
+        Write-Host "$msg_success $($editor.Name)!"
     }
+} else {
+    Write-Host "$msg_error $msg_install_fail $($editor.Name)." -ForegroundColor Red
 }
 
 } finally {

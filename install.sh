@@ -420,9 +420,6 @@ if [ -z "$choice" ]; then
   for i in "${!AVAILABLE_EDITORS[@]}"; do
     echo "$((i+1))) ${AVAILABLE_EDITORS[$i]}"
   done
-  if [ ${#AVAILABLE_EDITORS[@]} -gt 1 ]; then
-    echo "a) $msg_all_editors"
-  fi
   echo "q) $msg_quit"
   echo ""
 
@@ -434,7 +431,6 @@ if [ -z "$choice" ]; then
 
   case "$choice" in
     q|Q) echo "$msg_cancelled"; exit 0 ;;
-    a|A) [ ${#AVAILABLE_EDITORS[@]} -gt 1 ] || invalid_choice ;;
     ''|*[!0-9]*) invalid_choice ;;
     *) [ "$choice" -ge 1 ] && [ "$choice" -le ${#AVAILABLE_EDITORS[@]} ] || invalid_choice ;;
   esac
@@ -524,62 +520,56 @@ clone_repo() {
   fi
 }
 
-if [[ "$choice" == [aA] ]]; then
-  indices=("${!AVAILABLE_EDITORS[@]}")
+i=$((choice-1))
+
+editor_name="${AVAILABLE_EDITORS[$i]}"
+editor_cmd="${EDITOR_CMDS[$i]}"
+editor_scheme="${EDITOR_SCHEMES[$i]}"
+
+REPO_DIR="$CWC_DIR/repository-${editor_scheme}"
+
+is_update=false
+if [ -d "$REPO_DIR/.git" ] && run_step "$msg_step_cloning" update_repo; then
+  is_update=true
 else
-  indices=($((choice-1)))
+  rm -rf "$REPO_DIR"
+  run_step "$msg_step_cloning" clone_repo
 fi
 
-for i in "${indices[@]}"; do
-  editor_name="${AVAILABLE_EDITORS[$i]}"
-  editor_cmd="${EDITOR_CMDS[$i]}"
-  editor_scheme="${EDITOR_SCHEMES[$i]}"
+cd "$REPO_DIR"
 
-  REPO_DIR="$CWC_DIR/repository-${editor_scheme}"
-
-  is_update=false
-  if [ -d "$REPO_DIR/.git" ] && run_step "$msg_step_cloning" update_repo; then
-    is_update=true
-  else
-    rm -rf "$REPO_DIR"
-    run_step "$msg_step_cloning" clone_repo
-  fi
-
+if ! run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser install; then
+  echo -e "  \033[33m$msg_deps_retry\033[0m"
+  cd "$CWC_DIR"
+  rm -rf "$CWC_DIR"/repository*
+  pnpm store prune > /dev/null 2>&1 || true
+  run_step "$msg_step_cloning" clone_repo
   cd "$REPO_DIR"
+  run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser install
+fi
 
-  if ! run_step "$msg_step_deps" pnpm --filter gemini-coder install; then
-    echo -e "  \033[33m$msg_deps_retry\033[0m"
-    cd "$CWC_DIR"
-    rm -rf "$CWC_DIR"/repository*
-    pnpm store prune > /dev/null 2>&1 || true
-    run_step "$msg_step_cloning" clone_repo
-    cd "$REPO_DIR"
-    run_step "$msg_step_deps" pnpm --filter gemini-coder install
+rm -f ./apps/editor/*.vsix
+
+run_step "$msg_step_build" pnpm --filter gemini-coder --filter browser build
+
+cd apps/editor
+
+vsix_files=(*.vsix)
+VSIX_FILE="${vsix_files[0]}"
+
+if [ ! -f "$VSIX_FILE" ]; then
+  echo "$msg_error $msg_vsix_error"
+  exit 1
+fi
+
+if ! run_step "$msg_step_install $editor_name" "$editor_cmd" --install-extension "$VSIX_FILE" --force; then
+  echo "$msg_error $msg_install_fail $editor_name."
+else
+  if [ "$is_update" = false ]; then
+    echo "$msg_success $editor_name!"
   fi
+fi
 
-  rm -f ./apps/editor/*.vsix
-
-  run_step "$msg_step_build" pnpm --filter gemini-coder build
-
-  cd apps/editor
-
-  vsix_files=(*.vsix)
-  VSIX_FILE="${vsix_files[0]}"
-
-  if [ ! -f "$VSIX_FILE" ]; then
-    echo "$msg_error $msg_vsix_error"
-    exit 1
-  fi
-
-  if ! run_step "$msg_step_install $editor_name" "$editor_cmd" --install-extension "$VSIX_FILE" --force; then
-    echo "$msg_error $msg_install_fail $editor_name."
-  else
-    if [ "$is_update" = false ]; then
-      echo "$msg_success $editor_name!"
-    fi
-  fi
-
-  cd "$ORIGINAL_DIR"
-done
+cd "$ORIGINAL_DIR"
 
 cd "$ORIGINAL_DIR" || cd /

@@ -16,7 +16,7 @@ process.env.NODE_ENV = mode
 
 const run = async () => {
   if (!is_watch) {
-    fs.rmSync(path.join(app_dir, 'dist'), { recursive: true, force: true })
+    fs.rmSync(path.join(app_dir, 'out'), { recursive: true, force: true })
   }
 
   const pending = new Set(targets)
