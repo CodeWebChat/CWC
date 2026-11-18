@@ -39,10 +39,11 @@ const launch_browser = (params: {
 export const handle_run_browser = async () => {
   if (vscode.env.remoteName) {
     const action = t('views.prompt.handlers.handle-run-browser.forward-port')
+    const actions = vscode.env.remoteName === 'ssh-remote' ? [action] : []
     vscode.window
       .showWarningMessage(
         t('views.prompt.handlers.handle-run-browser.remote-not-supported'),
-        action
+        ...actions
       )
       .then((selection) => {
         if (selection === action) {
