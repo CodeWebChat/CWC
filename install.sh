@@ -357,8 +357,20 @@ if ! command -v git &> /dev/null; then
   exit 1
 fi
 
+is_wsl_windows_bin() {
+  case "$1" in
+    /mnt/[a-zA-Z]/*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 check_node_version() {
-  if ! command -v node &> /dev/null; then return 1; fi
+  local node_bin npm_bin
+  node_bin=$(command -v node 2>/dev/null) || return 1
+  npm_bin=$(command -v npm 2>/dev/null) || return 1
+  if is_wsl_windows_bin "$node_bin" || is_wsl_windows_bin "$npm_bin"; then
+    return 1
+  fi
   local version
   version=$(node -v | sed 's/^v//' | cut -d. -f1)
   [ "$version" -ge 20 ]
@@ -486,12 +498,18 @@ stop_spinner() {
   fi
 }
 
+CWC_DIR="$HOME/.cwc"
+mkdir -p -m 700 "$CWC_DIR"
+chmod 700 "$CWC_DIR" 2>/dev/null || true
+
+STEP_LOG="$CWC_DIR/install.log"
+
 run_step() {
   local msg="$1"; shift
   printf "  %s..." "$msg"
   start_spinner &
   SPINNER_PID=$!
-  if "$@" > /dev/null 2>&1 < /dev/null; then
+  if "$@" > "$STEP_LOG" 2>&1 < /dev/null; then
     stop_spinner 0
   else
     stop_spinner 1
@@ -501,14 +519,30 @@ run_step() {
 
 echo ""
 
-if ! command -v pnpm >/dev/null 2>&1; then
+has_valid_pnpm() {
+  local pnpm_bin
+  pnpm_bin=$(command -v pnpm 2>/dev/null) || return 1
+  ! is_wsl_windows_bin "$pnpm_bin"
+}
+
+if ! has_valid_pnpm; then
   npm install -g pnpm >/dev/null 2>&1 || true
+  npm_prefix=$(npm prefix -g 2>/dev/null || true)
+  if [ -n "$npm_prefix" ] && [ -d "$npm_prefix/bin" ]; then
+    export PATH="$npm_prefix/bin:$PATH"
+  fi
 fi
 
-CWC_DIR="$HOME/.cwc"
+if ! has_valid_pnpm; then
+  mkdir -p "$CWC_DIR/.tools"
+  npm install --prefix "$CWC_DIR/.tools" pnpm >/dev/null 2>&1 || true
+  export PATH="$CWC_DIR/.tools/node_modules/.bin:$PATH"
+fi
 
-mkdir -p -m 700 "$CWC_DIR"
-chmod 700 "$CWC_DIR" 2>/dev/null || true
+if ! has_valid_pnpm; then
+  echo "$msg_error Failed to install pnpm."
+  exit 1
+fi
 
 update_repo() {
   if [ -n "$TAG_NAME" ]; then
@@ -558,7 +592,10 @@ if ! run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser insta
   pnpm store prune > /dev/null 2>&1 || true
   run_step "$msg_step_cloning" clone_repo
   cd "$REPO_DIR"
-  run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser install
+  if ! run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser install; then
+    tail -n 20 "$STEP_LOG" >&2 || true
+    exit 1
+  fi
 fi
 
 rm -f ./apps/editor/*.vsix
