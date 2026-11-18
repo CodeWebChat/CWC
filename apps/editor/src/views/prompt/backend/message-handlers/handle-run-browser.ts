@@ -28,8 +28,88 @@ const get_log_tail = (log_path: string) => {
   }
 }
 
+const chrome_debian_packages = [
+  'libnss3',
+  'libatk1.0-0',
+  'libatk-bridge2.0-0',
+  'libcups2',
+  'libdrm2',
+  'libxkbcommon0',
+  'libxcomposite1',
+  'libxdamage1',
+  'libxfixes3',
+  'libxrandr2',
+  'libgbm1'
+]
+
+const get_distro_ids = (): string[] => {
+  try {
+    const content = fs.readFileSync('/etc/os-release', 'utf-8')
+    const ids: string[] = []
+    for (const line of content.split('\n')) {
+      const match = line.match(/^(ID|ID_LIKE)=(.*)$/)
+      if (match) {
+        ids.push(
+          ...match[2]
+            .replace(/["']/g, '')
+            .trim()
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean)
+        )
+      }
+    }
+    return ids
+  } catch {
+    return []
+  }
+}
+
+const get_install_command = (): string | undefined => {
+  const ids = get_distro_ids()
+  const is_distro = (...names: string[]) =>
+    names.some((name) => ids.includes(name))
+
+  if (is_distro('debian', 'ubuntu')) {
+    const asound_package =
+      '$(apt-cache show libasound2t64 >/dev/null 2>&1 && echo libasound2t64 || echo libasound2)'
+    return `sudo apt-get update && sudo apt-get install -y ${chrome_debian_packages.join(' ')} ${asound_package}`
+  }
+
+  if (is_distro('fedora', 'rhel', 'centos')) {
+    return 'sudo dnf install -y nss atk at-spi2-atk cups-libs libdrm libxkbcommon libXcomposite libXdamage libXfixes libXrandr mesa-libgbm alsa-lib pango cairo'
+  }
+
+  if (is_distro('arch')) {
+    return 'sudo pacman -S --needed --noconfirm nss atk at-spi2-core cups libdrm libxkbcommon libxcomposite libxdamage libxfixes libxrandr mesa alsa-lib pango cairo'
+  }
+
+  if (is_distro('opensuse', 'suse', 'sles')) {
+    return 'sudo zypper install -y mozilla-nss libatk-1_0-0 libatk-bridge-2_0-0 cups-libs libdrm2 libxkbcommon0 libXcomposite1 libXdamage1 libXfixes3 libXrandr2 libgbm1 libasound2'
+  }
+
+  return undefined
+}
+
+const run_in_terminal = (command: string) => {
+  const terminal = vscode.window.createTerminal({
+    name: 'Install browser dependencies'
+  })
+  terminal.show()
+  terminal.sendText(command)
+}
+
 const show_launch_error = (reason: string, log_path: string) => {
   const log_tail = get_log_tail(log_path)
+
+  if (is_wsl() && /shared libraries/i.test(log_tail)) {
+    const install_command = get_install_command()
+    if (install_command) {
+      run_in_terminal(install_command)
+      return
+    }
+  }
+
   const hint = /shared libraries/i.test(log_tail)
     ? '\nSystem libraries required by Chrome are missing. Install them, e.g. on Ubuntu/Debian: sudo apt install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 (libasound2t64 on newer releases).'
     : ''
