@@ -18,7 +18,9 @@ const launch_browser = (
 ) => {
   const args = [
     `--user-data-dir=${user_data_dir}`,
-    `--load-extension=${extension_path}`
+    `--load-extension=${extension_path}`,
+    '--disable-infobars',
+    '--no-first-run'
   ]
 
   if (process.platform === 'darwin') {

@@ -1,9 +1,12 @@
 import * as vscode from 'vscode'
 import * as os from 'os'
+import { close_browser } from './close-browser'
 
 export const update_extension = async (params: { tag_name: string }) => {
   const terminal = vscode.window.createTerminal('CWC Updater')
   terminal.show()
+
+  await close_browser()
 
   const uri_scheme = vscode.env.uriScheme
   const lang = vscode.env.language
