@@ -42,7 +42,7 @@ jobs:
       - name: Test
         run: pnpm test
 
-  release-vscode:
+  release:
     needs: check
     runs-on: ubuntu-24.04
 
