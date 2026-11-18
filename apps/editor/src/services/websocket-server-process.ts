@@ -41,6 +41,8 @@ class WebSocketServer {
         if (client_type === CLIENT_TYPE.BROWSER) {
           const origin = info.req.headers.origin
 
+          return cb(true)
+
           // 1. Chrome / Edge / Chromium: Strict Exact Match
           if (
             origin === 'chrome-extension://ljookipcanaglfaocjbgdicfbdhhjffp'

@@ -2,14 +2,43 @@ import * as vscode from 'vscode'
 import * as path from 'path'
 import * as os from 'os'
 import * as fs from 'fs'
-import { exec, spawn } from 'child_process'
+import { spawn } from 'child_process'
+import {
+  Browser,
+  detectBrowserPlatform,
+  install,
+  resolveBuildId
+} from '@puppeteer/browsers'
+import { t } from '@/i18n'
+
+const launch_browser = (
+  executable_path: string,
+  user_data_dir: string,
+  extension_path: string
+) => {
+  const args = [
+    `--user-data-dir=${user_data_dir}`,
+    `--load-extension=${extension_path}`
+  ]
+
+  if (process.platform === 'darwin') {
+    args.push('--use-mock-keychain')
+  } else if (process.platform === 'linux') {
+    args.push('--password-store=basic')
+  }
+
+  const child = spawn(executable_path, args, {
+    detached: true,
+    stdio: 'ignore'
+  })
+  child.unref()
+}
 
 export const handle_run_browser = async () => {
   const cwc_dir = path.join(os.homedir(), '.cwc')
-  const browsers_dir = path.join(cwc_dir, 'browsers')
 
-  if (!fs.existsSync(browsers_dir)) {
-    fs.mkdirSync(browsers_dir, { recursive: true })
+  if (!fs.existsSync(cwc_dir)) {
+    fs.mkdirSync(cwc_dir, { recursive: true })
   }
 
   const scheme = vscode.env.uriScheme
@@ -20,68 +49,78 @@ export const handle_run_browser = async () => {
     'browser',
     'out'
   )
-  const user_data_dir = path.join(browsers_dir, 'chrome-user-data')
+  const user_data_dir = path.join(cwc_dir, 'profiles', 'Default')
+  const cached_path_file = path.join(cwc_dir, '.chrome-157-path')
+
+  if (fs.existsSync(cached_path_file)) {
+    const executable_path = fs.readFileSync(cached_path_file, 'utf-8').trim()
+    if (fs.existsSync(executable_path)) {
+      launch_browser(executable_path, user_data_dir, extension_path)
+      return
+    }
+  }
 
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
-      title: 'Installing Browser...',
-      cancellable: false
+      title: t('views.prompt.handlers.handle-run-browser.downloading-browser'),
+      cancellable: true
     },
-    async () => {
-      return new Promise<void>((resolve, reject) => {
-        const exec_options: Record<string, any> = { cwd: browsers_dir }
-
-        if (process.platform !== 'win32') {
-          const env = { ...process.env }
-          if (process.platform === 'darwin') {
-            env.PATH = `${env.PATH || ''}:/usr/local/bin:/opt/homebrew/bin`
-          }
-          exec_options.env = env
-          if (vscode.env.shell) {
-            exec_options.shell = vscode.env.shell
-          }
+    async (progress, token) => {
+      try {
+        const platform = detectBrowserPlatform()
+        if (!platform) {
+          throw new Error('Unsupported platform for Chrome for Testing.')
         }
 
-        exec(
-          'npx @puppeteer/browsers install chrome@157',
-          exec_options,
-          (error, stdout) => {
-            if (error) {
-              vscode.window.showErrorMessage(
-                `Failed to install Browser: ${error.message}`
-              )
-              reject(error)
-              return
+        const build_id = await resolveBuildId(Browser.CHROME, platform, '157')
+
+        if (token.isCancellationRequested) {
+          return
+        }
+
+        let last_percentage = 0
+        const installed_browser = await install({
+          browser: Browser.CHROME,
+          buildId: build_id,
+          cacheDir: cwc_dir,
+          downloadProgressCallback: (downloaded_bytes, total_bytes) => {
+            if (token.isCancellationRequested) {
+              throw new Error('Download cancelled')
             }
-
-            const match = stdout.match(/chrome@\S+\s+(.+)/)
-            const executable_path = match ? match[1].trim() : ''
-
-            if (!executable_path || !fs.existsSync(executable_path)) {
-              vscode.window.showErrorMessage(
-                `Could not determine Browser path.`
-              )
-              reject(new Error('Could not find executable path'))
-              return
-            }
-
-            const child = spawn(
-              executable_path,
-              [
-                `--user-data-dir=${user_data_dir}`,
-                `--load-extension=${extension_path}`
-              ],
-              {
-                detached: true,
-                stdio: 'ignore'
-              }
+            const percentage = Math.round(
+              (downloaded_bytes / total_bytes) * 100
             )
-            child.unref()
-            resolve()
+            if (percentage > last_percentage) {
+              progress.report({
+                message: `${percentage}%`,
+                increment: percentage - last_percentage
+              })
+              last_percentage = percentage
+            }
           }
+        })
+
+        if (token.isCancellationRequested) {
+          return
+        }
+
+        const executable_path = installed_browser.executablePath
+        if (!executable_path || !fs.existsSync(executable_path)) {
+          throw new Error('Could not determine Browser path.')
+        }
+
+        fs.writeFileSync(cached_path_file, executable_path)
+        launch_browser(executable_path, user_data_dir, extension_path)
+      } catch (error: any) {
+        if (error.message === 'Download cancelled') {
+          return
+        }
+        vscode.window.showErrorMessage(
+          `Failed to install Browser: ${error.message}`
         )
-      })
+        throw error
+      }
     }
   )
 }
