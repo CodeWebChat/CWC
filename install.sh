@@ -368,7 +368,7 @@ try_nvm() { type nvm >/dev/null 2>&1 && nvm install 22 && nvm use 22; }
 try_fnm() { command -v fnm >/dev/null 2>&1 && eval "$(fnm env)" && fnm install 22 && fnm use 22; }
 try_n()   { command -v n >/dev/null 2>&1 && n 22; }
 try_install_nvm() {
-  local nvm_url="https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh"
+  local nvm_url="https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh"
   if [ ! -s "$NVM_DIR/nvm.sh" ]; then
     if command -v curl >/dev/null 2>&1; then
       curl -fsSL "$nvm_url" | PROFILE=/dev/null bash
