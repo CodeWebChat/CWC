@@ -187,35 +187,39 @@ export class WebSocketManager {
 
     this.client_id = null
 
-    const port_in_use = await this._is_port_in_use(this.port)
-    if (!port_in_use) {
-      try {
-        await this._start_server_process()
-      } catch (error) {
-        Logger.error({
-          function_name: '_connect_as_client',
-          message: 'Failed to restart WebSocket server',
-          data: error
-        })
-        this._schedule_reconnect()
-        return
-      }
-    } else {
-      // If the port was already in use, verify it's our server before connecting
-      try {
-        await this._wait_for_server_ready(1, 0)
-      } catch (error) {
-        Logger.error({
-          function_name: '_connect_as_client',
-          message: 'Existing server on port failed ownership verification',
-          data: error
-        })
-        this._schedule_reconnect()
-        return
+    const is_wsl = vscode.env.remoteName === 'wsl'
+
+    if (!is_wsl) {
+      const port_in_use = await this._is_port_in_use(this.port)
+      if (!port_in_use) {
+        try {
+          await this._start_server_process()
+        } catch (error) {
+          Logger.error({
+            function_name: '_connect_as_client',
+            message: 'Failed to restart WebSocket server',
+            data: error
+          })
+          this._schedule_reconnect()
+          return
+        }
+      } else {
+        // If the port was already in use, verify it's our server before connecting
+        try {
+          await this._wait_for_server_ready(1, 0)
+        } catch (error) {
+          Logger.error({
+            function_name: '_connect_as_client',
+            message: 'Existing server on port failed ownership verification',
+            data: error
+          })
+          this._schedule_reconnect()
+          return
+        }
       }
     }
 
-    if (vscode.env.remoteName) {
+    if (vscode.env.remoteName && !is_wsl) {
       try {
         const forwarded = await vscode.env.asExternalUri(
           vscode.Uri.parse(`http://localhost:${this.port}`)
