@@ -1,4 +1,22 @@
 export const translations = {
+  'views.prompt.handlers.handle-run-browser.remote-not-supported': {
+    en: 'Running the browser in a remote environment is not supported.',
+    pl: 'Uruchamianie przeglądarki w środowisku zdalnym nie jest obsługiwane.',
+    'zh-cn': '不支持在远程环境中运行浏览器。',
+    ja: 'リモート環境でのブラウザの実行はサポートされていません。',
+    'zh-tw': '不支援在遠端環境中執行瀏覽器。',
+    de: 'Die Ausführung des Browsers in einer Remote-Umgebung wird nicht unterstützt.',
+    es: 'No se admite la ejecución del navegador en un entorno remoto.',
+    fr: "L'exécution du navigateur dans un environnement distant n'est pas prise en charge.",
+    'pt-br': 'A execução do navegador em um ambiente remoto não é suportada.',
+    ru: 'Запуск браузера в удаленной среде не поддерживается.',
+    ko: '원격 환경에서의 브라우저 실행은 지원되지 않습니다.',
+    it: "L'esecuzione del browser in un ambiente remoto non è supportata.",
+    tr: 'Tarayıcının uzak bir ortamda çalıştırılması desteklenmiyor.',
+    cs: 'Spuštění prohlížeče ve vzdáleném prostředí není podporováno.',
+    hu: 'A böngésző távoli környezetben való futtatása nem támogatott.',
+    bg: 'Изпълнението на браузъра в отдалечена среда не се поддържа.'
+  },
   'views.prompt.handlers.handle-run-browser.downloading-browser': {
     en: 'Downloading browser',
     pl: 'Pobieranie przeglądarki',
