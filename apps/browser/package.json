@@ -4,7 +4,9 @@
     "build": "tsc --noEmit && node scripts/build.mjs && tsx scripts/create-firefox-build.ts && tsx scripts/create-zip-archives.ts",
     "watch": "node scripts/build.mjs --watch",
     "typecheck": "tsc --noEmit",
-    "bump": "node scripts/bump.cjs"
+    "bump": "node scripts/bump.cjs",
+    "publish:firefox": "tsx scripts/publish-firefox.ts",
+    "publish:chrome": "tsx scripts/publish-chrome.ts"
   },
   "devDependencies": {
     "@types/node": "22.x",
@@ -12,7 +14,7 @@
     "@types/react-dom": "18.2.25",
     "@types/webextension-polyfill": "0.12.6",
     "baseline-browser-mapping": "2.11.35",
-    "sass": "1.93.3",
+    "sass-embedded": "1.89.2",
     "tsx": "4.23.15",
     "vite": "8.3.6",
     "webextension-polyfill": "0.12.0"

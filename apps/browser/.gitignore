@@ -1,4 +1,4 @@
 /dist
 /dist-firefox
 /extension-*.zip
-/extension-*.zip
+/.env
