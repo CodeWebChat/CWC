@@ -2,8 +2,7 @@
   "name": "browser",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "typecheck": "tsc --noEmit",
-    "bump": "node scripts/bump.cjs"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "22.x",
