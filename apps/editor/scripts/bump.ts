@@ -23,29 +23,23 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
-rl.question(
-  `Bump version of the VS Code extension to ${next_version}? (y/N) `,
-  (answer: string) => {
-    if (answer.toLowerCase() === 'y') {
-      pkg.version = next_version
-      fs.writeFileSync(pkg_path, JSON.stringify(pkg, null, 2) + '\n')
-      console.log(`Bumped version of the VS Code extension to ${pkg.version}`)
+rl.question(`Bump version to ${next_version}? (y/N) `, (answer: string) => {
+  if (answer.toLowerCase() === 'y') {
+    pkg.version = next_version
+    fs.writeFileSync(pkg_path, JSON.stringify(pkg, null, 2) + '\n')
+    console.log(`Bumped version to ${pkg.version}`)
 
-      try {
-        execSync(`git add "${pkg_path}"`, { stdio: 'ignore' })
-        execSync(
-          `git commit --no-verify -m "Bump version of the VS Code extension to ${pkg.version}"`,
-          {
-            stdio: 'ignore'
-          }
-        )
-        console.log('Successfully committed the version bump.')
-      } catch (error: any) {
-        console.error('Failed to commit version bump:', error.message)
-      }
-    } else {
-      console.log('Version bump aborted.')
+    try {
+      execSync(`git add "${pkg_path}"`, { stdio: 'ignore' })
+      execSync(`git commit --no-verify -m "Bump version to ${pkg.version}"`, {
+        stdio: 'ignore'
+      })
+      console.log('Successfully committed the version bump.')
+    } catch (error: any) {
+      console.error('Failed to commit version bump:', error.message)
     }
-    rl.close()
+  } else {
+    console.log('Version bump aborted.')
   }
-)
+  rl.close()
+})
