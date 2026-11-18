@@ -38,10 +38,7 @@ export const install_specific_version_command = (
                 break
               }
 
-              const vscode_tags = res.data.filter((tag: any) =>
-                tag.name?.endsWith('-vscode')
-              )
-              tags.push(...vscode_tags)
+              tags.push(...res.data.filter((tag: any) => tag.name))
 
               if (res.data.length < 100) {
                 break
@@ -70,7 +67,7 @@ export const install_specific_version_command = (
       }
 
       const items = tags.map((tag) => {
-        const version = tag.name.replace('-vscode', '')
+        const version = tag.name
         let description = tag.commit?.sha?.substring(0, 7)
 
         const parts = version.split('.')
@@ -143,7 +140,7 @@ export const install_specific_version_command = (
       quick_pick.placeholder = t(
         'command.install-specific-version-command.select-version'
       )
-      const current_tag = `${extension_context.extension.packageJSON.version}-vscode`
+      const current_tag = extension_context.extension.packageJSON.version
       quick_pick.items = items
       quick_pick.activeItems = items.filter((item) => item.tag === current_tag)
       quick_pick.matchOnDetail = true

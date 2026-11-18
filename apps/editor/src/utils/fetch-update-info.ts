@@ -64,8 +64,8 @@ export const fetch_update_info = async (
       if (!Array.isArray(tags) || tags.length === 0) break
 
       for (const tag of tags) {
-        if (tag.name?.endsWith('-vscode')) {
-          const latest_version = tag.name.replace('-vscode', '')
+        if (tag.name) {
+          const latest_version = tag.name
           if (is_newer(latest_version, current_version)) {
             if (minimum_release_age > 0) {
               const tag_age_days = await get_version_age_days(
@@ -79,7 +79,7 @@ export const fetch_update_info = async (
 
             const current_version_age_days = await get_version_age_days(
               current_version,
-              `${current_version}-vscode`
+              current_version
             )
 
             return {

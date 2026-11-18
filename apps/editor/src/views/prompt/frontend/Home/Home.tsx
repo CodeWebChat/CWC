@@ -226,7 +226,7 @@ export const Home: React.FC<Props> = (props) => {
                   e.stopPropagation()
                   post_message(props.vscode, {
                     command: 'OPEN_WEBSITE',
-                    url: `https://github.com/CodeWebChat/CWC/releases#release-${props.update_info.latest_version}-vscode`
+                    url: `https://github.com/CodeWebChat/CWC/releases#release-${props.update_info.latest_version}`
                   })
                 }}
               >
@@ -355,7 +355,7 @@ export const Home: React.FC<Props> = (props) => {
                 e.preventDefault()
                 post_message(props.vscode, {
                   command: 'OPEN_WEBSITE',
-                  url: `https://github.com/CodeWebChat/CWC/releases#release-${props.version}-vscode`
+                  url: `https://github.com/CodeWebChat/CWC/releases#release-${props.version}`
                 })
               }}
             >
