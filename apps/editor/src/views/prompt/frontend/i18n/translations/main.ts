@@ -178,5 +178,41 @@ export const main = {
     cs: 'Ručně aplikováno',
     hu: 'Manuálisan alkalmazva',
     bg: 'Приложено ръчно'
+  },
+  'main.run-browser.enable': {
+    en: 'Enable autofill in Browser?',
+    pl: 'Włączyć autouzupełnianie w Przeglądarce?',
+    'zh-cn': '在浏览器中启用自动填充？',
+    ja: 'ブラウザで自動入力を有効にしますか？',
+    'zh-tw': '在瀏覽器中啟用自動填入？',
+    de: 'Automatisches Ausfüllen im Browser aktivieren?',
+    es: '¿Habilitar el autocompletado en el Navegador?',
+    fr: 'Activer la saisie automatique dans le Navigateur ?',
+    'pt-br': 'Ativar o preenchimento automático no Navegador?',
+    ru: 'Включить автозаполнение в Браузере?',
+    ko: '브라우저에서 자동 완성을 활성화하시겠습니까?',
+    it: 'Abilitare la compilazione automatica nel Browser?',
+    tr: 'Tarayıcıda otomatik doldurmayı etkinleştir?',
+    cs: 'Povolit automatické vyplňování v Prohlížeči?',
+    hu: 'Engedélyezi az automatikus kitöltést a Böngészőben?',
+    bg: 'Да се активира ли автоматичното попълване в Браузъра?'
+  },
+  'main.run-browser.run': {
+    en: 'Run',
+    pl: 'Uruchom',
+    'zh-cn': '运行',
+    ja: '実行',
+    'zh-tw': '執行',
+    de: 'Ausführen',
+    es: 'Ejecutar',
+    fr: 'Exécuter',
+    'pt-br': 'Executar',
+    ru: 'Запустить',
+    ko: '실행',
+    it: 'Esegui',
+    tr: 'Çalıştır',
+    cs: 'Spustit',
+    hu: 'Futtatás',
+    bg: 'Изпълни'
   }
 } as const

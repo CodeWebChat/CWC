@@ -1003,6 +1003,8 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
             })
           } else if (message.command === 'AGENTIC_SEARCH') {
             await handle_agentic_search(this)
+          } else if (message.command === 'RUN_BROWSER') {
+            await handlers.handle_run_browser()
           } else if (message.command === 'SHOW_ACCURACY_BOOST_INFO') {
             await handlers.handle_show_accuracy_boost_info()
           } else if (message.command === 'GET_CLI_CONFIGURATIONS') {

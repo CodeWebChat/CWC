@@ -163,6 +163,7 @@ type Props = {
   targets_order: Target[]
   can_apply_from_terminal: boolean
   clipboard_has_applicable_response: boolean
+  on_run_browser: () => void
 }
 
 const chatbot_to_icon: Record<keyof typeof CHATBOTS, Icon.Variant> = {
@@ -416,6 +417,24 @@ export const MainView: React.FC<Props> = (props) => {
           hide: t('main.browser-connection.hide')
         }}
       />
+
+      {props.target === 'WEB' && !props.is_connected && (
+        <>
+          <UiStatusBar
+            icon="codicon-beaker"
+            label={t('main.run-browser.enable')}
+            actions={[
+              {
+                id: 'run',
+                label: t('main.run-browser.run'),
+                icon: 'codicon-play',
+                on_click: props.on_run_browser
+              }
+            ]}
+          />
+          <UiSpacer height={6} />
+        </>
+      )}
 
       {is_api_warning_visible && (
         <>

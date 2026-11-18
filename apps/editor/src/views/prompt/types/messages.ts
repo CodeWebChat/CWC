@@ -1,5 +1,8 @@
 import { EditFormat } from '@shared/types/edit-format'
-import { FileInCodeReview, ItemInCodeReview } from '@shared/types/file-in-code-review'
+import {
+  FileInCodeReview,
+  ItemInCodeReview
+} from '@shared/types/file-in-code-review'
 import {
   ResponseHistoryItem,
   ApiConfigurationDetails,
@@ -655,6 +658,10 @@ export interface AgenticSearchMessage extends BaseMessage {
   command: 'AGENTIC_SEARCH'
 }
 
+export interface RunBrowserMessage extends BaseMessage {
+  command: 'RUN_BROWSER'
+}
+
 export interface ShowAccuracyBoostInfoMessage extends BaseMessage {
   command: 'SHOW_ACCURACY_BOOST_INFO'
 }
@@ -820,6 +827,7 @@ export type FrontendMessage =
   | PreviewSkillSymbolMessage
   | PreviewSavedContextSymbolMessage
   | AgenticSearchMessage
+  | RunBrowserMessage
   | ShowAccuracyBoostInfoMessage
   | GetAgentConfigurationsMessage
   | ReorderAgentConfigurationsMessage

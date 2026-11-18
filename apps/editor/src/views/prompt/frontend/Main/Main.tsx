@@ -93,6 +93,7 @@ type Props = {
   on_agentic_search: () => void
   has_update?: boolean
   targets_order: Target[]
+  on_run_browser: () => void
 }
 
 export const Main: React.FC<Props> = (props) => {
@@ -803,6 +804,7 @@ export const Main: React.FC<Props> = (props) => {
       targets_order={props.targets_order}
       can_apply_from_terminal={can_apply_from_terminal}
       clipboard_has_applicable_response={clipboard_has_applicable_response}
+      on_run_browser={props.on_run_browser}
     />
   )
 }

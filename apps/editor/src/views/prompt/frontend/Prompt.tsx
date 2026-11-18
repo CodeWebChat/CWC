@@ -407,6 +407,9 @@ export const Prompt = () => {
                 on_skill_click={handle_skill_click}
                 on_agentic_search={handle_agentic_search}
                 targets_order={targets_order}
+                on_run_browser={() => {
+                  post_message(vscode, { command: 'RUN_BROWSER' })
+                }}
               />
             </div>
             <div
