@@ -1,5 +1,4 @@
 import { ApplyResponseFromHistoryMessage } from '@/views/prompt/types/messages'
-
 import { apply_response } from '@/features/apply-response/apply-response'
 
 export const handle_apply_response_from_history = async (
