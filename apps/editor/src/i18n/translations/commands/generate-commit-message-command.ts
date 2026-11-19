@@ -272,22 +272,22 @@ export const translations = {
     bg: 'Генерирането на commit съобщение е деактивирано по време на преглед на код.'
   },
   'command.generate-commit-message-command.info.empty-response': {
-    en: 'API request returned an empty response.',
-    pl: 'Żądanie API zwróciło pustą odpowiedź.',
-    'zh-cn': 'API 请求返回了空响应。',
-    ja: 'API リクエストが空のレスポンスを返しました。',
-    'zh-tw': 'API 請求回傳了空回應。',
-    de: 'API-Anfrage gab eine leere Antwort zurück.',
-    es: 'La solicitud API devolvió una respuesta vacía.',
-    fr: 'La requête API a renvoyé une réponse vide.',
-    'pt-br': 'A solicitação de API retornou uma resposta vazia.',
-    ru: 'API-запрос вернул пустой ответ.',
-    ko: 'API 요청이 빈 응답을 반환했습니다.',
-    it: 'La richiesta API ha restituito una risposta vuota.',
-    tr: 'API isteği boş bir yanıt döndürdü.',
-    cs: 'Požadavek API vrátil prázdnou odpověď.',
-    hu: 'Az API kérés üres választ adott vissza.',
-    bg: 'API заявката върна празен отговор.'
+    en: 'API returned an empty response.',
+    pl: 'API zwróciło pustą odpowiedź.',
+    'zh-cn': 'API 返回了空响应。',
+    ja: 'API が空のレスポンスを返しました。',
+    'zh-tw': 'API 回傳了空回應。',
+    de: 'Die API gab eine leere Antwort zurück.',
+    es: 'La API devolvió una respuesta vacía.',
+    fr: "L'API a renvoyé une réponse vide.",
+    'pt-br': 'A API retornou uma resposta vazia.',
+    ru: 'API вернул пустой ответ.',
+    ko: 'API가 빈 응답을 반환했습니다.',
+    it: "L'API ha restituito una risposta vuota.",
+    tr: 'API boş bir yanıt döndürdü.',
+    cs: 'API vrátilo prázdnou odpověď.',
+    hu: 'Az API üres választ adott vissza.',
+    bg: 'API върна празен отговор.'
   },
   'command.generate-commit-message-command.attach-context-files.include-files-and-context':
     {

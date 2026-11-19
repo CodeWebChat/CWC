@@ -702,7 +702,7 @@ export const run_generate_action = async (params: {
                 show_quick_pick = true
                 continue
               } else {
-                if (error_msg === 'API request returned an empty response') {
+                if (error_msg === 'API returned an empty response') {
                   vscode.window.showInformationMessage(
                     t(
                       'command.generate-commit-message-command.info.empty-response'

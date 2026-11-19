@@ -90,7 +90,7 @@ export const generate_commit_message_with_api = async (params: {
         commit_message = commit_message.replace(/[<>`$()]/g, '')
 
         if (!commit_message.trim()) {
-          throw new Error('API request returned an empty response')
+          throw new Error('API returned an empty response')
         }
 
         return commit_message
