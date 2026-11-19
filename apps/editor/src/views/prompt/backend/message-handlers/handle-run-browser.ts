@@ -176,7 +176,7 @@ export const handle_run_browser = async (
     'out'
   )
   const user_data_dir = path.join(browser_dir, 'profiles', selected_profile)
-  const cached_path_file = path.join(browser_dir, '.chromium-path')
+  const cached_path_file = path.join(browser_dir, '.browser-path')
 
   if (fs.existsSync(cached_path_file)) {
     try {
