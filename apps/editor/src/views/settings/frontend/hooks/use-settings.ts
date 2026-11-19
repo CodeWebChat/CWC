@@ -317,7 +317,12 @@ export const use_settings = (vscode: any) => {
   }
 
   const handle_update_browser_profiles = (profiles: string[]) => {
-    set_browser_profiles(profiles)
+    const is_removal =
+      browser_profiles !== undefined &&
+      profiles.length < browser_profiles.length
+    if (!is_removal) {
+      set_browser_profiles(profiles)
+    }
     post_message(vscode, {
       command: 'UPDATE_BROWSER_PROFILES',
       browser_profiles: profiles

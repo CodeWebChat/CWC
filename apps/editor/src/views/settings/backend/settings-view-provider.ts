@@ -204,7 +204,7 @@ export class SettingsViewProvider {
         } else if (message.command === 'GET_BROWSER_PROFILES') {
           await handlers.handle_get_browser_profiles(this)
         } else if (message.command === 'UPDATE_BROWSER_PROFILES') {
-          await handlers.handle_update_browser_profiles(message)
+          await handlers.handle_update_browser_profiles(this, message)
         } else if (message.command === 'GET_FORWARDED_PORTS') {
           await handlers.handle_get_forwarded_ports(this)
         } else if (message.command === 'UPDATE_FORWARDED_PORTS') {

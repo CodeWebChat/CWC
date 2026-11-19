@@ -3,19 +3,17 @@ import * as os from 'os'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { UpdateBrowserProfilesMessage } from '@/views/settings/types/messages'
+import { SettingsViewProvider } from '@/views/settings/backend/settings-view-provider'
 import { Logger } from '@shared/utils/logger'
+import { t } from '@/i18n'
+import { handle_get_browser_profiles } from './handle-get-browser-profiles'
 
 export const handle_update_browser_profiles = async (
+  settings_provider: SettingsViewProvider,
   message: UpdateBrowserProfilesMessage
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
   const existing_profiles = config.get<string[]>('browserProfiles', []) || []
-
-  await config.update(
-    'browserProfiles',
-    message.browser_profiles,
-    vscode.ConfigurationTarget.Global
-  )
 
   const updated_profiles_set = new Set(
     message.browser_profiles.map((p) => p.trim())
@@ -31,6 +29,31 @@ export const handle_update_browser_profiles = async (
             !updated_profiles_set.has(p)
         )
     )
+  )
+
+  if (removed_profiles.length > 0) {
+    const delete_button = t('common.delete')
+    const result = await vscode.window.showWarningMessage(
+      t('settings.browser-profiles.confirm-delete.message', {
+        name: removed_profiles.join(', ')
+      }),
+      {
+        modal: true,
+        detail: t('settings.browser-profiles.confirm-delete.detail')
+      },
+      delete_button
+    )
+
+    if (result !== delete_button) {
+      await handle_get_browser_profiles(settings_provider)
+      return
+    }
+  }
+
+  await config.update(
+    'browserProfiles',
+    message.browser_profiles,
+    vscode.ConfigurationTarget.Global
   )
 
   if (removed_profiles.length === 0) {
