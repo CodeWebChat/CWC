@@ -356,8 +356,38 @@ switch -Regex ($lang) {
     }
 }
 
+$cwcDir = Join-Path $env:USERPROFILE ".cwc"
+$errorLog = Join-Path $cwcDir "error.log"
+$tempLog = Join-Path ([System.IO.Path]::GetTempPath()) "cwc-install-$PID.log"
+
+function Write-ErrorLog {
+    param([string]$Text)
+    if ($Text) {
+        Add-Content -Path $tempLog -Value $Text -Encoding UTF8 -ErrorAction SilentlyContinue
+    }
+}
+
+function Open-ErrorLog {
+    if (!(Test-Path $cwcDir)) {
+        New-Item -ItemType Directory -Path $cwcDir -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+    if (Test-Path $tempLog) {
+        Move-Item -Path $tempLog -Destination $errorLog -Force -ErrorAction SilentlyContinue
+    }
+    if (Test-Path $errorLog) {
+        Write-Host "Log: $errorLog" -ForegroundColor Yellow
+        try {
+            Start-Process -FilePath $errorLog -ErrorAction Stop
+        } catch {
+            Start-Process -FilePath "notepad.exe" -ArgumentList "`"$errorLog`"" -ErrorAction SilentlyContinue
+        }
+    }
+}
+
 function Fail($Message) {
     Write-Host "$msg_error $Message" -ForegroundColor Red
+    Write-ErrorLog "`n$msg_error $Message"
+    Open-ErrorLog
     Pause
     exit 1
 }
@@ -373,12 +403,14 @@ if (!$nodeIsGood) {
     $ErrorActionPreference = "Continue"
     try {
         if (Get-Command fnm -ErrorAction SilentlyContinue) {
+            Write-ErrorLog "`n=== fnm ==="
             fnm env --shell powershell | Out-String | Invoke-Expression
-            fnm install 22 *>$null
-            fnm use 22 *>$null
+            fnm install 22 *>&1 | ForEach-Object { Write-ErrorLog ($_ | Out-String).TrimEnd("`r", "`n") }
+            fnm use 22 *>&1 | ForEach-Object { Write-ErrorLog ($_ | Out-String).TrimEnd("`r", "`n") }
         } elseif (Get-Command nvm -ErrorAction SilentlyContinue) {
-            nvm install 22 *>$null
-            nvm use 22 *>$null
+            Write-ErrorLog "`n=== nvm ==="
+            nvm install 22 *>&1 | ForEach-Object { Write-ErrorLog ($_ | Out-String).TrimEnd("`r", "`n") }
+            nvm use 22 *>&1 | ForEach-Object { Write-ErrorLog ($_ | Out-String).TrimEnd("`r", "`n") }
         } else {
             Fail $msg_node_required
         }
@@ -417,6 +449,9 @@ if ($targetScheme -and $idx -ge 0) {
 
     if ($choice -eq 'q') {
         Write-Host $msg_cancelled
+        if (Test-Path $tempLog) {
+            Remove-Item -Path $tempLog -Force -ErrorAction SilentlyContinue
+        }
         Pause
         exit 0
     } else {
@@ -430,14 +465,23 @@ if ($targetScheme -and $idx -ge 0) {
 function Invoke-Step {
     param([string]$Message, [scriptblock]$Action, [string]$ErrorMsg)
     Write-Host -NoNewline "  $Message"
+    Write-ErrorLog "`n=== $Message ==="
     
     $prevPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     $ok = $true
+    $stepState = @{ Failed = $false }
     try {
-        & $Action
-        if (-not $?) { $ok = $false }
+        & {
+            $global:LASTEXITCODE = 0
+            & $Action
+            if (-not $?) { $stepState.Failed = $true }
+        } *>&1 | ForEach-Object {
+            Write-ErrorLog ($_ | Out-String).TrimEnd("`r", "`n")
+        }
+        if ($stepState.Failed) { $ok = $false }
     } catch {
+        Write-ErrorLog ($_ | Out-String)
         $ok = $false
     } finally {
         $ErrorActionPreference = $prevPreference
@@ -453,7 +497,8 @@ Write-Host ""
 
 if (!(Get-Command pnpm -ErrorAction SilentlyContinue)) {
     if (Get-Command npm -ErrorAction SilentlyContinue) {
-        npm install -g pnpm *>$null
+        Write-ErrorLog "`n=== Installing pnpm ==="
+        npm install -g pnpm *>&1 | ForEach-Object { Write-ErrorLog ($_ | Out-String).TrimEnd("`r", "`n") }
         if (!(Get-Command pnpm -ErrorAction SilentlyContinue)) {
             $npmGlobalBin = npm prefix -g 2>$null
             if ($npmGlobalBin) {
@@ -465,8 +510,6 @@ if (!(Get-Command pnpm -ErrorAction SilentlyContinue)) {
 
 $originalLocation = Get-Location
 
-$cwcDir = Join-Path $env:USERPROFILE ".cwc"
-
 function Clone-Repo {
     $cloneArgs = @("clone", "-c", "core.longpaths=true", "--quiet", "--depth", "1")
     if ($tagName) {
@@ -474,12 +517,12 @@ function Clone-Repo {
     }
     $cloneArgs += @("https://github.com/CodeWebChat/CWC.git", $repoDir)
 
-    git @cloneArgs *>$null
+    git @cloneArgs
     if ($LASTEXITCODE -ne 0) {
         if (Test-Path $repoDir) {
             Remove-Item -Path $repoDir -Recurse -Force -ErrorAction SilentlyContinue
         }
-        git @cloneArgs *>$null
+        git @cloneArgs
         if ($LASTEXITCODE -ne 0) { throw "Failed to clone" }
     }
 }
@@ -497,17 +540,17 @@ $updated = $false
 if (Test-Path (Join-Path $repoDir ".git")) {
     $updated = Invoke-Step "$msg_step_cloning..." {
         if ($tagName) {
-            git -C $repoDir fetch --depth 1 origin "+refs/tags/${tagName}:refs/tags/${tagName}" --quiet *>$null
+            git -C $repoDir fetch --depth 1 origin "+refs/tags/${tagName}:refs/tags/${tagName}" --quiet
             if ($LASTEXITCODE -ne 0) { throw "Failed to fetch" }
-            git -C $repoDir checkout --force $tagName --quiet *>$null
+            git -C $repoDir checkout --force $tagName --quiet
             if ($LASTEXITCODE -ne 0) { throw "Failed to checkout" }
         } else {
-            git -C $repoDir fetch --depth 1 origin main --quiet *>$null
+            git -C $repoDir fetch --depth 1 origin main --quiet
             if ($LASTEXITCODE -ne 0) { throw "Failed to fetch" }
-            git -C $repoDir reset --hard FETCH_HEAD --quiet *>$null
+            git -C $repoDir reset --hard FETCH_HEAD --quiet
             if ($LASTEXITCODE -ne 0) { throw "Failed to reset" }
         }
-        git -C $repoDir clean -fd --quiet *>$null
+        git -C $repoDir clean -fd --quiet
         if ($LASTEXITCODE -ne 0) { throw "Failed to clean" }
     } $msg_step_cloning
 }
@@ -524,7 +567,7 @@ if (-not $updated) {
 Set-Location $repoDir
 
 $depsOk = Invoke-Step "$msg_step_deps..." {
-    pnpm --filter gemini-coder --filter browser install *>$null
+    pnpm --filter gemini-coder --filter browser install
     if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
 }
 
@@ -536,7 +579,7 @@ if (-not $depsOk) {
     $prevPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     try {
-        pnpm store prune *>$null
+        pnpm store prune *>&1 | ForEach-Object { Write-ErrorLog ($_ | Out-String).TrimEnd("`r", "`n") }
     } catch {
         # Ignore
     }
@@ -549,7 +592,7 @@ if (-not $depsOk) {
     Set-Location $repoDir
 
     $null = Invoke-Step "$msg_step_deps..." {
-        pnpm --filter gemini-coder --filter browser install *>$null
+        pnpm --filter gemini-coder --filter browser install
         if ($LASTEXITCODE -ne 0) { throw "pnpm install failed" }
     } $msg_step_deps
 }
@@ -557,9 +600,9 @@ if (-not $depsOk) {
 Remove-Item "apps/editor/*.vsix" -Force -ErrorAction SilentlyContinue
 
 $null = Invoke-Step "$msg_step_build..." {
-    pnpm --filter gemini-coder --filter browser build *>$null
+    pnpm --filter gemini-coder --filter browser build
     if ($LASTEXITCODE -ne 0) { throw "pnpm build failed" }
-    node -e "const fs = require('fs'); const version = JSON.parse(fs.readFileSync('apps/editor/package.json', 'utf8')).version; const manifestPath = 'apps/browser/out/manifest.json'; const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')); manifest.version = version; fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');" *>$null
+    node -e "const fs = require('fs'); const version = JSON.parse(fs.readFileSync('apps/editor/package.json', 'utf8')).version; const manifestPath = 'apps/browser/out/manifest.json'; const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')); manifest.version = version; fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');"
     if ($LASTEXITCODE -ne 0) { throw "Failed to update browser manifest version" }
 } $msg_step_build
 
@@ -572,7 +615,7 @@ if (!$vsixFile) {
 }
 
 $ok = Invoke-Step "$msg_step_install $($editor.Name)..." {
-    & $editor.Cmd --install-extension $vsixFile.FullName --force *>$null
+    & $editor.Cmd --install-extension $vsixFile.FullName --force
     if ($LASTEXITCODE -ne 0) { throw "Extension install failed" }
 }
     
@@ -581,11 +624,17 @@ if ($ok) {
         Write-Host "$msg_success $($editor.Name)!"
     }
 } else {
-    Write-Host "$msg_error $msg_install_fail $($editor.Name)." -ForegroundColor Red
+    Fail "$msg_install_fail $($editor.Name)."
 }
 
+} catch {
+    Write-ErrorLog ($_ | Out-String)
+    Fail $_.Exception.Message
 } finally {
     Set-Location $originalLocation -ErrorAction SilentlyContinue
+    if (Test-Path $tempLog) {
+        Remove-Item -Path $tempLog -Force -ErrorAction SilentlyContinue
+    }
 }
 
 if (-not $updated) {

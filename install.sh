@@ -352,9 +352,75 @@ case "$LANGUAGE" in
     ;;
 esac
 
-if ! command -v git &> /dev/null; then
-  echo "$msg_error $msg_git_required"
+CWC_DIR="$HOME/.cwc"
+ERROR_LOG="$CWC_DIR/error.log"
+TEMP_LOG="$(mktemp 2>/dev/null || printf '%s' "/tmp/cwc-install-$$.log")"
+INTERRUPTED=false
+
+kill_spinner() {
+  if [ -n "${SPINNER_PID:-}" ]; then
+    kill "$SPINNER_PID" >/dev/null 2>&1 || true
+    wait "$SPINNER_PID" 2>/dev/null || true
+    SPINNER_PID=""
+  fi
+  tput cnorm 2>/dev/null || true
+}
+
+open_error_log() {
+  if [ "$(uname -s)" = "Darwin" ]; then
+    open "$ERROR_LOG" >/dev/null 2>&1 || true
+  elif grep -qi microsoft /proc/version 2>/dev/null && command -v wslpath >/dev/null 2>&1; then
+    local win_path
+    win_path="$(wslpath -w "$ERROR_LOG" 2>/dev/null || true)"
+    if [ -n "$win_path" ]; then
+      if command -v wslview >/dev/null 2>&1; then
+        wslview "$ERROR_LOG" >/dev/null 2>&1 || true
+      elif command -v notepad.exe >/dev/null 2>&1; then
+        notepad.exe "$win_path" >/dev/null 2>&1 &
+      elif command -v cmd.exe >/dev/null 2>&1; then
+        cmd.exe /c start "" "$win_path" >/dev/null 2>&1 || true
+      fi
+    fi
+  elif command -v xdg-open >/dev/null 2>&1 && { [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; }; then
+    xdg-open "$ERROR_LOG" >/dev/null 2>&1 &
+  fi
+}
+
+fail() {
+  local message="$1"
+  echo "$msg_error $message"
+  printf '\n%s %s\n' "$msg_error" "$message" >> "$TEMP_LOG"
   exit 1
+}
+
+cleanup() {
+  local exit_code=$?
+  kill_spinner
+  if [ "$exit_code" -ne 0 ] && [ "$INTERRUPTED" = false ]; then
+    mkdir -p -m 700 "$CWC_DIR" 2>/dev/null || true
+    chmod 700 "$CWC_DIR" 2>/dev/null || true
+    if [ -f "$TEMP_LOG" ]; then
+      mv -f "$TEMP_LOG" "$ERROR_LOG" 2>/dev/null || cp -f "$TEMP_LOG" "$ERROR_LOG" 2>/dev/null || true
+    fi
+    if [ -f "$ERROR_LOG" ]; then
+      echo "Log: $ERROR_LOG"
+      open_error_log
+    fi
+  else
+    rm -f "$TEMP_LOG" 2>/dev/null || true
+  fi
+}
+
+handle_interrupt() {
+  INTERRUPTED=true
+  exit 130
+}
+
+trap cleanup EXIT
+trap handle_interrupt INT TERM
+
+if ! command -v git &> /dev/null; then
+  fail "$msg_git_required"
 fi
 
 is_wsl_windows_bin() {
@@ -397,9 +463,9 @@ if ! check_node_version; then
   export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-  if ! { try_nvm || try_fnm || try_n || try_install_nvm; } >/dev/null 2>&1; then
-    echo "$msg_error $msg_node_required"
-    exit 1
+  printf '\n=== Node.js setup ===\n' >> "$TEMP_LOG"
+  if ! { try_nvm || try_fnm || try_n || try_install_nvm; } >> "$TEMP_LOG" 2>&1; then
+    fail "$msg_node_required"
   fi
 fi
 
@@ -419,8 +485,7 @@ check_editor "Antigravity" "agy-ide" "antigravity-ide"
 check_editor "Devin" "devin-desktop" "devin"
 
 if [ ${#AVAILABLE_EDITORS[@]} -eq 0 ]; then
-  echo "$msg_error $msg_no_editors"
-  exit 1
+  fail "$msg_no_editors"
 fi
 
 choice=""
@@ -434,7 +499,7 @@ if [ -n "$TARGET_SCHEME" ]; then
   done
 fi
 
-invalid_choice() { echo "$msg_error $msg_invalid"; exit 1; }
+invalid_choice() { fail "$msg_invalid"; }
 
 if [ -z "$choice" ]; then
   echo ""
@@ -463,20 +528,6 @@ fi
 
 ORIGINAL_DIR="$(pwd)"
 
-kill_spinner() {
-  if [ -n "${SPINNER_PID:-}" ]; then
-    kill "$SPINNER_PID" >/dev/null 2>&1 || true
-    wait "$SPINNER_PID" 2>/dev/null || true
-    SPINNER_PID=""
-  fi
-  tput cnorm 2>/dev/null || true
-}
-
-cleanup() {
-  kill_spinner
-}
-trap cleanup EXIT INT TERM
-
 start_spinner() {
   tput civis 2>/dev/null || true
   local delay=0.1
@@ -498,18 +549,16 @@ stop_spinner() {
   fi
 }
 
-CWC_DIR="$HOME/.cwc"
 mkdir -p -m 700 "$CWC_DIR"
 chmod 700 "$CWC_DIR" 2>/dev/null || true
-
-STEP_LOG="$CWC_DIR/install.log"
 
 run_step() {
   local msg="$1"; shift
   printf "  %s..." "$msg"
+  printf '\n=== %s ===\n' "$msg" >> "$TEMP_LOG"
   start_spinner &
   SPINNER_PID=$!
-  if "$@" > "$STEP_LOG" 2>&1 < /dev/null; then
+  if "$@" >> "$TEMP_LOG" 2>&1 < /dev/null; then
     stop_spinner 0
   else
     stop_spinner 1
@@ -526,7 +575,8 @@ has_valid_pnpm() {
 }
 
 if ! has_valid_pnpm; then
-  npm install -g pnpm >/dev/null 2>&1 || true
+  printf '\n=== Installing pnpm ===\n' >> "$TEMP_LOG"
+  npm install -g pnpm >> "$TEMP_LOG" 2>&1 || true
   npm_prefix=$(npm prefix -g 2>/dev/null || true)
   if [ -n "$npm_prefix" ] && [ -d "$npm_prefix/bin" ]; then
     export PATH="$npm_prefix/bin:$PATH"
@@ -535,13 +585,12 @@ fi
 
 if ! has_valid_pnpm; then
   mkdir -p "$CWC_DIR/.tools"
-  npm install --prefix "$CWC_DIR/.tools" pnpm >/dev/null 2>&1 || true
+  npm install --prefix "$CWC_DIR/.tools" pnpm >> "$TEMP_LOG" 2>&1 || true
   export PATH="$CWC_DIR/.tools/node_modules/.bin:$PATH"
 fi
 
 if ! has_valid_pnpm; then
-  echo "$msg_error Failed to install pnpm."
-  exit 1
+  fail "Failed to install pnpm."
 fi
 
 update_repo() {
@@ -589,13 +638,10 @@ if ! run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser insta
   echo -e "  \033[33m$msg_deps_retry\033[0m"
   cd "$CWC_DIR"
   rm -rf "$CWC_DIR"/repository*
-  pnpm store prune > /dev/null 2>&1 || true
+  pnpm store prune >> "$TEMP_LOG" 2>&1 || true
   run_step "$msg_step_cloning" clone_repo
   cd "$REPO_DIR"
-  if ! run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser install; then
-    tail -n 20 "$STEP_LOG" >&2 || true
-    exit 1
-  fi
+  run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser install
 fi
 
 build_extension() {
@@ -613,12 +659,11 @@ vsix_files=(*.vsix)
 VSIX_FILE="${vsix_files[0]}"
 
 if [ ! -f "$VSIX_FILE" ]; then
-  echo "$msg_error $msg_vsix_error"
-  exit 1
+  fail "$msg_vsix_error"
 fi
 
 if ! run_step "$msg_step_install $editor_name" "$editor_cmd" --install-extension "$VSIX_FILE" --force; then
-  echo "$msg_error $msg_install_fail $editor_name."
+  fail "$msg_install_fail $editor_name."
 else
   if [ "$is_update" = false ]; then
     echo "$msg_success $editor_name!"
