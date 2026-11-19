@@ -39,13 +39,17 @@ export const CHATBOTS = {
         label: 'Gemini 4 Argon',
         supported_reasoning_efforts: ['Low', 'Medium', 'High']
       },
-      'gemini-pro-latest': {
-        label: 'Gemini Pro Latest',
-        supported_reasoning_efforts: ['Low', 'Medium', 'High']
+      'gemini-4-neon': {
+        label: 'Gemini 4 Neon',
+        supported_reasoning_efforts: ['Low', 'Medium', 'High', 'Extra High']
       },
       'gemini-4-hydrogen': {
         label: 'Gemini 4 Hydrogen',
         supported_reasoning_efforts: ['Low', 'Medium', 'High', 'Extra High']
+      },
+      'gemini-pro-latest': {
+        label: 'Gemini Pro Latest',
+        supported_reasoning_efforts: ['Low', 'Medium', 'High']
       },
       'gemini-flash-latest': {
         label: 'Gemini Flash Latest',
@@ -106,10 +110,8 @@ export const CHATBOTS = {
     supports_reasoning_effort: true,
     supported_reasoning_efforts: ['Low', 'Medium', 'High'],
     models: {
-      'flash-lite': { label: 'Flash-Lite' },
       hydrogen: { label: 'Hydrogen' },
-      pro: { label: 'Pro' },
-      argon: { label: 'Argon' },
+      neon: { label: 'Neon' },
       carbon: { label: 'Carbon' }
     }
   } as Chatbot,
