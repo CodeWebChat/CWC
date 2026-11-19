@@ -1,5 +1,8 @@
 import * as crypto from 'crypto'
+import * as fs from 'fs'
 import * as http from 'http'
+import * as os from 'os'
+import * as path from 'path'
 import * as process from 'process'
 const WebSocket = require('ws')
 import { DEFAULT_PORT, CLIENT_TYPE } from '@shared/constants/websocket'
@@ -33,6 +36,19 @@ class WebSocketServer {
         const client_type = url.searchParams.get('client_type')
 
         if (client_type === CLIENT_TYPE.BROWSER) {
+          const origin = info.origin || info.req.headers.origin
+          if (
+            typeof origin !== 'string' ||
+            !origin.startsWith('chrome-extension://')
+          ) {
+            return cb(false, 403, 'Forbidden: Invalid origin')
+          }
+
+          const token = url.searchParams.get('token')
+          if (!this._verify_browser_token(token)) {
+            return cb(false, 401, 'Unauthorized: Invalid token')
+          }
+
           if (
             this.browser_client &&
             this.browser_client.ws.readyState === WebSocket.OPEN
@@ -56,6 +72,22 @@ class WebSocketServer {
     this._schedule_shutdown()
 
     console.log(`Starting WebSocket server process (PID: ${process.pid})`)
+  }
+
+  private _verify_browser_token(token: string | null): boolean {
+    if (!token) return false
+    const token_path = path.join(os.homedir(), '.cwc', 'ws-token')
+    try {
+      if (!fs.existsSync(token_path)) return false
+      const expected_token = fs.readFileSync(token_path, 'utf-8').trim()
+      if (!expected_token) return false
+      const token_buf = Buffer.from(token)
+      const expected_buf = Buffer.from(expected_token)
+      if (token_buf.length !== expected_buf.length) return false
+      return crypto.timingSafeEqual(token_buf, expected_buf)
+    } catch {
+      return false
+    }
   }
 
   private _schedule_shutdown() {

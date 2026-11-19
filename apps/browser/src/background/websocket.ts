@@ -10,6 +10,17 @@ const ports_to_check = async (): Promise<number[]> => {
   return [DEFAULT_PORT, ...forwarded_ports]
 }
 
+const get_ws_token = async (): Promise<string | null> => {
+  try {
+    const response = await fetch(chrome.runtime.getURL('ws-token'))
+    if (!response.ok) return null
+    const token = (await response.text()).trim()
+    return token || null
+  } catch {
+    return null
+  }
+}
+
 const STALE_AFTER_MS = 20000
 const CONNECT_TIMEOUT_MS = 2000
 const RETRY_IDLE_MS = 5000
@@ -132,7 +143,16 @@ export const connect_websocket = async (port: number): Promise<void> => {
   }
 
   try {
-    const ws_url = `ws://localhost:${port}?client_type=${CLIENT_TYPE.BROWSER}`
+    const token = await get_ws_token()
+    if (is_busy(c)) return
+
+    const params = new URLSearchParams({
+      client_type: CLIENT_TYPE.BROWSER
+    })
+    if (token) {
+      params.set('token', token)
+    }
+    const ws_url = `ws://localhost:${port}?${params.toString()}`
 
     const ws = new WebSocket(ws_url)
     c.ws = ws
