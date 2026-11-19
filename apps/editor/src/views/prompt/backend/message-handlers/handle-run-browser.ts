@@ -4,15 +4,12 @@ import * as os from 'os'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
 import { spawn } from 'child_process'
-import {
-  Browser,
-  detectBrowserPlatform,
-  install,
-  resolveBuildId
-} from '@puppeteer/browsers'
+import { Browser, detectBrowserPlatform, install } from '@puppeteer/browsers'
 import { t } from '@/i18n'
 import { PromptViewProvider } from '../prompt-view-provider'
 import { LAST_SELECTED_BROWSER_PROFILE_STATE_KEY } from '@/constants/state-keys'
+
+const CHROMIUM_BUILD_ID = '1717349'
 
 const launch_browser = (params: {
   executable_path: string
@@ -177,19 +174,25 @@ export const handle_run_browser = async (
     'out'
   )
   const user_data_dir = path.join(browser_dir, 'profiles', selected_profile)
-  const cached_path_file = path.join(browser_dir, '.chrome-157-path')
+  const cached_path_file = path.join(browser_dir, '.chromium-path')
 
   if (fs.existsSync(cached_path_file)) {
-    const executable_path = fs.readFileSync(cached_path_file, 'utf-8').trim()
-    if (fs.existsSync(executable_path)) {
-      launch_browser({
-        executable_path,
-        user_data_dir,
-        extension_path,
-        cwc_dir
-      })
-      return
-    }
+    try {
+      const cached = JSON.parse(fs.readFileSync(cached_path_file, 'utf-8'))
+      if (
+        cached.version === CHROMIUM_BUILD_ID &&
+        typeof cached.path === 'string' &&
+        fs.existsSync(cached.path)
+      ) {
+        launch_browser({
+          executable_path: cached.path,
+          user_data_dir,
+          extension_path,
+          cwc_dir
+        })
+        return
+      }
+    } catch {}
   }
 
   const download_action = t(
@@ -220,10 +223,8 @@ export const handle_run_browser = async (
       try {
         const platform = detectBrowserPlatform()
         if (!platform) {
-          throw new Error('Unsupported platform for Chrome for Testing.')
+          throw new Error('Unsupported platform for Chromium.')
         }
-
-        const build_id = await resolveBuildId(Browser.CHROME, platform, '157')
 
         if (token.isCancellationRequested) {
           return
@@ -231,9 +232,10 @@ export const handle_run_browser = async (
 
         let last_percentage = 0
         const installed_browser = await install({
-          browser: Browser.CHROME,
-          buildId: build_id,
+          browser: Browser.CHROMIUM,
+          buildId: CHROMIUM_BUILD_ID,
           cacheDir: browser_dir,
+          platform,
           downloadProgressCallback: (downloaded_bytes, total_bytes) => {
             if (token.isCancellationRequested) {
               throw new Error('Download cancelled')
@@ -260,7 +262,13 @@ export const handle_run_browser = async (
           throw new Error('Could not determine Browser path.')
         }
 
-        fs.writeFileSync(cached_path_file, executable_path)
+        fs.writeFileSync(
+          cached_path_file,
+          JSON.stringify({
+            version: CHROMIUM_BUILD_ID,
+            path: executable_path
+          })
+        )
         launch_browser({
           executable_path,
           user_data_dir,
