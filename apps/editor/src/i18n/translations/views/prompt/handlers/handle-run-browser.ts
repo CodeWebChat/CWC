@@ -108,7 +108,25 @@ export const translations = {
     bg: 'Активиране на автоматичното попълване'
   },
   'views.prompt.handlers.handle-run-browser.confirm-download.detail': {
-    en: 'A portable installation of the Chrome browser is used for prompt autofilling. About 200MB will be downloaded.'
+    en: 'The extension autofills prompts in a latest, open-source Chromium browser. About 180MB will be downloaded.',
+    pl: 'Rozszerzenie automatycznie uzupełnia prompty w najnowszym otwartoźródłowym Chromium. Zostanie pobrane około 180 MB.',
+    'zh-cn':
+      '该扩展程序会在最新的开源 Chromium 浏览器中自动填充提示词。将下载约 180MB。',
+    ja: '拡張機能は最新のオープンソース Chromium ブラウザでプロンプトを自動入力します。約 180MB がダウンロードされます。',
+    'zh-tw':
+      '擴充功能會在最新的開源 Chromium 瀏覽器中自動填入提示詞。將下載約 180MB。',
+    de: 'Die Erweiterung füllt Prompts automatisch in einem aktuellen Open-Source-Chromium-Browser aus. Es werden etwa 180 MB heruntergeladen.',
+    es: 'La extensión autocompleta los prompts en un navegador Chromium de código abierto actualizado. Se descargarán unos 180 MB.',
+    fr: "L'extension remplit automatiquement les prompts dans un navigateur Chromium open-source récent. Environ 180 Mo seront téléchargés.",
+    'pt-br':
+      'A extensão preenche automaticamente os prompts em um navegador Chromium de código aberto mais recente. Cerca de 180 MB serão baixados.',
+    ru: 'Расширение автоматически заполняет промпты в актуальном браузере Chromium с открытым исходным кодом. Будет загружено около 180 МБ.',
+    ko: '확장 프로그램은 최신 오픈 소스 Chromium 브라우저에서 프롬프트를 자동으로 입력합니다. 약 180MB가 다운로드됩니다.',
+    it: "L'estensione compila automaticamente i prompt in un browser Chromium open-source aggiornato. Verranno scaricati circa 180 MB.",
+    tr: 'Uzantı, en güncel açık kaynaklı Chromium tarayıcısında istemleri otomatik olarak doldurur. Yaklaşık 180 MB indirilecektir.',
+    cs: 'Rozšíření automaticky vyplňuje prompty v nejnovějším open-source prohlížeči Chromium. Stáhne se přibližně 180 MB.',
+    hu: 'A bővítmény automatikusan kitölti a promptokat egy legújabb, nyílt forráskódú Chromium böngészőben. Körülbelül 180 MB kerül letöltésre.',
+    bg: 'Разширението автоматично попълва промптове в най-новия браузър Chromium с отворен код. Ще бъдат изтеглени около 180 MB.'
   },
   'views.prompt.handlers.handle-run-browser.confirm-download.download': {
     en: 'Download',
