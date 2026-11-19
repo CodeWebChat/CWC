@@ -52,5 +52,41 @@ export const translations = {
     cs: 'Stahování prohlížeče',
     hu: 'Böngésző letöltése',
     bg: 'Изтегляне на браузър'
+  },
+  'views.prompt.handlers.handle-run-browser.select-profile.title': {
+    en: 'Browser Profiles',
+    pl: 'Profile przeglądarki',
+    'zh-cn': '浏览器配置文件',
+    ja: 'ブラウザプロファイル',
+    'zh-tw': '瀏覽器設定檔',
+    de: 'Browser-Profile',
+    es: 'Perfiles del navegador',
+    fr: 'Profils du navigateur',
+    'pt-br': 'Perfis do navegador',
+    ru: 'Профили браузера',
+    ko: '브라우저 프로필',
+    it: 'Profili del browser',
+    tr: 'Tarayıcı Profilleri',
+    cs: 'Profily prohlížeče',
+    hu: 'Böngészőprofilok',
+    bg: 'Профили на браузъра'
+  },
+  'views.prompt.handlers.handle-run-browser.select-profile.placeholder': {
+    en: 'Select a browser profile',
+    pl: 'Wybierz profil przeglądarki',
+    'zh-cn': '选择浏览器配置文件',
+    ja: 'ブラウザプロファイルを選択',
+    'zh-tw': '選擇瀏覽器設定檔',
+    de: 'Browser-Profil auswählen',
+    es: 'Seleccione un perfil del navegador',
+    fr: 'Sélectionner un profil du navigateur',
+    'pt-br': 'Selecione um perfil do navegador',
+    ru: 'Выберите профиль браузера',
+    ko: '브라우저 프로필 선택',
+    it: 'Seleziona un profilo del browser',
+    tr: 'Bir tarayıcı profili seçin',
+    cs: 'Vyberte profil prohlížeče',
+    hu: 'Válasszon böngészőprofilt',
+    bg: 'Изберете профил на браузъра'
   }
 } as const

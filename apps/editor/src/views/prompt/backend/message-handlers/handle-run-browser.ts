@@ -10,6 +10,8 @@ import {
   resolveBuildId
 } from '@puppeteer/browsers'
 import { t } from '@/i18n'
+import { PromptViewProvider } from '../prompt-view-provider'
+import { LAST_SELECTED_BROWSER_PROFILE_STATE_KEY } from '@/constants/state-keys'
 
 const launch_browser = (params: {
   executable_path: string
@@ -36,7 +38,9 @@ const launch_browser = (params: {
   child.unref()
 }
 
-export const handle_run_browser = async () => {
+export const handle_run_browser = async (
+  prompt_view_provider: PromptViewProvider
+) => {
   if (vscode.env.remoteName) {
     const action = t('views.prompt.handlers.handle-run-browser.forward-port')
     const actions = vscode.env.remoteName === 'ssh-remote' ? [action] : []
@@ -56,6 +60,92 @@ export const handle_run_browser = async () => {
     return
   }
 
+  const browser_profiles = Array.from(
+    new Set(
+      vscode.workspace
+        .getConfiguration('codeWebChat')
+        .get<string[]>('browserProfiles', [])
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0 && p !== 'Default')
+    )
+  )
+
+  let selected_profile: string | undefined = 'Default'
+
+  if (browser_profiles.length > 0) {
+    const items = ['Default', ...browser_profiles].map((profile) => ({
+      label: profile
+    }))
+    const last_selected_profile =
+      prompt_view_provider.extension_context.globalState.get<string>(
+        LAST_SELECTED_BROWSER_PROFILE_STATE_KEY
+      )
+
+    selected_profile = await new Promise<string | undefined>((resolve) => {
+      const quick_pick = vscode.window.createQuickPick<vscode.QuickPickItem>()
+      quick_pick.items = items
+      if (last_selected_profile) {
+        const active_item = items.find(
+          (item) => item.label === last_selected_profile
+        )
+        if (active_item) {
+          quick_pick.activeItems = [active_item]
+        }
+      }
+      quick_pick.title = t(
+        'views.prompt.handlers.handle-run-browser.select-profile.title'
+      )
+      quick_pick.placeholder = t(
+        'views.prompt.handlers.handle-run-browser.select-profile.placeholder'
+      )
+
+      const close_button: vscode.QuickInputButton = {
+        iconPath: new vscode.ThemeIcon('close'),
+        tooltip: t('common.close')
+      }
+      quick_pick.buttons = [close_button]
+
+      let is_accepted = false
+      const disposables: vscode.Disposable[] = []
+      const cleanup = () => {
+        disposables.forEach((d) => d.dispose())
+        quick_pick.dispose()
+      }
+
+      disposables.push(
+        quick_pick.onDidAccept(() => {
+          is_accepted = true
+          const selected = quick_pick.selectedItems[0]
+          if (selected) {
+            prompt_view_provider.extension_context.globalState.update(
+              LAST_SELECTED_BROWSER_PROFILE_STATE_KEY,
+              selected.label
+            )
+          }
+          resolve(selected?.label)
+          quick_pick.hide()
+        }),
+        quick_pick.onDidTriggerButton((button) => {
+          if (button === close_button) {
+            quick_pick.hide()
+          }
+        }),
+        quick_pick.onDidHide(() => {
+          if (!is_accepted) {
+            resolve(undefined)
+          }
+          cleanup()
+        })
+      )
+
+      quick_pick.show()
+    })
+
+    if (!selected_profile) {
+      return
+    }
+  }
+
   const cwc_dir = path.join(os.homedir(), '.cwc')
   const browser_dir = path.join(cwc_dir, 'browser')
 
@@ -71,7 +161,7 @@ export const handle_run_browser = async () => {
     'browser',
     'out'
   )
-  const user_data_dir = path.join(browser_dir, 'profiles', 'Default')
+  const user_data_dir = path.join(browser_dir, 'profiles', selected_profile)
   const cached_path_file = path.join(browser_dir, '.chrome-157-path')
 
   if (fs.existsSync(cached_path_file)) {
