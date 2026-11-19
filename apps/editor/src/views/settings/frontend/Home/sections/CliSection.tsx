@@ -1,9 +1,12 @@
 import { forwardRef } from 'react'
 import { Section as UiSection } from '@ui/components/editor/settings-view/Section'
 import { Group as UiGroup } from '@ui/components/editor/settings-view/Group/Group'
+import { Item as UiItem } from '@ui/components/editor/settings-view/Item'
 import { Notices as UiNotices } from '@ui/components/editor/settings-view/Notices'
 import { SortableList } from '@ui/components/editor/settings-view/SortableList'
 import { IconButton } from '@ui/components/editor/common/IconButton'
+import { Dropdown as UiDropdown } from '@ui/components/editor/common/Dropdown'
+import { Textarea as UiTextarea } from '@ui/components/editor/common/Textarea'
 import { DefaultConfigurationSelector } from '@ui/components/editor/settings-view/DefaultConfigurationSelector'
 import { CliConfiguration } from '@/types/cli-configuration'
 import { use_translation } from '../../i18n/use-translation'
@@ -26,6 +29,13 @@ type Props = {
   on_edit_cli_configuration: (id: string) => void
   on_delete_cli_configuration: (name: string) => void
   on_toggle_pinned_cli_configuration: (config: CliConfiguration) => void
+  agentic_search_instructions: string
+  set_agentic_search_instructions: (instructions: string) => void
+  on_agentic_search_instructions_blur: () => void
+  default_agentic_search_instructions: string
+  on_restore_agentic_search_instructions: () => void
+  agentic_search_invocation_count: 1 | 2 | 3
+  on_agentic_search_invocation_count_change: (count: 1 | 2 | 3) => void
   set_section_ref: (id: NavItem, el: HTMLDivElement | null) => void
 }
 
@@ -166,6 +176,57 @@ export const CliSection = forwardRef<HTMLDivElement, Props>((props, ref) => {
                 />
               </>
             )}
+          />
+        </UiGroup>
+      </div>
+      <div
+        ref={(el) =>
+          props.set_section_ref('section:cli:group:agentic-search', el)
+        }
+      >
+        <UiGroup title={t('cli.agentic-search.title')}>
+          <UiItem
+            title={t('common.instructions')}
+            description={t('cli.agentic-search.instructions.description')}
+            is_toggleable
+            translations={{
+              expand: t('common.expand'),
+              collapse: t('common.collapse')
+            }}
+          >
+            <UiTextarea
+              value={props.agentic_search_instructions}
+              min_rows={3}
+              on_change={props.set_agentic_search_instructions}
+              on_blur={props.on_agentic_search_instructions_blur}
+              action_icon={
+                props.agentic_search_instructions !=
+                props.default_agentic_search_instructions
+                  ? 'discard'
+                  : undefined
+              }
+              action_title={t('general.action.restore-default')}
+              on_action_click={props.on_restore_agentic_search_instructions}
+            />
+          </UiItem>
+          <UiItem
+            title={t('cli.agentic-search.invocation-count.title')}
+            description={t('cli.agentic-search.invocation-count.description')}
+            slot_right={
+              <UiDropdown
+                options={[
+                  { value: '1', label: '1' },
+                  { value: '2', label: '2' },
+                  { value: '3', label: '3' }
+                ]}
+                value={props.agentic_search_invocation_count.toString()}
+                onChange={(val) =>
+                  props.on_agentic_search_invocation_count_change(
+                    parseInt(val, 10) as 1 | 2 | 3
+                  )
+                }
+              />
+            }
           />
         </UiGroup>
       </div>
