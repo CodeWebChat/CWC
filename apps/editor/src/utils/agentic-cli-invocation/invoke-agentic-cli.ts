@@ -6,6 +6,7 @@ import { WorkspaceProvider } from '@/context/providers/workspace/workspace-provi
 import { t } from '@/i18n'
 import { spawn } from 'child_process'
 import { CLI_AGENTS } from './agents'
+import { CodingAgent } from './types'
 import { Logger } from '@shared/utils/logger'
 import { generate_diff_markdown } from './utils/generate-diff-markdown'
 import { format_duration } from './utils/format-duration'
@@ -27,6 +28,205 @@ export const show_agentic_cli_output_channel = () => {
 }
 
 const cli_waiting_chain = new WaitingChain()
+
+type AgentPickItem = vscode.QuickPickItem & {
+  cmd: string
+  agent_id: string
+  flag_value: string
+  config_name: string
+}
+
+type AgentSelectionResult =
+  | 'back'
+  | undefined
+  | { cmd: string; flag_value: string; config_name: string }
+
+const parse_flags = (flags_string?: string): string[] => {
+  const custom_args: string[] = []
+  if (!flags_string?.trim()) return custom_args
+
+  let current_arg = ''
+  let in_single_quote = false
+  let in_double_quote = false
+
+  for (let i = 0; i < flags_string.length; i++) {
+    const char = flags_string[i]
+    if (char === "'" && !in_double_quote) {
+      in_single_quote = !in_single_quote
+    } else if (char === '"' && !in_single_quote) {
+      in_double_quote = !in_double_quote
+    } else if (char === ' ' && !in_single_quote && !in_double_quote) {
+      if (current_arg.length > 0) {
+        custom_args.push(current_arg)
+        current_arg = ''
+      }
+    } else {
+      current_arg += char
+    }
+  }
+  if (current_arg.length > 0) {
+    custom_args.push(current_arg)
+  }
+
+  return custom_args
+}
+
+const build_agent_picks = (): AgentPickItem[] => {
+  const agent_picks: AgentPickItem[] = []
+  const current_agents_config =
+    vscode.workspace
+      .getConfiguration('codeWebChat')
+      .get<ConfigAgentConfigurationFormat[]>('agents', []) || []
+
+  for (const agent_config of current_agents_config) {
+    const agent_info = CLI_AGENTS.find((a) => a.label === agent_config.agent)
+    if (!agent_info) continue
+
+    const is_unnamed =
+      !agent_config.name || /^\(\d+\)$/.test(agent_config.name.trim())
+    const display_name = is_unnamed
+      ? agent_config.agent!
+      : agent_config.name!.replace(/ \(\d+\)$/, '')
+
+    const details: string[] = []
+    if (!is_unnamed && agent_config.agent) {
+      details.push(agent_config.agent)
+    }
+
+    if (agent_config.flags) {
+      details.push(agent_config.flags)
+    }
+
+    agent_picks.push({
+      label: display_name,
+      description: details.join(' · ') || undefined,
+      cmd: agent_info.cmd,
+      agent_id: agent_info.id,
+      flag_value: agent_config.flags || '',
+      config_name: agent_config.name!
+    })
+  }
+  return agent_picks
+}
+
+const show_agent_quick_pick = async (options: {
+  title: string
+  active_config_name?: string
+  show_back_button?: boolean
+  ignore_focus_out?: boolean
+  on_hide_result: 'back' | undefined
+}): Promise<AgentSelectionResult> => {
+  const close_button: vscode.QuickInputButton = {
+    iconPath: new vscode.ThemeIcon('close'),
+    tooltip: t('common.close')
+  }
+
+  const agent_quick_pick = vscode.window.createQuickPick<AgentPickItem>()
+  agent_quick_pick.items = build_agent_picks()
+
+  if (options.active_config_name) {
+    const active_item = agent_quick_pick.items.find(
+      (i) => i.config_name === options.active_config_name
+    )
+    if (active_item) {
+      agent_quick_pick.activeItems = [active_item]
+    }
+  }
+
+  agent_quick_pick.title = options.title
+  agent_quick_pick.placeholder = t(
+    'utils.agentic-cli-invocation.agent.agents-placeholder'
+  )
+  agent_quick_pick.buttons = options.show_back_button
+    ? [vscode.QuickInputButtons.Back, close_button]
+    : [close_button]
+  agent_quick_pick.ignoreFocusOut = !!options.ignore_focus_out
+
+  const config_listener = vscode.workspace.onDidChangeConfiguration((e) => {
+    if (e.affectsConfiguration('codeWebChat.agents')) {
+      const prev_active = agent_quick_pick.activeItems[0]
+      agent_quick_pick.items = build_agent_picks()
+
+      if (prev_active) {
+        const item = agent_quick_pick.items.find(
+          (i) =>
+            i.label === prev_active.label &&
+            i.description === prev_active.description
+        )
+        if (item) {
+          agent_quick_pick.activeItems = [item]
+        }
+      }
+    }
+  })
+
+  return await new Promise<AgentSelectionResult>((resolve) => {
+    let is_resolved = false
+
+    agent_quick_pick.onDidTriggerButton((button) => {
+      if (button === vscode.QuickInputButtons.Back) {
+        is_resolved = true
+        resolve('back')
+        agent_quick_pick.hide()
+      } else if (button === close_button) {
+        is_resolved = true
+        resolve(undefined)
+        agent_quick_pick.hide()
+      }
+    })
+
+    agent_quick_pick.onDidAccept(() => {
+      const selected = agent_quick_pick.selectedItems[0]
+      if (selected) {
+        is_resolved = true
+        resolve({
+          cmd: selected.cmd,
+          flag_value: selected.flag_value,
+          config_name: selected.config_name
+        })
+        agent_quick_pick.hide()
+      }
+    })
+
+    agent_quick_pick.onDidHide(() => {
+      if (!is_resolved) {
+        resolve(options.on_hide_result)
+      }
+      config_listener.dispose()
+      agent_quick_pick.dispose()
+    })
+
+    agent_quick_pick.show()
+  })
+}
+
+const ensure_agent_installed = async (
+  agent_info: CodingAgent
+): Promise<boolean> => {
+  if (agent_info.is_installed()) {
+    return true
+  }
+
+  const response = await vscode.window.showWarningMessage(
+    t('utils.agentic-cli-invocation.error.not-installed', {
+      agent: agent_info.label
+    }),
+    t('utils.agentic-cli-invocation.error.installation-instructions')
+  )
+
+  if (
+    response ==
+    t('utils.agentic-cli-invocation.error.installation-instructions')
+  ) {
+    const agent_label = agent_info.label as keyof typeof AGENTS
+    const url = AGENTS[agent_label]?.homepage_url
+    if (url) {
+      vscode.env.openExternal(vscode.Uri.parse(url))
+    }
+  }
+
+  return false
+}
 
 export const invoke_agentic_cli = async (params: {
   workspace_provider: WorkspaceProvider
@@ -158,57 +358,7 @@ export const invoke_agentic_cli = async (params: {
       }
     }
 
-    type AgentPickItem = vscode.QuickPickItem & {
-      cmd: string
-      agent_id: string
-      flag_value: string
-      config_name: string
-    }
-
     if (!selected_agent_cmd || show_quick_pick) {
-      const build_agent_picks = (): AgentPickItem[] => {
-        const agent_picks: AgentPickItem[] = []
-        const current_agents_config =
-          vscode.workspace
-            .getConfiguration('codeWebChat')
-            .get<ConfigAgentConfigurationFormat[]>('agents', []) || []
-
-        for (const agent_config of current_agents_config) {
-          const agent_info = CLI_AGENTS.find(
-            (a) => a.label === agent_config.agent
-          )
-          if (!agent_info) continue
-
-          const is_unnamed =
-            !agent_config.name || /^\(\d+\)$/.test(agent_config.name.trim())
-          const display_name = is_unnamed
-            ? agent_config.agent!
-            : agent_config.name!.replace(/ \(\d+\)$/, '')
-
-          const details: string[] = []
-          if (!is_unnamed && agent_config.agent) {
-            details.push(agent_config.agent)
-          }
-
-          if (agent_config.flags) {
-            details.push(agent_config.flags)
-          }
-
-          agent_picks.push({
-            label: display_name,
-            description: details.join(' · ') || undefined,
-            cmd: agent_info.cmd,
-            agent_id: agent_info.id,
-            flag_value: agent_config.flags || '',
-            config_name: agent_config.name!
-          })
-        }
-        return agent_picks
-      }
-
-      const agent_quick_pick = vscode.window.createQuickPick<AgentPickItem>()
-      agent_quick_pick.items = build_agent_picks()
-
       const last_used = params.agent_state_key
         ? (params.extension_context.workspaceState.get<string>(
             params.agent_state_key
@@ -218,88 +368,13 @@ export const invoke_agentic_cli = async (params: {
           ))
         : undefined
 
-      if (last_used) {
-        const active_item = agent_quick_pick.items.find(
-          (i) => i.config_name === last_used
-        )
-        if (active_item) {
-          agent_quick_pick.activeItems = [active_item]
-        }
-      }
-
-      agent_quick_pick.title = t('utils.agentic-cli-invocation.agent.agents')
-      agent_quick_pick.placeholder = t(
-        'utils.agentic-cli-invocation.agent.agents-placeholder'
-      )
-      agent_quick_pick.buttons = params.show_back_button
-        ? [vscode.QuickInputButtons.Back, close_button]
-        : [close_button]
-      agent_quick_pick.ignoreFocusOut = !!params.show_back_button
-
-      const config_listener = vscode.workspace.onDidChangeConfiguration((e) => {
-        if (e.affectsConfiguration('codeWebChat.agents')) {
-          const prev_active = agent_quick_pick.activeItems[0]
-          agent_quick_pick.items = build_agent_picks()
-
-          if (prev_active) {
-            const item = agent_quick_pick.items.find(
-              (i) =>
-                i.label === prev_active.label &&
-                i.description === prev_active.description
-            )
-            if (item) {
-              agent_quick_pick.activeItems = [item]
-            }
-          }
-        }
+      const agent_selection_result = await show_agent_quick_pick({
+        title: t('utils.agentic-cli-invocation.agent.agents'),
+        active_config_name: last_used,
+        show_back_button: params.show_back_button,
+        ignore_focus_out: !!params.show_back_button,
+        on_hide_result: 'back'
       })
-
-      type AgentSelectionResult =
-        | 'back'
-        | 'settings'
-        | undefined
-        | { cmd: string; flag_value: string; config_name: string }
-
-      const agent_selection_result = await new Promise<AgentSelectionResult>(
-        (resolve) => {
-          let is_resolved = false
-
-          agent_quick_pick.onDidTriggerButton((button) => {
-            if (button === vscode.QuickInputButtons.Back) {
-              is_resolved = true
-              resolve('back')
-              agent_quick_pick.hide()
-            } else if (button === close_button) {
-              is_resolved = true
-              resolve(undefined)
-              agent_quick_pick.hide()
-            }
-          })
-
-          agent_quick_pick.onDidAccept(() => {
-            const selected = agent_quick_pick.selectedItems[0]
-            if (selected) {
-              is_resolved = true
-              resolve({
-                cmd: selected.cmd,
-                flag_value: selected.flag_value,
-                config_name: selected.config_name
-              })
-              agent_quick_pick.hide()
-            }
-          })
-
-          agent_quick_pick.onDidHide(() => {
-            if (!is_resolved) {
-              resolve('back')
-            }
-            config_listener.dispose()
-            agent_quick_pick.dispose()
-          })
-
-          agent_quick_pick.show()
-        }
-      )
 
       if (agent_selection_result === 'back') {
         return 'back'
@@ -307,11 +382,6 @@ export const invoke_agentic_cli = async (params: {
 
       if (!agent_selection_result) {
         return undefined
-      }
-
-      if (agent_selection_result === 'settings') {
-        await vscode.commands.executeCommand('codeWebChat.settings')
-        continue
       }
 
       selected_agent_cmd = agent_selection_result.cmd
@@ -323,25 +393,10 @@ export const invoke_agentic_cli = async (params: {
       (a) => a.cmd === selected_agent_cmd
     )
 
-    if (selected_agent_info && !selected_agent_info.is_installed()) {
-      const response = await vscode.window.showWarningMessage(
-        t('utils.agentic-cli-invocation.error.not-installed', {
-          agent: selected_agent_info.label
-        }),
-        t('utils.agentic-cli-invocation.error.installation-instructions')
-      )
-
-      if (
-        response ==
-        t('utils.agentic-cli-invocation.error.installation-instructions')
-      ) {
-        const agent_label = selected_agent_info.label as keyof typeof AGENTS
-        const url = AGENTS[agent_label]?.homepage_url
-        if (url) {
-          vscode.env.openExternal(vscode.Uri.parse(url))
-        }
-      }
-
+    if (
+      selected_agent_info &&
+      !(await ensure_agent_installed(selected_agent_info))
+    ) {
       show_quick_pick = true
       current_agent_config_name = undefined
       continue
@@ -553,32 +608,7 @@ export const invoke_agentic_cli = async (params: {
       if (!agent_info) break
 
       const executable = agent_info.cmd
-
-      const custom_args: string[] = []
-      if (flags_string!.trim()) {
-        let current_arg = ''
-        let in_single_quote = false
-        let in_double_quote = false
-
-        for (let i = 0; i < flags_string!.length; i++) {
-          const char = flags_string![i]
-          if (char === "'" && !in_double_quote) {
-            in_single_quote = !in_single_quote
-          } else if (char === '"' && !in_single_quote) {
-            in_double_quote = !in_double_quote
-          } else if (char === ' ' && !in_single_quote && !in_double_quote) {
-            if (current_arg.length > 0) {
-              custom_args.push(current_arg)
-              current_arg = ''
-            }
-          } else {
-            current_arg += char
-          }
-        }
-        if (current_arg.length > 0) {
-          custom_args.push(current_arg)
-        }
-      }
+      const custom_args = parse_flags(flags_string)
 
       const final_prompt = await params.build_prompt(
         selected_root!,
@@ -708,17 +738,32 @@ export const invoke_agentic_cli = async (params: {
 
       const initial_invocation_count = params.invocation_count || 1
       let total_invocations = 0
+      let active_invocations = 0
       let is_finished = false
       let cancelled_count = 0
+      let last_invocation_config_name = selected_config_name
       const agent_outputs: string[] = []
 
       output_channel.clear()
       const start_time = Date.now()
 
       try {
-        const run_invocation = async (index: number) => {
+        const run_invocation = async (
+          index: number,
+          invocation_agent: {
+            agent_info: CodingAgent
+            flags_string: string
+            config_name?: string
+          }
+        ) => {
+          const invocation_agent_info = invocation_agent.agent_info
+          const invocation_executable = invocation_agent_info.cmd
+          const invocation_custom_args = parse_flags(
+            invocation_agent.flags_string
+          )
+
           const gate = cli_waiting_chain.enqueue({
-            key: selected_config_name || executable,
+            key: invocation_agent.config_name || invocation_executable,
             meta: undefined
           })
 
@@ -761,31 +806,36 @@ export const invoke_agentic_cli = async (params: {
                   return
                 }
 
-                const base_args = agent_info.get_headless_args({
-                  cwd: selected_root
+                const base_args = invocation_agent_info.get_headless_args({
+                  cwd: selected_root!
                 })
 
-                let args = [...base_args, ...custom_args]
+                let args = [...base_args, ...invocation_custom_args]
 
-                if (agent_info.get_prompt_file_args) {
+                if (invocation_agent_info.get_prompt_file_args) {
                   args = [
                     ...args,
-                    ...agent_info.get_prompt_file_args(temp_prompt_path)
+                    ...invocation_agent_info.get_prompt_file_args(
+                      temp_prompt_path
+                    )
                   ]
                 }
 
                 return await new Promise<void>((resolve, reject) => {
                   let current_agent_output = ''
                   let current_raw_stream_output = ''
-                  const child = spawn(executable, args, {
+                  const child = spawn(invocation_executable, args, {
                     cwd: selected_root,
                     shell: false,
-                    stdio: agent_info.get_prompt_file_args
+                    stdio: invocation_agent_info.get_prompt_file_args
                       ? ['ignore', 'pipe', 'pipe']
                       : ['pipe', 'pipe', 'pipe']
                   })
 
-                  if (!agent_info.get_prompt_file_args && child.stdin) {
+                  if (
+                    !invocation_agent_info.get_prompt_file_args &&
+                    child.stdin
+                  ) {
                     const read_stream = fs.createReadStream(temp_prompt_path)
                     read_stream.pipe(child.stdin)
 
@@ -801,7 +851,7 @@ export const invoke_agentic_cli = async (params: {
                   child.stdout?.on('data', (data) => {
                     const chunk = data.toString()
                     output_channel.append(chunk)
-                    if (agent_info.parse_stream_line) {
+                    if (invocation_agent_info.parse_stream_line) {
                       current_raw_stream_output += chunk
                       const lines = current_raw_stream_output.split('\n')
                       current_raw_stream_output = lines.pop() || ''
@@ -810,15 +860,16 @@ export const invoke_agentic_cli = async (params: {
                         if (!trimmed) continue
                         try {
                           const parsed = JSON.parse(trimmed)
-                          const result = agent_info.parse_stream_line(
-                            parsed,
-                            (msg) => {
-                              progress.report({ message: msg })
-                              if (msg && msg !== waiting_msg) {
-                                gate.release()
+                          const result =
+                            invocation_agent_info.parse_stream_line(
+                              parsed,
+                              (msg) => {
+                                progress.report({ message: msg })
+                                if (msg && msg !== waiting_msg) {
+                                  gate.release()
+                                }
                               }
-                            }
-                          )
+                            )
 
                           if (result?.output !== undefined) {
                             current_agent_output = result.output
@@ -848,7 +899,7 @@ export const invoke_agentic_cli = async (params: {
 
                   child.on('close', async () => {
                     if (
-                      agent_info.parse_final_output &&
+                      invocation_agent_info.parse_final_output &&
                       current_raw_stream_output.trim()
                     ) {
                       try {
@@ -856,7 +907,7 @@ export const invoke_agentic_cli = async (params: {
                           current_raw_stream_output.trim()
                         )
                         current_agent_output =
-                          agent_info.parse_final_output(
+                          invocation_agent_info.parse_final_output(
                             parsed,
                             current_agent_output
                           ) ?? current_agent_output
@@ -919,10 +970,69 @@ export const invoke_agentic_cli = async (params: {
         }
 
         const tasks: Promise<void>[] = []
-        const start_invocation = () => {
-          const index = tasks.length
+        const start_invocation = (invocation_agent: {
+          agent_info: CodingAgent
+          flags_string: string
+          config_name?: string
+        }) => {
+          const index = total_invocations
           total_invocations++
-          tasks.push(run_invocation(index))
+          active_invocations++
+          tasks.push(
+            run_invocation(index, invocation_agent).finally(() => {
+              active_invocations--
+            })
+          )
+        }
+
+        const pick_agent_for_additional_invocation = async (): Promise<
+          | {
+              agent_info: CodingAgent
+              flags_string: string
+              config_name: string
+            }
+          | undefined
+        > => {
+          while (!is_finished) {
+            if (build_agent_picks().length === 0) {
+              vscode.window.showInformationMessage(
+                t('utils.agentic-cli-invocation.info.no-agents')
+              )
+              return undefined
+            }
+
+            const selection = await show_agent_quick_pick({
+              title: t('utils.agentic-cli-invocation.agent.add-invocation'),
+              active_config_name: last_invocation_config_name,
+              show_back_button: false,
+              ignore_focus_out: false,
+              on_hide_result: undefined
+            })
+
+            if (!selection || selection === 'back' || is_finished) {
+              return undefined
+            }
+
+            const picked_agent_info = CLI_AGENTS.find(
+              (a) => a.cmd === selection.cmd
+            )
+            if (!picked_agent_info) {
+              return undefined
+            }
+
+            const is_installed = await ensure_agent_installed(picked_agent_info)
+            if (!is_installed) {
+              continue
+            }
+
+            return {
+              agent_info: picked_agent_info,
+              flags_string: selection.flag_value,
+              config_name: selection.config_name
+            }
+          }
+
+          return undefined
         }
 
         const show_add_invocation_button = () => {
@@ -934,13 +1044,27 @@ export const invoke_agentic_cli = async (params: {
             )
             .then((selection) => {
               if (selection !== label || is_finished) return
-              start_invocation()
-              show_add_invocation_button()
+              const selection_task = (async () => {
+                const picked = await pick_agent_for_additional_invocation()
+                if (is_finished) return
+                if (picked) {
+                  last_invocation_config_name = picked.config_name
+                  start_invocation(picked)
+                  show_add_invocation_button()
+                } else if (active_invocations > 0) {
+                  show_add_invocation_button()
+                }
+              })()
+              tasks.push(selection_task)
             })
         }
 
         for (let i = 0; i < initial_invocation_count; i++) {
-          start_invocation()
+          start_invocation({
+            agent_info,
+            flags_string: flags_string || '',
+            config_name: selected_config_name
+          })
         }
 
         if (params.allow_adding_invocations) {
