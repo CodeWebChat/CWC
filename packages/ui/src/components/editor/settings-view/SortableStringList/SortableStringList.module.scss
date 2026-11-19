@@ -27,7 +27,7 @@
   box-sizing: border-box;
 
   &--locked {
-    opacity: 0.5;
+    opacity: var(--dimmed-opacity);
     padding-right: 8px;
   }
 }
