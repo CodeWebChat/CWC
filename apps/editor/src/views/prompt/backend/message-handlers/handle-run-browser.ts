@@ -4,12 +4,15 @@ import * as os from 'os'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
 import { spawn } from 'child_process'
-import { Browser, detectBrowserPlatform, install } from '@puppeteer/browsers'
+import {
+  Browser,
+  detectBrowserPlatform,
+  install,
+  resolveBuildId
+} from '@puppeteer/browsers'
 import { t } from '@/i18n'
 import { PromptViewProvider } from '../prompt-view-provider'
 import { LAST_SELECTED_BROWSER_PROFILE_STATE_KEY } from '@/constants/state-keys'
-
-const CHROMIUM_BUILD_ID = '1717349'
 
 const launch_browser = (params: {
   executable_path: string
@@ -33,7 +36,6 @@ const launch_browser = (params: {
   const args = [
     `--user-data-dir=${params.user_data_dir}`,
     `--load-extension=${params.extension_path}`,
-    '--disable-infobars',
     '--no-first-run'
   ]
 
@@ -179,11 +181,7 @@ export const handle_run_browser = async (
   if (fs.existsSync(cached_path_file)) {
     try {
       const cached = JSON.parse(fs.readFileSync(cached_path_file, 'utf-8'))
-      if (
-        cached.version === CHROMIUM_BUILD_ID &&
-        typeof cached.path === 'string' &&
-        fs.existsSync(cached.path)
-      ) {
+      if (typeof cached.path === 'string' && fs.existsSync(cached.path)) {
         launch_browser({
           executable_path: cached.path,
           user_data_dir,
@@ -230,10 +228,20 @@ export const handle_run_browser = async (
           return
         }
 
+        const build_id = await resolveBuildId(
+          Browser.CHROMIUM,
+          platform,
+          'latest'
+        )
+
+        if (token.isCancellationRequested) {
+          return
+        }
+
         let last_percentage = 0
         const installed_browser = await install({
           browser: Browser.CHROMIUM,
-          buildId: CHROMIUM_BUILD_ID,
+          buildId: build_id,
           cacheDir: browser_dir,
           platform,
           downloadProgressCallback: (downloaded_bytes, total_bytes) => {
@@ -265,7 +273,7 @@ export const handle_run_browser = async (
         fs.writeFileSync(
           cached_path_file,
           JSON.stringify({
-            version: CHROMIUM_BUILD_ID,
+            version: build_id,
             path: executable_path
           })
         )
