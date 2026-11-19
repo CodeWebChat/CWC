@@ -258,7 +258,12 @@ export class WebSocketManager {
         if (message.action === 'client-id-assignment') {
           this.client_id = message.client_id
         } else if (message.action === 'browser-connection-status') {
-          this.has_connected_browser = message.has_connected_browser
+          this.has_connected_browser =
+            typeof message.has_connected_browser === 'boolean'
+              ? message.has_connected_browser
+              : // Backwards compability 19.11.26
+                Array.isArray((message as any).connected_browsers) &&
+                (message as any).connected_browsers.length > 0
           this._on_connection_status_change.fire(this.has_connected_browser)
 
           const config = vscode.workspace.getConfiguration('codeWebChat')
