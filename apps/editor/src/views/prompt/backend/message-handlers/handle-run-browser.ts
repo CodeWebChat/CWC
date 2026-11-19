@@ -192,6 +192,24 @@ export const handle_run_browser = async (
     }
   }
 
+  const download_action = t(
+    'views.prompt.handlers.handle-run-browser.confirm-download.download'
+  )
+  const selection = await vscode.window.showInformationMessage(
+    t('views.prompt.handlers.handle-run-browser.confirm-download.message'),
+    {
+      modal: true,
+      detail: t(
+        'views.prompt.handlers.handle-run-browser.confirm-download.detail'
+      )
+    },
+    download_action
+  )
+
+  if (selection !== download_action) {
+    return
+  }
+
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
