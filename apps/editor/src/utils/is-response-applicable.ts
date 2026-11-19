@@ -1,4 +1,5 @@
 import { parse_response } from '@/features/apply-response/utils/response-parser'
+import { get_invalid_file_path } from '@/features/apply-response/utils/file-checks'
 
 export const is_response_applicable = (params: {
   response: string
@@ -15,6 +16,15 @@ export const is_response_applicable = (params: {
       params.is_single_root_folder_workspace ?? true,
     workspace_files: params.workspace_files
   })
+
+  try {
+    const invalid_file_path = get_invalid_file_path(response_items)
+    if (invalid_file_path) {
+      return false
+    }
+  } catch {
+    // Ignore
+  }
 
   return response_items.some(
     (item) =>

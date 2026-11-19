@@ -29,6 +29,7 @@ import {
 import { get_all_workspace_files } from '@/context/helpers/get-all-workspace-files'
 import { parse_response, PatchRepairItem } from './utils/response-parser'
 import { Checkpoint } from '@/features/checkpoints/types'
+import { get_invalid_file_path } from './utils/file-checks'
 import { WebSocketManager } from '@/services/websocket-manager'
 import { handle_patch_repair } from './response-processor/handlers/patch-repair-handler'
 import {
@@ -105,7 +106,10 @@ export const setup_apply_response = (params: {
             options: { skip_confirmation: true, hide_notification: true }
           })
         } catch (err) {
-          console.error('Failed to restore interrupted code review checkpoint', err)
+          console.error(
+            'Failed to restore interrupted code review checkpoint',
+            err
+          )
         } finally {
           await delete_checkpoint({
             extension_context: params.extension_context,
@@ -230,6 +234,18 @@ export const setup_apply_response = (params: {
         }
         return true
       })
+
+      const invalid_file_path = get_invalid_file_path(response_items)
+
+      if (invalid_file_path) {
+        vscode.window.showErrorMessage(
+          t('command.apply-response-command.error.file-not-found', {
+            path: invalid_file_path
+          })
+        )
+        params.prompt_view_provider.send_message({ command: 'HIDE_PROGRESS' })
+        return false
+      }
 
       const commit_message_item = response_items.find(
         (i) => i.type === 'commit-message'
