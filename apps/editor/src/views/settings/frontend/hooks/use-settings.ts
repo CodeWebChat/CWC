@@ -16,6 +16,9 @@ export const use_settings = (vscode: any) => {
   const [api_configurations, set_api_configurations] = useState<
     ApiConfiguration[] | undefined
   >(undefined)
+  const [browser_profiles, set_browser_profiles] = useState<
+    string[] | undefined
+  >(undefined)
   const [forwarded_ports, set_forwarded_ports] = useState<number[] | undefined>(
     undefined
   )
@@ -96,6 +99,7 @@ export const use_settings = (vscode: any) => {
   useEffect(() => {
     post_message(vscode, { command: 'GET_PROVIDERS' })
     post_message(vscode, { command: 'GET_API_CONFIGURATIONS' })
+    post_message(vscode, { command: 'GET_BROWSER_PROFILES' })
     post_message(vscode, { command: 'GET_FORWARDED_PORTS' })
     post_message(vscode, { command: 'GET_WEB_CONFIGURATIONS' })
     post_message(vscode, { command: 'GET_CLI_CONFIGURATIONS' })
@@ -130,6 +134,8 @@ export const use_settings = (vscode: any) => {
       } else if (message.command === 'API_CONFIGURATIONS') {
         set_api_configurations(message.api_configurations)
         set_defaults(message.defaults)
+      } else if (message.command === 'BROWSER_PROFILES') {
+        set_browser_profiles(message.browser_profiles)
       } else if (message.command === 'FORWARDED_PORTS') {
         set_forwarded_ports(message.forwarded_ports)
       } else if (message.command === 'WEB_CONFIGURATIONS') {
@@ -307,6 +313,14 @@ export const use_settings = (vscode: any) => {
     post_message(vscode, {
       command: 'DELETE_WEB_CONFIGURATION',
       name
+    })
+  }
+
+  const handle_update_browser_profiles = (profiles: string[]) => {
+    set_browser_profiles(profiles)
+    post_message(vscode, {
+      command: 'UPDATE_BROWSER_PROFILES',
+      browser_profiles: profiles
     })
   }
 
@@ -510,6 +524,7 @@ export const use_settings = (vscode: any) => {
     set_providers,
     api_configurations,
     set_api_configurations,
+    browser_profiles,
     forwarded_ports,
     web_configurations,
     set_web_configurations,
@@ -552,6 +567,7 @@ export const use_settings = (vscode: any) => {
     handle_reorder_web_configurations,
     handle_add_web_configuration,
     handle_delete_web_configuration,
+    handle_update_browser_profiles,
     handle_update_forwarded_ports,
     handle_toggle_pinned_cli_configuration,
     handle_toggle_pinned_api_configuration,

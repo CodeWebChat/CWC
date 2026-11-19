@@ -1159,6 +1159,14 @@
             "CLI"
           ]
         },
+        "codeWebChat.browserProfiles": {
+          "type": "array",
+          "scope": "application",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
         "codeWebChat.forwardedPorts": {
           "type": "array",
           "scope": "application",

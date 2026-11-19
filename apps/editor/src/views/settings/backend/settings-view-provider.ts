@@ -201,6 +201,10 @@ export class SettingsViewProvider {
           await handlers.handle_pick_agent(this, message)
         } else if (message.command === 'PICK_EXAMPLE_FLAGS') {
           await handlers.handle_pick_example_flags(this, message)
+        } else if (message.command === 'GET_BROWSER_PROFILES') {
+          await handlers.handle_get_browser_profiles(this)
+        } else if (message.command === 'UPDATE_BROWSER_PROFILES') {
+          await handlers.handle_update_browser_profiles(message)
         } else if (message.command === 'GET_FORWARDED_PORTS') {
           await handlers.handle_get_forwarded_ports(this)
         } else if (message.command === 'UPDATE_FORWARDED_PORTS') {
@@ -273,6 +277,7 @@ export class SettingsViewProvider {
           void handlers.handle_get_ai_studio_user_id(this)
           void handlers.handle_get_send_with_shift_enter(this)
           void handlers.handle_get_prompt_instructions(this)
+          void handlers.handle_get_browser_profiles(this)
           void handlers.handle_get_forwarded_ports(this)
           void handlers.handle_get_web_configurations(this)
           void handlers.handle_get_cli_configurations(this)

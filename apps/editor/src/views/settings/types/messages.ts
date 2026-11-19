@@ -200,6 +200,15 @@ export interface OpenKeybindingsMessage {
   search?: string
 }
 
+export interface GetBrowserProfilesMessage {
+  command: 'GET_BROWSER_PROFILES'
+}
+
+export interface UpdateBrowserProfilesMessage {
+  command: 'UPDATE_BROWSER_PROFILES'
+  browser_profiles: string[]
+}
+
 export interface GetForwardedPortsMessage {
   command: 'GET_FORWARDED_PORTS'
 }
@@ -457,6 +466,8 @@ export type FrontendMessage =
   | OpenIgnorePatternsSettingsMessage
   | OpenAllowPatternsSettingsMessage
   | OpenKeybindingsMessage
+  | GetBrowserProfilesMessage
+  | UpdateBrowserProfilesMessage
   | GetForwardedPortsMessage
   | UpdateForwardedPortsMessage
   | GetWebConfigurationsMessage
@@ -584,6 +595,11 @@ export interface SendWithShiftEnterMessage {
 export interface ShowSectionMessage {
   command: 'SHOW_SECTION'
   section: string
+}
+
+export interface BrowserProfilesMessage {
+  command: 'BROWSER_PROFILES'
+  browser_profiles: string[]
 }
 
 export interface ForwardedPortsMessage {
@@ -738,6 +754,7 @@ export type BackendMessage =
   | AiStudioUserIdMessage
   | SendWithShiftEnterMessage
   | ShowSectionMessage
+  | BrowserProfilesMessage
   | ForwardedPortsMessage
   | WebConfigurationsMessage
   | NewlyPickedModelMessage

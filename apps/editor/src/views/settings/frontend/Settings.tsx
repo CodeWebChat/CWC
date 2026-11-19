@@ -82,6 +82,7 @@ export const Settings = () => {
     return (
       settings_hook.providers !== undefined &&
       settings_hook.api_configurations !== undefined &&
+      settings_hook.browser_profiles !== undefined &&
       settings_hook.forwarded_ports !== undefined &&
       settings_hook.web_configurations !== undefined &&
       settings_hook.cli_configurations !== undefined &&
@@ -276,6 +277,10 @@ export const Settings = () => {
         }
         on_toggle_pinned_api_configuration={
           settings_hook.handle_toggle_pinned_api_configuration
+        }
+        browser_profiles={settings_hook.browser_profiles!}
+        on_update_browser_profiles={
+          settings_hook.handle_update_browser_profiles
         }
         forwarded_ports={settings_hook.forwarded_ports!}
         on_update_forwarded_ports={settings_hook.handle_update_forwarded_ports}

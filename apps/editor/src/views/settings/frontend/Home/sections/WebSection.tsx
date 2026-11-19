@@ -6,6 +6,7 @@ import { Item as UiItem } from '@ui/components/editor/settings-view/Item'
 import { SortableList } from '@ui/components/editor/settings-view/SortableList'
 import { IconButton } from '@ui/components/editor/common/IconButton'
 import { ForwardedPorts } from '@ui/components/editor/settings-view/ForwardedPorts'
+import { SortableStringList } from '@ui/components/editor/settings-view/SortableStringList'
 import { DefaultConfigurationSelector } from '@ui/components/editor/settings-view/DefaultConfigurationSelector'
 import { Notices as UiNotices } from '@ui/components/editor/settings-view/Notices'
 import { WebConfiguration } from '@/types/web-configuration'
@@ -15,6 +16,8 @@ import { use_translation } from '../../i18n/use-translation'
 import { NavItem } from '../Home'
 
 type Props = {
+  browser_profiles: string[]
+  on_update_browser_profiles: (profiles: string[]) => void
   forwarded_ports: number[]
   on_update_forwarded_ports: (ports: number[]) => void
   web_configurations: WebConfiguration[]
@@ -349,6 +352,25 @@ export const WebSection = forwardRef<HTMLDivElement, Props>((props, ref) => {
               }
             />
           )}
+        </UiGroup>
+      </div>
+      <div ref={(el) => props.set_section_ref('section:web:group:browser', el)}>
+        <UiGroup title={t('web.browser.title')}>
+          <UiItem
+            title={t('web.browser.profiles.title')}
+            description={t('web.browser.profiles.description')}
+          >
+            <SortableStringList
+              items={props.browser_profiles}
+              on_update={props.on_update_browser_profiles}
+              locked_first_item={t('web.browser.profiles.default')}
+              translations={{
+                placeholder: t('web.browser.profiles.placeholder'),
+                add: t('web.browser.profiles.add'),
+                delete: t('web.browser.profiles.delete')
+              }}
+            />
+          </UiItem>
         </UiGroup>
       </div>
       <div
