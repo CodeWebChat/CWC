@@ -598,9 +598,14 @@ if ! run_step "$msg_step_deps" pnpm --filter gemini-coder --filter browser insta
   fi
 fi
 
+build_extension() {
+  pnpm --filter gemini-coder --filter browser build && \
+  node -e "const fs = require('fs'); const version = JSON.parse(fs.readFileSync('apps/editor/package.json', 'utf8')).version; const manifestPath = 'apps/browser/out/manifest.json'; const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')); manifest.version = version; fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');"
+}
+
 rm -f ./apps/editor/*.vsix
 
-run_step "$msg_step_build" pnpm --filter gemini-coder --filter browser build
+run_step "$msg_step_build" build_extension
 
 cd apps/editor
 

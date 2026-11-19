@@ -559,6 +559,8 @@ Remove-Item "apps/editor/*.vsix" -Force -ErrorAction SilentlyContinue
 $null = Invoke-Step "$msg_step_build..." {
     pnpm --filter gemini-coder --filter browser build *>$null
     if ($LASTEXITCODE -ne 0) { throw "pnpm build failed" }
+    node -e "const fs = require('fs'); const version = JSON.parse(fs.readFileSync('apps/editor/package.json', 'utf8')).version; const manifestPath = 'apps/browser/out/manifest.json'; const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')); manifest.version = version; fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');" *>$null
+    if ($LASTEXITCODE -ne 0) { throw "Failed to update browser manifest version" }
 } $msg_step_build
 
 Set-Location apps/editor
