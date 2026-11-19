@@ -108,23 +108,7 @@ export const translations = {
     bg: 'Активиране на автоматичното попълване'
   },
   'views.prompt.handlers.handle-run-browser.confirm-download.detail': {
-    en: 'A portable installation of the Chrome browser is used for prompt autofilling. About 200MB will be downloaded.',
-    pl: 'Przenośna instalacja przeglądarki Chrome jest używana do autouzupełniania promptów. Zostanie pobrane około 200 MB.',
-    'zh-cn': '便携版 Chrome 浏览器用于提示词自动填充。将下载约 200MB 的内容。',
-    ja: 'プロンプトの自動入力にはポータブル版の Chrome ブラウザが使用されます。約 200MB がダウンロードされます。',
-    'zh-tw': '可攜式 Chrome 瀏覽器用於提示詞自動填入。將下載約 200MB 的內容。',
-    de: 'Für das automatische Ausfüllen von Prompts wird eine portable Installation des Chrome-Browsers verwendet. Es werden etwa 200 MB heruntergeladen.',
-    es: 'Se utiliza una instalación portátil del navegador Chrome para el autocompletado de prompts. Se descargarán unos 200 MB.',
-    fr: 'Une installation portable du navigateur Chrome est utilisée pour le remplissage automatique des prompts. Environ 200 Mo seront téléchargés.',
-    'pt-br':
-      'Uma instalação portátil do navegador Chrome é usada para o preenchimento automático de prompts. Cerca de 200 MB serão baixados.',
-    ru: 'Для автозаполнения промптов используется портативная версия браузера Chrome. Будет загружено около 200 МБ.',
-    ko: '프롬프트 자동 완성을 위해 포터블 버전의 Chrome 브라우저가 사용됩니다. 약 200MB가 다운로드됩니다.',
-    it: "Per la compilazione automatica dei prompt viene utilizzata un'installazione portatile del browser Chrome. Verranno scaricati circa 200 MB.",
-    tr: 'İstemlerin otomatik doldurulması için Chrome tarayıcısının taşınabilir bir kurulumu kullanılır. Yaklaşık 200 MB indirilecektir.',
-    cs: 'Pro automatické vyplňování promptů se používá přenosná instalace prohlížeče Chrome. Bude staženo přibližně 200 MB.',
-    hu: 'A promptok automatikus kitöltéséhez a Chrome böngésző hordozható telepítése használatos. Körülbelül 200 MB kerül letöltésre.',
-    bg: 'За автоматично попълване на промптове се използва преносима инсталация на браузъра Chrome. Ще бъдат изтеглени около 200 MB.'
+    en: 'A portable installation of the Chrome browser is used for prompt autofilling. About 200MB will be downloaded.'
   },
   'views.prompt.handlers.handle-run-browser.confirm-download.download': {
     en: 'Download',

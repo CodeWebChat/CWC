@@ -11,8 +11,11 @@ export const uninstall_browser_command = () => {
     'codeWebChat.uninstallBrowser',
     async () => {
       const browser_dir = path.join(os.homedir(), '.cwc', 'browser')
+      const has_installation =
+        fs.existsSync(browser_dir) &&
+        fs.readdirSync(browser_dir).some((entry) => entry !== 'profiles')
 
-      if (!fs.existsSync(browser_dir)) {
+      if (!has_installation) {
         vscode.window.showInformationMessage(
           t('command.uninstall-browser-command.not-installed')
         )
@@ -44,12 +47,16 @@ export const uninstall_browser_command = () => {
         async () => {
           try {
             await close_browser()
-            await fs.promises.rm(browser_dir, {
-              recursive: true,
-              force: true,
-              maxRetries: 3,
-              retryDelay: 200
-            })
+            const entries = await fs.promises.readdir(browser_dir)
+            for (const entry of entries) {
+              if (entry === 'profiles') {
+                continue
+              }
+              await fs.promises.rm(path.join(browser_dir, entry), {
+                recursive: true,
+                force: true
+              })
+            }
             vscode.window.showInformationMessage(
               t('command.uninstall-browser-command.success')
             )
