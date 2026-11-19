@@ -6,12 +6,6 @@ export type Chat = {
   options?: string[]
 }
 
-export type ConnectedBrowser = {
-  id: string
-  version: string
-  user_agent: string
-}
-
 export type InitializeChatMessage = {
   action: 'initialize-chat'
   text: string
@@ -19,7 +13,6 @@ export type InitializeChatMessage = {
   client_id: string
   chatbot?: string
   model?: string
-  target_browser_id?: string
   reasoning_effort?: string
   system_instructions?: string
   options?: string[]
@@ -29,7 +22,7 @@ export type InitializeChatMessage = {
 
 export type BrowserConnectionStatusMessage = {
   action: 'browser-connection-status'
-  connected_browsers: ConnectedBrowser[]
+  has_connected_browser: boolean
 }
 
 export type ApplyResponseMessage = {

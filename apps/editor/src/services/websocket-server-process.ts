@@ -4,13 +4,8 @@ import * as process from 'process'
 const WebSocket = require('ws')
 import { DEFAULT_PORT, CLIENT_TYPE } from '@shared/constants/websocket'
 
-declare const __DEV_CHROME_EXTENSION_ID__: string
-
 interface BrowserClient {
   ws: WebSocket
-  version: string
-  id: string
-  user_agent: string
   is_alive: boolean
 }
 
@@ -22,7 +17,7 @@ interface VSCodeClient {
 
 class WebSocketServer {
   private vscode_clients: Map<string, VSCodeClient> = new Map()
-  private browser_clients: Map<string, BrowserClient> = new Map()
+  private browser_client: BrowserClient | null = null
   private connections: Set<WebSocket> = new Set()
   private server: http.Server
   private wss: any
@@ -38,31 +33,14 @@ class WebSocketServer {
         const client_type = url.searchParams.get('client_type')
 
         if (client_type === CLIENT_TYPE.BROWSER) {
-          const origin = info.req.headers.origin
+          if (
+            this.browser_client &&
+            this.browser_client.ws.readyState === WebSocket.OPEN
+          ) {
+            return cb(false, 409, 'Conflict: Browser already connected')
+          }
 
           return cb(true)
-
-          // 1. Chrome / Edge / Chromium: Strict Exact Match
-          if (
-            origin === 'chrome-extension://ljookipcanaglfaocjbgdicfbdhhjffp'
-          ) {
-            return cb(true)
-          }
-
-          if (
-            __DEV_CHROME_EXTENSION_ID__ &&
-            origin == `chrome-extension://${__DEV_CHROME_EXTENSION_ID__}`
-          ) {
-            return cb(true)
-          }
-
-          // 2. Firefox: Wildcard fallback
-          // (Firefox extensions get random origins, making exact matches impossible)
-          if (origin && origin.startsWith('moz-extension://')) {
-            return cb(true)
-          }
-
-          return cb(false, 403, 'Forbidden: Invalid Origin')
         }
 
         if (client_type === CLIENT_TYPE.EDITOR) {
@@ -139,7 +117,14 @@ class WebSocketServer {
     const is_browser_client = client_type === CLIENT_TYPE.BROWSER
 
     if (is_browser_client) {
-      this._handle_browser_connection(ws, url)
+      if (
+        this.browser_client &&
+        this.browser_client.ws.readyState === WebSocket.OPEN
+      ) {
+        ws.close(1008, 'Browser already connected')
+        return
+      }
+      this._handle_browser_connection(ws)
     } else {
       this._handle_vscode_connection(ws)
     }
@@ -151,22 +136,14 @@ class WebSocketServer {
     ws.on('close', () => this._handle_disconnection(ws, is_browser_client))
   }
 
-  private _handle_browser_connection(ws: WebSocket, url: URL) {
-    const version = url.searchParams.get('version') || 'unknown'
-    const user_agent = url.searchParams.get('user_agent') || 'unknown'
-    const id = url.searchParams.get('browser_id') || crypto.randomUUID()
-
-    const client: BrowserClient = {
+  private _handle_browser_connection(ws: WebSocket) {
+    this.browser_client = {
       ws,
-      version,
-      id,
-      user_agent,
       is_alive: true
     }
-    this.browser_clients.set(id, client)
 
     this._notify_vscode_clients()
-    ws.send(JSON.stringify({ action: 'connected', id }))
+    ws.send(JSON.stringify({ action: 'connected' }))
   }
 
   private _handle_vscode_connection(ws: WebSocket) {
@@ -185,19 +162,20 @@ class WebSocketServer {
     ws.send(
       JSON.stringify({
         action: 'browser-connection-status',
-        connected_browsers: this._get_connected_browsers_list()
+        has_connected_browser: this.browser_client !== null
       })
     )
 
-    for (const client of this.browser_clients.values()) {
-      if (client.ws.readyState === WebSocket.OPEN) {
-        client.ws.send(
-          JSON.stringify({
-            action: 'vscode-client-connected',
-            client_id
-          })
-        )
-      }
+    if (
+      this.browser_client &&
+      this.browser_client.ws.readyState === WebSocket.OPEN
+    ) {
+      this.browser_client.ws.send(
+        JSON.stringify({
+          action: 'vscode-client-connected',
+          client_id
+        })
+      )
     }
   }
 
@@ -215,11 +193,9 @@ class WebSocketServer {
     }
 
     if (msg_data.action === 'pong') {
-      for (const client of this.browser_clients.values()) {
-        if (client.ws === ws) {
-          client.is_alive = true
-          return
-        }
+      if (this.browser_client && this.browser_client.ws === ws) {
+        this.browser_client.is_alive = true
+        return
       }
       for (const client of this.vscode_clients.values()) {
         if (client.ws === ws) {
@@ -231,19 +207,11 @@ class WebSocketServer {
     }
 
     if (msg_data.action === 'initialize-chat') {
-      if (msg_data.target_browser_id) {
-        const client = this.browser_clients.get(msg_data.target_browser_id)
-        if (client && client.ws.readyState === WebSocket.OPEN) {
-          client.ws.send(msg_string)
-        }
-      } else {
-        const clients = Array.from(this.browser_clients.values())
-        if (clients.length > 0) {
-          const client = clients[clients.length - 1]
-          if (client.ws.readyState === WebSocket.OPEN) {
-            client.ws.send(msg_string)
-          }
-        }
+      if (
+        this.browser_client &&
+        this.browser_client.ws.readyState === WebSocket.OPEN
+      ) {
+        this.browser_client.ws.send(msg_string)
       }
     } else if (msg_data.action === 'apply-response') {
       const target_client_id = msg_data.client_id
@@ -265,23 +233,21 @@ class WebSocketServer {
         ...msg_data,
         client_id: sender_client_id
       })
-      for (const client of this.browser_clients.values()) {
-        if (client.ws.readyState === WebSocket.OPEN) {
-          client.ws.send(tagged_message)
-        }
+      if (
+        this.browser_client &&
+        this.browser_client.ws.readyState === WebSocket.OPEN
+      ) {
+        this.browser_client.ws.send(tagged_message)
       }
     }
   }
 
   private _handle_disconnection(ws: WebSocket, is_browser_client: boolean) {
     if (is_browser_client) {
-      for (const [id, client] of this.browser_clients.entries()) {
-        if (client.ws === ws) {
-          this.browser_clients.delete(id)
-          break
-        }
+      if (this.browser_client && this.browser_client.ws === ws) {
+        this.browser_client = null
+        this._notify_vscode_clients()
       }
-      this._notify_vscode_clients()
     } else {
       let disconnected_client_id: string | null = null
       for (const [client_id, client] of this.vscode_clients.entries()) {
@@ -292,16 +258,17 @@ class WebSocketServer {
         }
       }
 
-      if (disconnected_client_id !== null && this.browser_clients.size > 0) {
-        const message = JSON.stringify({
-          action: 'vscode-client-disconnected',
-          client_id: disconnected_client_id
-        })
-        for (const client of this.browser_clients.values()) {
-          if (client.ws.readyState === WebSocket.OPEN) {
-            client.ws.send(message)
-          }
-        }
+      if (
+        disconnected_client_id !== null &&
+        this.browser_client &&
+        this.browser_client.ws.readyState === WebSocket.OPEN
+      ) {
+        this.browser_client.ws.send(
+          JSON.stringify({
+            action: 'vscode-client-disconnected',
+            client_id: disconnected_client_id
+          })
+        )
       }
     }
     this.connections.delete(ws)
@@ -315,18 +282,10 @@ class WebSocketServer {
     return crypto.randomUUID()
   }
 
-  private _get_connected_browsers_list() {
-    return Array.from(this.browser_clients.values()).map((c) => ({
-      id: c.id,
-      version: c.version,
-      user_agent: c.user_agent
-    }))
-  }
-
   private _notify_vscode_clients() {
     const message = JSON.stringify({
       action: 'browser-connection-status',
-      connected_browsers: this._get_connected_browsers_list()
+      has_connected_browser: this.browser_client !== null
     })
 
     for (const client of this.vscode_clients.values()) {
@@ -339,14 +298,14 @@ class WebSocketServer {
   private _ping_clients() {
     const ping_message = JSON.stringify({ action: 'ping' })
 
-    for (const client of this.browser_clients.values()) {
-      if (!client.is_alive) {
-        ;(client.ws as any).terminate()
-        continue
-      }
-      client.is_alive = false
-      if (client.ws.readyState === WebSocket.OPEN) {
-        client.ws.send(ping_message)
+    if (this.browser_client) {
+      if (!this.browser_client.is_alive) {
+        ;(this.browser_client.ws as any).terminate()
+      } else {
+        this.browser_client.is_alive = false
+        if (this.browser_client.ws.readyState === WebSocket.OPEN) {
+          this.browser_client.ws.send(ping_message)
+        }
       }
     }
 

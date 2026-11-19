@@ -132,21 +132,7 @@ export const connect_websocket = async (port: number): Promise<void> => {
   }
 
   try {
-    const manifest = chrome.runtime.getManifest()
-    const version = manifest.version
-    const user_agent = navigator.userAgent
-
-    const storage = await chrome.storage.local.get('browser-id')
-
-    let browser_id = storage['browser-id'] as string | undefined
-    if (!browser_id) {
-      browser_id = crypto.randomUUID()
-      await chrome.storage.local.set({ 'browser-id': browser_id })
-    }
-
-    if (is_busy(c)) return
-
-    const ws_url = `ws://localhost:${port}?client_type=${CLIENT_TYPE.BROWSER}&version=${version}&user_agent=${encodeURIComponent(user_agent)}&browser_id=${encodeURIComponent(browser_id)}`
+    const ws_url = `ws://localhost:${port}?client_type=${CLIENT_TYPE.BROWSER}`
 
     const ws = new WebSocket(ws_url)
     c.ws = ws

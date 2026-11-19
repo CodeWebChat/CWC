@@ -91,7 +91,6 @@ export const get_last_used_cli_configuration_key = (prompt_type: string) =>
 export const get_last_used_template_key = (prompt_type: string) =>
   `last-used-template-${prompt_type}`
 
-export const LAST_SELECTED_BROWSER_ID_STATE_KEY = 'last-selected-browser-id'
 export const LAST_SELECTED_BROWSER_PROFILE_STATE_KEY =
   'last-selected-browser-profile'
 
