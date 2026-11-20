@@ -588,7 +588,7 @@ Respond with the audio transcription or the word INAUDIBLE, without explanations
 - `CWC: Duplicate Workspace` - Copy the extension's state in a new window.
 - `CWC: Check for Updates` - Check for extension updates.
 - `CWC: Install Specific Version...` - Install a specific version of the extension.
-- `CWC: Uninstall Browser` - Close the browser and remove its installation data.
+- `CWC: Uninstall Browser` - Close the Chromium browser and remove its installation data.
 
 ## Building from source
 
