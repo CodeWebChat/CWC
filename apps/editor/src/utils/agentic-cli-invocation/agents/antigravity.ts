@@ -15,8 +15,13 @@ export const antigravity_agent: CodingAgent = {
   cmd: 'agy',
   is_installed: () => check_command_exists('agy'),
   get_documentation_url: () => AGENTS[agent_name].docs_url,
-  get_headless_args: () => ['--output-format', 'stream-json', '--mode', 'auto'],
-  get_integrated_terminal_edit_args: () => ['--mode', 'auto'],
+  get_headless_args: () => [
+    '--output-format',
+    'stream-json',
+    '--mode',
+    'accept-edits'
+  ],
+  get_integrated_terminal_edit_args: () => ['--mode', 'accept-edits'],
   get_integrated_terminal_ask_args: () => [],
   get_integrated_terminal_prompt_args: (temp_prompt_path: string) => {
     if (os.platform() === 'win32') {
