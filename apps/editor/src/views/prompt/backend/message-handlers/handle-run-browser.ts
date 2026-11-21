@@ -36,8 +36,7 @@ const launch_browser = (params: {
   const args = [
     `--user-data-dir=${params.user_data_dir}`,
     `--load-extension=${params.extension_path}`,
-    '--no-first-run',
-    '--disable-backgrounding-occluded-windows'
+    '--no-first-run'
   ]
 
   if (process.platform === 'darwin') {
