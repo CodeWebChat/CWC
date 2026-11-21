@@ -24,13 +24,13 @@ export const close_browser = async () => {
     return
   }
 
-  const chrome_dir_prefix =
-    path.join(os.homedir(), '.cwc', 'browser', 'chrome') + path.sep
+  const chromium_dir_prefix =
+    path.join(os.homedir(), '.cwc', 'browser', 'chromium') + path.sep
 
   try {
     if (process.platform === 'win32') {
       const script = [
-        '$target = $env:CWC_CHROME_DIR',
+        '$target = $env:CWC_CHROMIUM_DIR',
         '$procs = Get-CimInstance Win32_Process -Filter "Name = \'chrome.exe\'" | Where-Object {',
         '  $_.ExecutablePath -and',
         '  $_.ExecutablePath.StartsWith($target, [System.StringComparison]::OrdinalIgnoreCase) -and',
@@ -53,7 +53,7 @@ export const close_browser = async () => {
         {
           env: {
             ...process.env,
-            CWC_CHROME_DIR: chrome_dir_prefix
+            CWC_CHROMIUM_DIR: chromium_dir_prefix
           },
           windowsHide: true
         }
@@ -80,7 +80,7 @@ export const close_browser = async () => {
           (entry): entry is { pid: number; args: string } =>
             entry !== null &&
             entry.pid !== process.pid &&
-            entry.args.startsWith(chrome_dir_prefix) &&
+            entry.args.startsWith(chromium_dir_prefix) &&
             !entry.args.includes('--type=')
         )
         .map((entry) => entry.pid)
