@@ -41,15 +41,12 @@ export const handle_save_history = async (
 
     const new_history: HistoryEntry[] = []
 
-    // Using a Set to ensure no duplicates are added, though frontend should handle this.
     const processedTexts = new Set<string>()
 
     for (const text of text_history) {
       if (processedTexts.has(text)) continue
       processedTexts.add(text)
 
-      // The first item in text_history is the one that was just used.
-      // Its timestamp is updated to reflect recent use.
       if (text === text_history[0]) {
         new_history.push({ text, createdAt: Date.now() })
       } else {
@@ -57,7 +54,6 @@ export const handle_save_history = async (
         if (old_entry) {
           new_history.push(old_entry)
         } else {
-          // Fallback for entries not in old history
           new_history.push({ text, createdAt: Date.now() })
         }
       }
