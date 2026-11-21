@@ -4,6 +4,7 @@
   "short_name": "CWC",
   "description": "Autofill CWC-constructed markdown prompts in chatbots.",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAygNzRqaqLbsMPmNdmCD/5N+yr87OF2KPUhHIsNbAZlPm2tBKu+PA0YdpOl4KV6574LxmSsWw3PLm3FtA+li6nll7+cUbF4f0ZHg8DyaodbahRUqs+XWDoSb/PBnlGD7B2I6+vnOrlC+QSPWnH3hxO+1l2RrkOwQ6gCMUU8HKi8N+Zug8Twmv3Z1RooAgxteIhCq03REsW3gS2gnAoekRiF7fuZbAGpkqzalZU5lzOO1/inVWcOIWd4bSfljAXtyLfqHLopjx18rmfYrGghFPk39mt+nBdK9ReIC/cxPMng1URUwxMuXcgFubmLm9HtvkCFbvGX7bKWqS8432PKkdjQIDAQAB",
   "homepage_url": "https://github.com/CodeWebChat/CWC",
   "icons": {
     "16": "icons/icon-16.png",

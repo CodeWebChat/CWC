@@ -2,7 +2,6 @@ import * as vscode from 'vscode'
 import * as path from 'path'
 import * as os from 'os'
 import * as fs from 'fs'
-import * as crypto from 'crypto'
 import { spawn } from 'child_process'
 import {
   Browser,
@@ -18,21 +17,7 @@ const launch_browser = (params: {
   executable_path: string
   user_data_dir: string
   extension_path: string
-  cwc_dir: string
 }) => {
-  const token_path = path.join(params.cwc_dir, 'ws-token')
-  let token = ''
-  if (fs.existsSync(token_path)) {
-    token = fs.readFileSync(token_path, 'utf-8').trim()
-  }
-  if (!token) {
-    token = crypto.randomBytes(32).toString('hex')
-    fs.writeFileSync(token_path, token, { mode: 0o600 })
-  }
-  if (fs.existsSync(params.extension_path)) {
-    fs.copyFileSync(token_path, path.join(params.extension_path, 'ws-token'))
-  }
-
   const args = [
     `--user-data-dir=${params.user_data_dir}`,
     `--load-extension=${params.extension_path}`,
@@ -185,8 +170,7 @@ export const handle_run_browser = async (
         launch_browser({
           executable_path: cached.path,
           user_data_dir,
-          extension_path,
-          cwc_dir
+          extension_path
         })
         return
       }
@@ -280,8 +264,7 @@ export const handle_run_browser = async (
         launch_browser({
           executable_path,
           user_data_dir,
-          extension_path,
-          cwc_dir
+          extension_path
         })
       } catch (error: any) {
         if (error.message === 'Download cancelled') {
