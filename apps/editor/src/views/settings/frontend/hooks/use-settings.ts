@@ -64,6 +64,10 @@ export const use_settings = (vscode: any) => {
   ] = useState<string | undefined>(undefined)
   const [agentic_search_invocation_count, set_agentic_search_invocation_count] =
     useState<1 | 2 | 3 | undefined>(undefined)
+  const [
+    agentic_search_run_automatically,
+    set_agentic_search_run_automatically
+  ] = useState<boolean | undefined>(undefined)
   const [attach_ascii_tree_of_context, set_attach_ascii_tree_of_context] =
     useState<'ask' | 'always' | 'never' | undefined>(undefined)
   const [
@@ -110,6 +114,7 @@ export const use_settings = (vscode: any) => {
     post_message(vscode, { command: 'GET_VOICE_INPUT_INSTRUCTIONS' })
     post_message(vscode, { command: 'GET_AGENTIC_SEARCH_INSTRUCTIONS' })
     post_message(vscode, { command: 'GET_AGENTIC_SEARCH_INVOCATION_COUNT' })
+    post_message(vscode, { command: 'GET_AGENTIC_SEARCH_RUN_AUTOMATICALLY' })
     post_message(vscode, {
       command: 'GET_ATTACH_ASCII_TREE_OF_CONTEXT'
     })
@@ -162,6 +167,8 @@ export const use_settings = (vscode: any) => {
         set_default_agentic_search_instructions(message.default_instructions)
       } else if (message.command === 'AGENTIC_SEARCH_INVOCATION_COUNT') {
         set_agentic_search_invocation_count(message.count)
+      } else if (message.command === 'AGENTIC_SEARCH_RUN_AUTOMATICALLY') {
+        set_agentic_search_run_automatically(message.enabled)
       } else if (message.command === 'ATTACH_ASCII_TREE_OF_CONTEXT') {
         set_attach_ascii_tree_of_context(message.value)
       } else if (
@@ -381,6 +388,14 @@ export const use_settings = (vscode: any) => {
     })
   }
 
+  const handle_agentic_search_run_automatically_change = (enabled: boolean) => {
+    set_agentic_search_run_automatically(enabled)
+    post_message(vscode, {
+      command: 'UPDATE_AGENTIC_SEARCH_RUN_AUTOMATICALLY',
+      enabled
+    })
+  }
+
   const handle_attach_ascii_tree_of_context_change = (
     value: 'ask' | 'always' | 'never'
   ) => {
@@ -549,6 +564,7 @@ export const use_settings = (vscode: any) => {
     agentic_search_instructions,
     default_agentic_search_instructions,
     agentic_search_invocation_count,
+    agentic_search_run_automatically,
     attach_ascii_tree_of_context,
     use_context_files_in_commit_message_prompt,
     select_all_prompts_in_commit_messages_by_default,
@@ -581,6 +597,7 @@ export const use_settings = (vscode: any) => {
     handle_voice_input_instructions_change,
     handle_agentic_search_instructions_change,
     handle_agentic_search_invocation_count_change,
+    handle_agentic_search_run_automatically_change,
     handle_attach_ascii_tree_of_context_change,
     handle_use_context_files_in_commit_message_prompt_change,
     handle_select_all_prompts_in_commit_messages_by_default_change,

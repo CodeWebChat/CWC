@@ -158,6 +158,8 @@ type Props = {
   on_agentic_search_instructions_change: (instructions: string) => void
   agentic_search_invocation_count: 1 | 2 | 3
   on_agentic_search_invocation_count_change: (count: 1 | 2 | 3) => void
+  agentic_search_run_automatically: boolean
+  on_agentic_search_run_automatically_change: (enabled: boolean) => void
   gemini_user_id: number | null
   ai_studio_user_id: number | null
   send_with_shift_enter: boolean
@@ -584,6 +586,12 @@ export const Home: React.FC<Props> = (props) => {
           }
           on_agentic_search_invocation_count_change={
             props.on_agentic_search_invocation_count_change
+          }
+          agentic_search_run_automatically={
+            props.agentic_search_run_automatically
+          }
+          on_agentic_search_run_automatically_change={
+            props.on_agentic_search_run_automatically_change
           }
         />
       </UiLayout>

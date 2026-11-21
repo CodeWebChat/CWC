@@ -7,6 +7,7 @@ import { SortableList } from '@ui/components/editor/settings-view/SortableList'
 import { IconButton } from '@ui/components/editor/common/IconButton'
 import { Dropdown as UiDropdown } from '@ui/components/editor/common/Dropdown'
 import { Textarea as UiTextarea } from '@ui/components/editor/common/Textarea'
+import { Toggler as UiToggler } from '@ui/components/editor/common/Toggler'
 import { DefaultConfigurationSelector } from '@ui/components/editor/settings-view/DefaultConfigurationSelector'
 import { CliConfiguration } from '@/types/cli-configuration'
 import { use_translation } from '../../i18n/use-translation'
@@ -36,6 +37,8 @@ type Props = {
   on_restore_agentic_search_instructions: () => void
   agentic_search_invocation_count: 1 | 2 | 3
   on_agentic_search_invocation_count_change: (count: 1 | 2 | 3) => void
+  agentic_search_run_automatically: boolean
+  on_agentic_search_run_automatically_change: (enabled: boolean) => void
   set_section_ref: (id: NavItem, el: HTMLDivElement | null) => void
 }
 
@@ -225,6 +228,16 @@ export const CliSection = forwardRef<HTMLDivElement, Props>((props, ref) => {
                     parseInt(val, 10) as 1 | 2 | 3
                   )
                 }
+              />
+            }
+          />
+          <UiItem
+            title={t('cli.agentic-search.run-automatically.title')}
+            description={t('cli.agentic-search.run-automatically.description')}
+            slot_right={
+              <UiToggler
+                is_on={props.agentic_search_run_automatically}
+                on_toggle={props.on_agentic_search_run_automatically_change}
               />
             }
           />

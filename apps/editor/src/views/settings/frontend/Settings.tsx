@@ -96,6 +96,7 @@ export const Settings = () => {
       settings_hook.agentic_search_instructions !== undefined &&
       settings_hook.default_agentic_search_instructions !== undefined &&
       settings_hook.agentic_search_invocation_count !== undefined &&
+      settings_hook.agentic_search_run_automatically !== undefined &&
       settings_hook.commit_message_instructions !== undefined &&
       settings_hook.default_commit_message_instructions !== undefined &&
       settings_hook.attach_ascii_tree_of_context !== undefined &&
@@ -192,6 +193,12 @@ export const Settings = () => {
         }
         on_agentic_search_invocation_count_change={
           settings_hook.handle_agentic_search_invocation_count_change
+        }
+        agentic_search_run_automatically={
+          settings_hook.agentic_search_run_automatically!
+        }
+        on_agentic_search_run_automatically_change={
+          settings_hook.handle_agentic_search_run_automatically_change
         }
         commit_message_instructions={settings_hook.commit_message_instructions!}
         default_commit_message_instructions={

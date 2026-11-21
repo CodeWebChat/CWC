@@ -167,6 +167,12 @@ export class SettingsViewProvider {
           message.command === 'UPDATE_AGENTIC_SEARCH_INVOCATION_COUNT'
         ) {
           await handlers.handle_update_agentic_search_invocation_count(message)
+        } else if (message.command === 'GET_AGENTIC_SEARCH_RUN_AUTOMATICALLY') {
+          await handlers.handle_get_agentic_search_run_automatically(this)
+        } else if (
+          message.command === 'UPDATE_AGENTIC_SEARCH_RUN_AUTOMATICALLY'
+        ) {
+          await handlers.handle_update_agentic_search_run_automatically(message)
         } else if (message.command === 'GET_GEMINI_USER_ID') {
           await handlers.handle_get_gemini_user_id(this)
         } else if (message.command === 'UPDATE_GEMINI_USER_ID') {
@@ -273,6 +279,7 @@ export class SettingsViewProvider {
           void handlers.handle_get_voice_input_instructions(this)
           void handlers.handle_get_agentic_search_instructions(this)
           void handlers.handle_get_agentic_search_invocation_count(this)
+          void handlers.handle_get_agentic_search_run_automatically(this)
           void handlers.handle_get_gemini_user_id(this)
           void handlers.handle_get_ai_studio_user_id(this)
           void handlers.handle_get_send_with_shift_enter(this)

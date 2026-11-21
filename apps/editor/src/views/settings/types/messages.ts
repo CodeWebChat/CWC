@@ -138,6 +138,15 @@ export interface UpdateAgenticSearchInvocationCountMessage {
   count: 1 | 2 | 3
 }
 
+export interface GetAgenticSearchRunAutomaticallyMessage {
+  command: 'GET_AGENTIC_SEARCH_RUN_AUTOMATICALLY'
+}
+
+export interface UpdateAgenticSearchRunAutomaticallyMessage {
+  command: 'UPDATE_AGENTIC_SEARCH_RUN_AUTOMATICALLY'
+  enabled: boolean
+}
+
 export interface UpdateVoiceInputInstructionsMessage {
   command: 'UPDATE_VOICE_INPUT_INSTRUCTIONS'
   instructions: string
@@ -453,6 +462,8 @@ export type FrontendMessage =
   | UpdateAgenticSearchInstructionsMessage
   | GetAgenticSearchInvocationCountMessage
   | UpdateAgenticSearchInvocationCountMessage
+  | GetAgenticSearchRunAutomaticallyMessage
+  | UpdateAgenticSearchRunAutomaticallyMessage
   | GetEditFilesSystemInstructionsMessage
   | UpdateEditFilesSystemInstructionsMessage
   | SettingsUiReadyMessage
@@ -569,6 +580,11 @@ export interface AgenticSearchInstructionsMessage {
 export interface AgenticSearchInvocationCountMessage {
   command: 'AGENTIC_SEARCH_INVOCATION_COUNT'
   count: 1 | 2 | 3
+}
+
+export interface AgenticSearchRunAutomaticallyMessage {
+  command: 'AGENTIC_SEARCH_RUN_AUTOMATICALLY'
+  enabled: boolean
 }
 
 export interface EditFilesSystemInstructionsMessage {
@@ -749,6 +765,7 @@ export type BackendMessage =
   | VoiceInputInstructionsMessage
   | AgenticSearchInstructionsMessage
   | AgenticSearchInvocationCountMessage
+  | AgenticSearchRunAutomaticallyMessage
   | EditFilesSystemInstructionsMessage
   | GeminiUserIdMessage
   | AiStudioUserIdMessage

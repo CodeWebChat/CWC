@@ -1072,6 +1072,11 @@
           ],
           "default": 1
         },
+        "codeWebChat.agenticSearchRunAutomatically": {
+          "type": "boolean",
+          "scope": "resource",
+          "default": false
+        },
         "codeWebChat.editFilesSystemInstructions": {
           "type": "string",
           "scope": "resource",

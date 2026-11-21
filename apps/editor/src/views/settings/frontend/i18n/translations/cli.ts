@@ -252,5 +252,41 @@ export const translations = {
     cs: 'Počet vyvolání agenta během vyhledávání.',
     hu: 'Az ügynök meghívásainak száma keresés során.',
     bg: 'Брой пъти, когато агентът се извиква по време на търсене.'
+  },
+  'cli.agentic-search.run-automatically.title': {
+    en: 'Run automatically',
+    pl: 'Uruchamiaj automatycznie',
+    'zh-cn': '自动运行',
+    ja: '自動的に実行',
+    'zh-tw': '自動執行',
+    de: 'Automatisch ausführen',
+    es: 'Ejecutar automáticamente',
+    fr: 'Exécuter automatiquement',
+    'pt-br': 'Executar automaticamente',
+    ru: 'Запускать автоматически',
+    ko: '자동으로 실행',
+    it: 'Esegui automaticamente',
+    tr: 'Otomatik çalıştır',
+    cs: 'Spouštět automaticky',
+    hu: 'Automatikus futtatás',
+    bg: 'Автоматично стартиране'
+  },
+  'cli.agentic-search.run-automatically.description': {
+    en: 'Look for relevant files when context is empty.',
+    pl: 'Szukaj odpowiednich plików, gdy kontekst jest pusty.',
+    'zh-cn': '当上下文为空时查找相关文件。',
+    ja: 'コンテキストが空のときに関連ファイルを検索します。',
+    'zh-tw': '當上下文為空時尋找相關檔案。',
+    de: 'Nach relevanten Dateien suchen, wenn der Kontext leer ist.',
+    es: 'Buscar archivos relevantes cuando el contexto esté vacío.',
+    fr: 'Rechercher des fichiers pertinents lorsque le contexte est vide.',
+    'pt-br': 'Procurar arquivos relevantes quando o contexto estiver vazio.',
+    ru: 'Искать релевантные файлы, когда контекст пуст.',
+    ko: '컨텍스트가 비어 있을 때 관련 파일을 찾습니다.',
+    it: 'Cerca file pertinenti quando il contesto è vuoto.',
+    tr: 'Bağlam boş olduğunda ilgili dosyaları ara.',
+    cs: 'Hledat relevantní soubory, když je kontext prázdný.',
+    hu: 'Releváns fájlok keresése, ha a kontextus üres.',
+    bg: 'Търсене на подходящи файлове, когато контекстът е празен.'
   }
 } as const
