@@ -101,6 +101,10 @@ In the project, find the complete set of primary and structural files relevant t
 
 Output strictly as a bulleted list of file paths without explanations or any other text (e.g., - `path/to/file.ext`).
 
+# Requirements
+
+- Editing files in this session is FORBIDDEN.
+
 # Query
 
 [INSTRUCTIONS]

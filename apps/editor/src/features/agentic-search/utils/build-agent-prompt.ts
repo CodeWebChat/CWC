@@ -1,5 +1,8 @@
 import * as vscode from 'vscode'
-import { ai_file_search_format_instructions } from '@/constants/instructions'
+import {
+  agentic_search_requirements,
+  ai_file_search_format_instructions
+} from '@/constants/instructions'
 
 export const build_agent_prompt = (
   query: string,
@@ -12,7 +15,7 @@ export const build_agent_prompt = (
     config.inspect<string>('agenticSearchInstructions')?.defaultValue ||
     ''
 
-  let prompt = `# Task\n\n${task_instructions}\n\n# Output formatting\n\n${ai_file_search_format_instructions}`
+  let prompt = `# Task\n\n${task_instructions}\n\n# Output formatting\n\n${ai_file_search_format_instructions}\n\n# Requirements\n\n- ${agentic_search_requirements}`
 
   prompt += `\n\n# Query\n\n${query}`
 

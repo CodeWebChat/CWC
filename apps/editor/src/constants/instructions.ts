@@ -80,3 +80,6 @@ export const cli_edit_ask_requirements = {
   exception_allow_file_system_operations:
     'EXCEPTION: Perform file system operations (create, update, delete, rename, move) required to complete the [task](#task).'
 }
+
+export const agentic_search_requirements =
+  'Editing files in this session is FORBIDDEN.'
