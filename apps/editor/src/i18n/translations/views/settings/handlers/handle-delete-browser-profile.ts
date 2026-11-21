@@ -36,5 +36,23 @@ export const translations = {
     cs: 'Tato akce je nevratná a trvale smaže všechna data spojená s tímto profilem.',
     hu: 'Ez a művelet visszafordíthatatlan, és véglegesen törli a profilhoz tartozó összes adatot.',
     bg: 'Това действие е необратимо и ще изтрие за постоянно всички данни, свързани с този профил.'
+  },
+  'settings.browser-profiles.deleted': {
+    en: 'Browser profile "{name}" has been deleted.',
+    pl: 'Profil przeglądarki "{name}" został usunięty.',
+    'zh-cn': '浏览器配置文件 "{name}" 已删除。',
+    ja: 'ブラウザプロファイル "{name}" を削除しました。',
+    'zh-tw': '瀏覽器設定檔 "{name}" 已刪除。',
+    de: 'Browser-Profil "{name}" wurde gelöscht.',
+    es: 'El perfil del navegador "{name}" ha sido eliminado.',
+    fr: 'Le profil du navigateur "{name}" a été supprimé.',
+    'pt-br': 'O perfil do navegador "{name}" foi excluído.',
+    ru: 'Профиль браузера "{name}" удален.',
+    ko: '브라우저 프로필 "{name}"이(가) 삭제되었습니다.',
+    it: 'Il profilo del browser "{name}" è stato eliminato.',
+    tr: '"{name}" tarayıcı profili silindi.',
+    cs: 'Profil prohlížeče "{name}" byl smazán.',
+    hu: 'A(z) "{name}" böngészőprofil törölve lett.',
+    bg: 'Профилът на браузъра "{name}" беше изтрит.'
   }
 } as const

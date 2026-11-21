@@ -289,6 +289,7 @@ export const Settings = () => {
         on_update_browser_profiles={
           settings_hook.handle_update_browser_profiles
         }
+        on_delete_browser_profile={settings_hook.handle_delete_browser_profile}
         forwarded_ports={settings_hook.forwarded_ports!}
         on_update_forwarded_ports={settings_hook.handle_update_forwarded_ports}
         web_configurations={settings_hook.web_configurations!}

@@ -218,6 +218,11 @@ export interface UpdateBrowserProfilesMessage {
   browser_profiles: string[]
 }
 
+export interface DeleteBrowserProfileMessage {
+  command: 'DELETE_BROWSER_PROFILE'
+  name: string
+}
+
 export interface GetForwardedPortsMessage {
   command: 'GET_FORWARDED_PORTS'
 }
@@ -479,6 +484,7 @@ export type FrontendMessage =
   | OpenKeybindingsMessage
   | GetBrowserProfilesMessage
   | UpdateBrowserProfilesMessage
+  | DeleteBrowserProfileMessage
   | GetForwardedPortsMessage
   | UpdateForwardedPortsMessage
   | GetWebConfigurationsMessage

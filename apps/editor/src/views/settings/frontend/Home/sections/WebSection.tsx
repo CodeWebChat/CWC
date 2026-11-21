@@ -18,6 +18,7 @@ import { NavItem } from '../Home'
 type Props = {
   browser_profiles: string[]
   on_update_browser_profiles: (profiles: string[]) => void
+  on_delete_browser_profile: (name: string) => void
   forwarded_ports: number[]
   on_update_forwarded_ports: (ports: number[]) => void
   web_configurations: WebConfiguration[]
@@ -363,6 +364,7 @@ export const WebSection = forwardRef<HTMLDivElement, Props>((props, ref) => {
             <SortableStringList
               items={props.browser_profiles}
               on_update={props.on_update_browser_profiles}
+              on_delete={props.on_delete_browser_profile}
               locked_first_item={t('web.browser.profiles.default')}
               translations={{
                 placeholder: t('web.browser.profiles.placeholder'),

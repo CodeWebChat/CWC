@@ -244,6 +244,7 @@ type Props = {
   on_delete_web_configuration: (name: string) => void
   on_toggle_pinned_web_configuration: (config: WebConfiguration) => void
   on_update_browser_profiles: (profiles: string[]) => void
+  on_delete_browser_profile: (name: string) => void
   on_update_forwarded_ports: (ports: number[]) => void
   web_defaults: Record<string, string | null>
   on_set_default_web_configuration: (
@@ -457,6 +458,7 @@ export const Home: React.FC<Props> = (props) => {
           set_section_ref={set_section_ref}
           browser_profiles={props.browser_profiles}
           on_update_browser_profiles={props.on_update_browser_profiles}
+          on_delete_browser_profile={props.on_delete_browser_profile}
           forwarded_ports={props.forwarded_ports}
           on_update_forwarded_ports={props.on_update_forwarded_ports}
           web_configurations={props.web_configurations}

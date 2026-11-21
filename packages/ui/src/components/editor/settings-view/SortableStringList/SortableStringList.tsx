@@ -16,6 +16,7 @@ export namespace SortableStringList {
   export type Props = {
     items: string[]
     on_update: (items: string[]) => void
+    on_delete?: (item: string, index: number) => void
     translations: Translations
     locked_first_item?: string
   }
@@ -40,7 +41,11 @@ export const SortableStringList: React.FC<SortableStringList.Props> = (
   }
 
   const handle_delete = (index: number) => {
-    props.on_update(props.items.filter((_, i) => i !== index))
+    if (props.on_delete) {
+      props.on_delete(props.items[index], index)
+    } else {
+      props.on_update(props.items.filter((_, i) => i !== index))
+    }
   }
 
   const seen = new Map<string, number>()

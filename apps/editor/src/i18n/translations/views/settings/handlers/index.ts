@@ -7,7 +7,7 @@ import { translations as handle_delete_provider } from './handle-delete-provider
 import { translations as handle_select_default_web_configuration } from './handle-select-default-web-configuration'
 import { translations as handle_select_default_cli_configuration } from './handle-select-default-cli-configuration'
 import { translations as handle_test_provider_connection } from './handle-test-provider-connection'
-import { translations as handle_update_browser_profiles } from './handle-update-browser-profiles'
+import { translations as handle_delete_browser_profile } from './handle-delete-browser-profile'
 
 export const translations = {
   ...handle_open_allow_patterns_settings,
@@ -19,5 +19,5 @@ export const translations = {
   ...handle_select_default_web_configuration,
   ...handle_select_default_cli_configuration,
   ...handle_test_provider_connection,
-  ...handle_update_browser_profiles
+  ...handle_delete_browser_profile
 }

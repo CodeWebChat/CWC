@@ -324,15 +324,17 @@ export const use_settings = (vscode: any) => {
   }
 
   const handle_update_browser_profiles = (profiles: string[]) => {
-    const is_removal =
-      browser_profiles !== undefined &&
-      profiles.length < browser_profiles.length
-    if (!is_removal) {
-      set_browser_profiles(profiles)
-    }
+    set_browser_profiles(profiles)
     post_message(vscode, {
       command: 'UPDATE_BROWSER_PROFILES',
       browser_profiles: profiles
+    })
+  }
+
+  const handle_delete_browser_profile = (name: string) => {
+    post_message(vscode, {
+      command: 'DELETE_BROWSER_PROFILE',
+      name
     })
   }
 
@@ -589,6 +591,7 @@ export const use_settings = (vscode: any) => {
     handle_add_web_configuration,
     handle_delete_web_configuration,
     handle_update_browser_profiles,
+    handle_delete_browser_profile,
     handle_update_forwarded_ports,
     handle_toggle_pinned_cli_configuration,
     handle_toggle_pinned_api_configuration,
