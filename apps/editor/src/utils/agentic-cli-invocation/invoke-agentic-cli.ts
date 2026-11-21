@@ -1002,7 +1002,7 @@ export const invoke_agentic_cli = async (params: {
             }
 
             const selection = await show_agent_quick_pick({
-              title: t('utils.agentic-cli-invocation.agent.add-invocation'),
+              title: t('utils.agentic-cli-invocation.agent.agents'),
               active_config_name: last_invocation_config_name,
               show_back_button: false,
               ignore_focus_out: false,

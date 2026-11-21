@@ -11,6 +11,7 @@ import {
 } from '@/constants/state-keys'
 import { InvokeAgenticCliMessage } from '@/views/prompt/types/messages'
 import { apply_response } from '@/features/apply-response/apply-response'
+import { show_context_cannot_be_empty_warning } from './utils/show-context-cannot-be-empty-warning'
 
 export const handle_invoke_agentic_cli = async (
   prompt_view_provider: PromptViewProvider,
@@ -29,9 +30,7 @@ export const handle_invoke_agentic_cli = async (
     prompt_view_provider.cli_prompt_type === 'edit' &&
     !prompt_view_provider.workspace_provider.get_selected_files().length
   ) {
-    vscode.window.showWarningMessage(
-      t('views.common.handlers.common.context-cannot-be-empty')
-    )
+    await show_context_cannot_be_empty_warning(prompt_view_provider)
     return
   }
 

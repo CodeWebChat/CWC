@@ -16,6 +16,7 @@ import { t } from '@/i18n'
 import { show_incomplete_setup_warning } from '@/utils/show-missing-configuration-notification'
 import { CHATBOTS } from '@shared/constants/chatbots'
 import { update_last_used_web_configuration } from './utils/update-last-used-web-configuration'
+import { show_context_cannot_be_empty_warning } from './utils/show-context-cannot-be-empty-warning'
 
 export const handle_autofill = async (params: {
   prompt_view_provider: PromptViewProvider
@@ -74,9 +75,7 @@ export const handle_autofill = async (params: {
     params.prompt_view_provider.web_prompt_type === 'edit' &&
     !collected_files
   ) {
-    vscode.window.showWarningMessage(
-      t('views.common.handlers.common.context-cannot-be-empty')
-    )
+    await show_context_cannot_be_empty_warning(params.prompt_view_provider)
     return
   }
 

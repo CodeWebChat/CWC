@@ -11,6 +11,7 @@ import { PromptBuilder } from '@/utils/prompt-builder'
 import { preview_text_in_temp_file } from '../utils/preview-text-in-temp-file'
 import * as vscode from 'vscode'
 import { t } from '@/i18n'
+import { show_context_cannot_be_empty_warning } from './utils/show-context-cannot-be-empty-warning'
 
 export const handle_preview_prompt = async (params: {
   prompt_view_provider: PromptViewProvider
@@ -46,9 +47,7 @@ export const handle_preview_prompt = async (params: {
     })
 
     if (!collected_files) {
-      vscode.window.showWarningMessage(
-        t('views.common.handlers.common.context-cannot-be-empty')
-      )
+      await show_context_cannot_be_empty_warning(params.prompt_view_provider)
       return
     }
 

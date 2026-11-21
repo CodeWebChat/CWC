@@ -22,6 +22,7 @@ import { PROVIDERS } from '@/constants/providers'
 import { get_api_configuration } from '@/utils/get-api-configuration'
 import { show_incomplete_setup_warning } from '@/utils/show-missing-configuration-notification'
 import { apply_response } from '@/features/apply-response/apply-response'
+import { show_context_cannot_be_empty_warning } from './utils/show-context-cannot-be-empty-warning'
 
 export const handle_make_api_call = async (
   prompt_view_provider: PromptViewProvider,
@@ -63,9 +64,7 @@ export const handle_make_api_call = async (
   })
 
   if (!collected_files) {
-    vscode.window.showWarningMessage(
-      t('views.common.handlers.common.context-cannot-be-empty')
-    )
+    await show_context_cannot_be_empty_warning(prompt_view_provider)
     return
   }
 
