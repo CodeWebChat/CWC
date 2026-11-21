@@ -18,8 +18,7 @@ export const antigravity_agent: CodingAgent = {
   get_headless_args: () => [
     '--output-format',
     'stream-json',
-    '--mode',
-    'accept-edits'
+    '--dangerously-skip-permissions'
   ],
   get_integrated_terminal_edit_args: () => ['--mode', 'accept-edits'],
   get_integrated_terminal_ask_args: () => [],
