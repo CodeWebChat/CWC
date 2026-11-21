@@ -10,6 +10,14 @@ import { normalize_path } from './normalize-path'
 export namespace CommitMessageDetails {
   const COMMIT_MESSAGE_DETAILS_FILENAME = 'commit-message-details.json'
 
+  const is_existing_file = (abs_path: string): boolean => {
+    try {
+      return fs.statSync(abs_path).isFile()
+    } catch {
+      return false
+    }
+  }
+
   export type Prompt = {
     prompt: string
     files: string[]
@@ -189,7 +197,10 @@ export namespace CommitMessageDetails {
 
           const filtered_files = p.files.filter(filter_fn)
           const filtered_selected_files = (p.selected_files || []).filter(
-            filter_fn
+            (f) => {
+              const abs_path = path.isAbsolute(f) ? f : path.join(root, f)
+              return is_existing_file(abs_path)
+            }
           )
 
           if (
@@ -266,17 +277,17 @@ export namespace CommitMessageDetails {
 
     all_prompts[workspace_root] = all_prompts[workspace_root]
       .map((p) => {
-        const filter_fn = (f: string) => {
+        const filtered_files = p.files.filter((f) => {
           const rel_path = path.isAbsolute(f)
             ? normalize_path(path.relative(workspace_root, f))
             : normalize_path(f)
           return current_changes.has(rel_path)
-        }
+        })
 
-        const filtered_files = p.files.filter(filter_fn)
-        const filtered_selected_files = (p.selected_files || []).filter(
-          filter_fn
-        )
+        const filtered_selected_files = (p.selected_files || []).filter((f) => {
+          const abs_path = path.isAbsolute(f) ? f : path.join(workspace_root, f)
+          return is_existing_file(abs_path)
+        })
 
         if (
           filtered_files.length !== p.files.length ||
@@ -331,19 +342,21 @@ export namespace CommitMessageDetails {
 
     all_prompts[params.workspace_root] = all_prompts[params.workspace_root]
       .map((p) => {
-        if (!prompt_set.has(p.prompt)) return p
+        const filtered_files = prompt_set.has(p.prompt)
+          ? p.files.filter((f) => {
+              const rel_path = path.isAbsolute(f)
+                ? normalize_path(path.relative(params.workspace_root, f))
+                : normalize_path(f)
+              return !committed_set.has(rel_path)
+            })
+          : p.files
 
-        const filter_fn = (f: string) => {
-          const rel_path = path.isAbsolute(f)
-            ? normalize_path(path.relative(params.workspace_root, f))
-            : normalize_path(f)
-          return !committed_set.has(rel_path)
-        }
-
-        const filtered_files = p.files.filter(filter_fn)
-        const filtered_selected_files = (p.selected_files || []).filter(
-          filter_fn
-        )
+        const filtered_selected_files = (p.selected_files || []).filter((f) => {
+          const abs_path = path.isAbsolute(f)
+            ? f
+            : path.join(params.workspace_root, f)
+          return is_existing_file(abs_path)
+        })
 
         if (
           filtered_files.length !== p.files.length ||

@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { get_repository_for_commit } from '../../../utils/git-repository-utils'
@@ -759,7 +760,14 @@ export const run_generate_action = async (params: {
       const selected_files_set = new Set<string>()
       for (const p of [...selected_prompts, ...empty_prompts]) {
         for (const f of p.selected_files || []) {
-          selected_files_set.add(f)
+          const abs_path = path.isAbsolute(f) ? f : path.join(workspace_root, f)
+          try {
+            if (fs.statSync(abs_path).isFile()) {
+              selected_files_set.add(f)
+            }
+          } catch {
+            // Ignore non-existent or inaccessible paths
+          }
         }
       }
       const selected_files_to_attach = Array.from(selected_files_set)

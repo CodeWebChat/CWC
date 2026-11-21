@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import {
@@ -102,7 +103,16 @@ export const get_prompt_data = async (params: {
         ? normalize_path(path.relative(workspace_root, f))
         : normalize_path(f)
       if (!diff_file_paths.includes(rel_path) && !diff_file_paths.includes(f)) {
-        context_files_set.add(rel_path)
+        const abs_path = path.isAbsolute(f)
+          ? f
+          : path.join(workspace_root, rel_path)
+        try {
+          if (fs.statSync(abs_path).isFile()) {
+            context_files_set.add(rel_path)
+          }
+        } catch {
+          // Ignore non-existent or inaccessible paths
+        }
       }
     }
   }
