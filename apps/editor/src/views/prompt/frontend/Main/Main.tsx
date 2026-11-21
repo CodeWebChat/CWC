@@ -253,10 +253,7 @@ export const Main: React.FC<Props> = (props) => {
       history && history.length > 0 && history[0] === trimmed_instruction
 
     if (!is_duplicate) {
-      const new_history = [trimmed_instruction, ...(history || [])].slice(
-        0,
-        100
-      )
+      const new_history = [trimmed_instruction, ...(history || [])].slice(0, 25)
       set_history(new_history)
 
       post_message(props.vscode, {

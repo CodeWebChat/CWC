@@ -47,8 +47,6 @@ export class PersistentPromptStorage<T extends 'text' | 'image'> {
       }
     }
 
-    await this.garbage_collect()
-
     return id
   }
 
@@ -67,6 +65,19 @@ export class PersistentPromptStorage<T extends 'text' | 'image'> {
     }
     const filename = `${id}${this.extension}`
     return path.join(this.dir_path, filename)
+  }
+
+  static async cleanup(extension_context: vscode.ExtensionContext) {
+    const text_storage = new PersistentPromptStorage(extension_context, 'text')
+    const image_storage = new PersistentPromptStorage(
+      extension_context,
+      'image'
+    )
+
+    await Promise.all([
+      text_storage.garbage_collect(),
+      image_storage.garbage_collect()
+    ])
   }
 
   private async garbage_collect() {

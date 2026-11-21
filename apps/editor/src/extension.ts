@@ -58,6 +58,7 @@ import { get_current_preview_url } from './views/prompt/backend/message-handlers
 import { AgenticSearchState } from './features/agentic-search'
 import { checkpoints_cleanup } from './features/checkpoints/utils'
 import { setup_apply_response } from './features/apply-response/apply-response'
+import { PersistentPromptStorage } from './views/prompt/backend/utils/persistent-prompt-storage'
 
 let websocket_server_instance: WebSocketManager | null = null
 
@@ -93,6 +94,7 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
   await migrations()
 
   checkpoints_cleanup(extension_context).catch(() => {})
+  PersistentPromptStorage.cleanup(extension_context).catch(() => {})
 
   const agentic_search_state = new AgenticSearchState()
 

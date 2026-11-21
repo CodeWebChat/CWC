@@ -1,5 +1,5 @@
 export const CHECKPOINT_LIFESPAN = 7 * 24 * 60 * 60 * 1000 // 7 days
-export const PROMPT_UPLOADS_LIFESPAN = 3 * 30 * 24 * 60 * 60 * 1000 // 3 months
+export const PROMPT_UPLOADS_LIFESPAN = 6 * 30 * 24 * 60 * 60 * 1000 // 6 months
 export const MAX_FILE_TOKENS_FOR_COMMIT_MESSAGE = 20000
 export const MAX_PROMPT_CHARS_IN_COMMIT_MESSAGE = 1000
 export const GIT_LOG_SINCE_DURATION = '6 months ago'
