@@ -8,7 +8,7 @@
   </a>
 </p>
 
-<p align="center"><strong>Markdown prompts for chatbots, APIs, and CLIs with seamless integration</strong></p>
+<p align="center"><strong>Markdown prompts for free chatbots, APIs, and CLIs with seamless integration</strong></p>
 
 <p align="center"><img src="https://github.com/CodeWebChat/CWC/raw/HEAD/media/screenshot-1.png"></p>
 
