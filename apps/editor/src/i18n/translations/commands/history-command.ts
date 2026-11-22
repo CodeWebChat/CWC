@@ -511,24 +511,6 @@ export const translations = {
     hu: 'Véglegesítve',
     bg: 'Комитнато'
   },
-  'command.history-command.trigger.temporary': {
-    en: 'Temporary Checkpoint',
-    pl: 'Tymczasowy punkt kontrolny',
-    'zh-cn': '临时检查点',
-    ja: '一時的なチェックポイント',
-    'zh-tw': '暫時檢查點',
-    de: 'Temporärer Prüfpunkt',
-    es: 'Punto de control temporal',
-    fr: 'Point de contrôle temporaire',
-    'pt-br': 'Ponto de verificação temporário',
-    ru: 'Временная контрольная точка',
-    ko: '임시 체크포인트',
-    it: 'Punto di controllo temporaneo',
-    tr: 'Geçici Kontrol Noktası',
-    cs: 'Dočasný kontrolní bod',
-    hu: 'Ideiglenes ellenőrzőpont',
-    bg: 'Временная контрольная точка'
-  },
   'command.history-command.disabled-during-preview': {
     en: 'History is disabled during code review.',
     pl: 'Historia jest niedostępna podczas przeglądu kodu.',

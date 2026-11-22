@@ -37,6 +37,7 @@ import {
   restore_tab_groups,
   SavedTabGroups
 } from './utils/tab-group-manager'
+import { AgenticSearchState } from '@/features/agentic-search'
 import { CHECKPOINT_OPERATION_IN_PROGRESS_STATE_KEY } from '@/constants/state-keys'
 import { update_undo_button_state } from './utils/state-manager'
 import { Logger } from '@shared/utils/logger'
@@ -57,6 +58,7 @@ export const setup_apply_response = (params: {
   workspace_provider: WorkspaceProvider
   prompt_view_api_calls_manager: PromptViewApiCallsManager
   websocket_manager: WebSocketManager
+  agentic_search_state: AgenticSearchState
 }) => {
   params.extension_context.subscriptions.push(
     vscode.workspace.registerTextDocumentContentProvider(
@@ -73,8 +75,10 @@ export const setup_apply_response = (params: {
       )
 
       const checkpoints = await get_checkpoints(params.extension_context)
-      const code_review_checkpoints = checkpoints.filter(
-        (c) => c.trigger === 'before-code-reviewed'
+      const interrupted_checkpoints = checkpoints.filter(
+        (c) =>
+          c.trigger === 'before-code-reviewed' ||
+          c.trigger === 'before-agentic-search'
       )
 
       for (const tab_group of vscode.window.tabGroups.all) {
@@ -95,8 +99,8 @@ export const setup_apply_response = (params: {
         }
       }
 
-      code_review_checkpoints.reverse()
-      for (const cp of code_review_checkpoints) {
+      interrupted_checkpoints.reverse()
+      for (const cp of interrupted_checkpoints) {
         try {
           await restore_checkpoint({
             checkpoint: cp,
@@ -106,10 +110,7 @@ export const setup_apply_response = (params: {
             options: { skip_confirmation: true, hide_notification: true }
           })
         } catch (err) {
-          console.error(
-            'Failed to restore interrupted code review checkpoint',
-            err
-          )
+          console.error('Failed to restore interrupted checkpoint', err)
         } finally {
           await delete_checkpoint({
             extension_context: params.extension_context,
@@ -173,6 +174,10 @@ export const setup_apply_response = (params: {
           t('command.apply-response-command.error.response-missing')
         )
         return false
+      }
+
+      if (params.agentic_search_state.in_progress) {
+        await params.agentic_search_state.cancel()
       }
 
       while (in_progress && !get_code_review_promise_resolve()) {

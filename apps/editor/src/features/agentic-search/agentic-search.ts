@@ -1,5 +1,4 @@
 import * as fs from 'fs'
-import * as os from 'os'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { WorkspaceProvider } from '@/context/providers/workspace/workspace-provider'
@@ -19,26 +18,30 @@ import { build_agent_prompt } from './utils/build-agent-prompt'
 import { replace_symbols } from '@/views/prompt/backend/utils/symbols/replace-symbols'
 import { search_files } from '@/features/search-files'
 import { WebSocketManager } from '@/services/websocket-manager'
+import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { Logger } from '@shared/utils/logger'
 import {
   invoke_agentic_cli,
   show_agentic_cli_output_channel
 } from '@/utils/agentic-cli-invocation'
 import {
-  create_workspace_snapshot,
-  restore_workspace_snapshot,
-  WorkspaceSnapshotData
-} from '@/utils/workspace-snapshot'
+  create_checkpoint,
+  delete_checkpoint
+} from '@/features/checkpoints/actions'
+import { restore_checkpoint } from '@/commands/history-command/actions/restore-checkpoint'
+import { Checkpoint } from '@/features/checkpoints/types'
 
 export const agentic_search = async (params: {
   workspace_provider: WorkspaceProvider
   extension_context: vscode.ExtensionContext
   websocket_manager: WebSocketManager
+  prompt_view_provider: PromptViewProvider
   query: string
   current_instructions: string
   completed_tasks?: string[]
   skip_prompt_if_not_empty?: boolean
   folder_path?: string
+  abort_signal?: AbortSignal
 }): Promise<
   | { selected_paths: string[]; matched_paths: string[]; title: string }
   | undefined
@@ -72,8 +75,7 @@ export const agentic_search = async (params: {
     const config = vscode.workspace.getConfiguration('codeWebChat')
     const invocation_count = config.get<number>('agenticSearchInvocationCount')
 
-    let snapshot_dir: string | undefined
-    let snapshot_data: WorkspaceSnapshotData | undefined
+    let snapshot_checkpoint: Checkpoint | undefined
 
     let result: any
     try {
@@ -90,8 +92,13 @@ export const agentic_search = async (params: {
         invocation_count,
         allow_adding_invocations: true,
         target_folder: params.folder_path,
+        abort_signal: params.abort_signal,
         build_prompt: async () => {
           while (true) {
+            if (params.abort_signal?.aborted) {
+              return undefined
+            }
+
             let current_query = query
             let additional_instructions = ''
 
@@ -108,6 +115,7 @@ export const agentic_search = async (params: {
                 await prompt_for_additional_instructions({
                   show_back_button: true,
                   initial_value: last_additional,
+                  abort_signal: params.abort_signal,
                   on_change: (value) => {
                     params.extension_context.workspaceState.update(
                       LAST_AGENTIC_SEARCH_ADDITIONAL_INSTRUCTIONS_STATE_KEY,
@@ -132,6 +140,7 @@ export const agentic_search = async (params: {
             } else {
               const query_result = await prompt_for_search_term(query, {
                 show_back_button: true,
+                abort_signal: params.abort_signal,
                 on_change: (value) => {
                   query = value
                   params.extension_context.workspaceState.update(
@@ -194,17 +203,13 @@ export const agentic_search = async (params: {
               ? `${processed_query}\n\n${skill_definitions}`
               : processed_query
 
-            snapshot_dir = path.join(
-              os.tmpdir(),
-              `cwc-agentic-search-snapshot-${Date.now()}-${Math.random().toString().slice(2)}`
-            )
-            await vscode.workspace.fs.createDirectory(
-              vscode.Uri.file(snapshot_dir)
-            )
-            snapshot_data = await create_workspace_snapshot(
-              snapshot_dir,
-              params.workspace_provider
-            )
+            snapshot_checkpoint = await create_checkpoint({
+              workspace_provider: params.workspace_provider,
+              extension_context: params.extension_context,
+              prompt_view_provider: params.prompt_view_provider,
+              trigger: 'before-agentic-search',
+              hide_notification: true
+            })
 
             return build_agent_prompt(
               final_query,
@@ -215,14 +220,15 @@ export const agentic_search = async (params: {
         }
       })
     } finally {
-      if (snapshot_dir && snapshot_data) {
+      if (snapshot_checkpoint) {
         try {
-          params.workspace_provider.pause_file_watcher()
-          await restore_workspace_snapshot(
-            snapshot_dir,
-            snapshot_data,
-            params.workspace_provider
-          )
+          await restore_checkpoint({
+            checkpoint: snapshot_checkpoint,
+            workspace_provider: params.workspace_provider,
+            extension_context: params.extension_context,
+            prompt_view_provider: params.prompt_view_provider,
+            options: { skip_confirmation: true, hide_notification: true }
+          })
         } catch (err) {
           Logger.error({
             function_name: 'agentic_search',
@@ -230,10 +236,11 @@ export const agentic_search = async (params: {
             data: err
           })
         } finally {
-          params.workspace_provider.resume_file_watcher()
           try {
-            await vscode.workspace.fs.delete(vscode.Uri.file(snapshot_dir), {
-              recursive: true
+            await delete_checkpoint({
+              extension_context: params.extension_context,
+              checkpoint_to_delete: snapshot_checkpoint,
+              prompt_view_provider: params.prompt_view_provider
             })
           } catch {
             // Ignore
@@ -315,13 +322,18 @@ export const agentic_search = async (params: {
     let go_back_to_query = false
 
     while (true) {
+      if (params.abort_signal?.aborted) {
+        return undefined
+      }
+
       const selected_items = await show_search_results_quick_pick({
         matched_items: absolute_paths.map((path) => ({ path })),
         unmatched_selected_paths: [],
         workspace_provider: params.workspace_provider,
         title: t('views.prompt.handlers.handle-agentic-search.results'),
         show_back_button: true,
-        restored_selected_paths
+        restored_selected_paths,
+        abort_signal: params.abort_signal
       })
 
       if (selected_items === 'back') {
@@ -340,7 +352,8 @@ export const agentic_search = async (params: {
           extension_context: params.extension_context,
           websocket_manager: params.websocket_manager,
           show_back_button: true,
-          is_sub_search: true
+          is_sub_search: true,
+          abort_signal: params.abort_signal
         })
 
         if (sub_search_result === 'back') {

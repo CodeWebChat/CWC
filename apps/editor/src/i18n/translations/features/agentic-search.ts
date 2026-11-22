@@ -52,5 +52,24 @@ export const translations = {
     cs: 'Jakékoli další instrukce pro vyhledávání',
     hu: 'További utasítások a kereséshez',
     bg: 'Допълнителни инструкции за търсенето'
+  },
+  'feature.agentic-search.info.disabled-during-code-review': {
+    en: 'Agentic search is disabled during code review.',
+    pl: 'Wyszukiwanie agentem jest wyłączone podczas przeglądu kodu.',
+    'zh-cn': '智能体搜索在代码审查期间已禁用。',
+    ja: 'コードレビュー中はエージェント検索が無効になっています。',
+    'zh-tw': '智能體搜尋在程式碼審查期間已停用。',
+    de: 'Die agentische Suche ist während des Code-Reviews deaktiviert.',
+    es: 'La búsqueda de agentes está deshabilitada durante la revisión de código.',
+    fr: "La recherche d'agents est désactivée pendant la revue de code.",
+    'pt-br':
+      'A pesquisa de agentes está desativada durante a revisão de código.',
+    ru: 'Агентный поиск отключен во время проверки кода.',
+    ko: '코드 리뷰 중에는 에이전트 검색이 비활성화됩니다.',
+    it: 'La ricerca agenti è disabilitata durante la revisione del codice.',
+    tr: 'Aracı araması kod incelemesi sırasında devre dışıdır.',
+    cs: 'Agentní vyhledávání je během revize kódu zakázáno.',
+    hu: 'Az ügynökkeresés kódellenőrzés közben le van tiltva.',
+    bg: 'Агентното търсене е деактивирано по време на преглед на код.'
   }
 } as const

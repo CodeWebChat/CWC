@@ -127,7 +127,8 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
     prompt_view_provider,
     workspace_provider,
     prompt_view_api_calls_manager,
-    websocket_manager: websocket_server_instance
+    websocket_manager: websocket_server_instance,
+    agentic_search_state
   })
 
   extension_context.subscriptions.push(
@@ -241,7 +242,8 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
       workspace_provider,
       extension_context,
       websocket_manager: websocket_server_instance,
-      agentic_search_state
+      agentic_search_state,
+      prompt_view_provider
     }),
     select_definition_file_command(workspace_provider),
     open_url_command({

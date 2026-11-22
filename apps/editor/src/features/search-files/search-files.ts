@@ -25,153 +25,176 @@ export const search_files = async (params: {
   folder_path?: string
   is_workspace_action?: boolean
   get_file_content?: (file_path: string) => Promise<string | undefined>
+  abort_signal?: AbortSignal
 }): Promise<
   | { selected_paths: string[]; matched_paths: string[]; title: string }
   | undefined
   | 'back'
 > => {
-  const mode_state_key = params.is_search_in_selected
-    ? LAST_SEARCH_SELECTED_FILES_FOR_CONTEXT_MODE_STATE_KEY
-    : LAST_SEARCH_FILES_FOR_CONTEXT_MODE_STATE_KEY
+  if (params.abort_signal?.aborted) return undefined
 
-  let initial_search_mode =
-    params.extension_context.workspaceState.get<
-      'phrase' | 'keywords' | 'intelligent'
-    >(mode_state_key) || 'phrase'
-
-  let _resolved_files: string[] | undefined
-  const resolve_files = async () => {
-    if (!_resolved_files) {
-      _resolved_files = await params.get_files()
+  let abort_handler: (() => void) | undefined
+  if (params.abort_signal) {
+    abort_handler = () => {
+      vscode.commands.executeCommand('workbench.action.closeQuickOpen')
     }
-    return _resolved_files
+    params.abort_signal.addEventListener('abort', abort_handler)
   }
 
-  const search_in_results = async (matched_paths: string[]) => {
-    return search_files({
-      get_files: async () => matched_paths,
-      workspace_provider: params.workspace_provider,
-      extension_context: params.extension_context,
-      websocket_manager: params.websocket_manager,
-      show_back_button: true,
-      is_sub_search: true,
-      is_search_in_selected: params.is_search_in_selected,
-      folder_path: params.folder_path,
-      get_file_content: params.get_file_content
-    })
-  }
+  try {
+    const mode_state_key = params.is_search_in_selected
+      ? LAST_SEARCH_SELECTED_FILES_FOR_CONTEXT_MODE_STATE_KEY
+      : LAST_SEARCH_FILES_FOR_CONTEXT_MODE_STATE_KEY
 
-  const is_folder_search =
-    !!params.folder_path &&
-    !params.is_workspace_action &&
-    !params.is_search_in_selected
+    let initial_search_mode =
+      params.extension_context.workspaceState.get<
+        'phrase' | 'keywords' | 'intelligent'
+      >(mode_state_key) || 'phrase'
 
-  while (true) {
-    try {
-      const mode_result = await prompt_for_search_mode(
-        initial_search_mode,
-        params.show_back_button,
-        is_folder_search
-      )
+    let _resolved_files: string[] | undefined
+    const resolve_files = async () => {
+      if (!_resolved_files) {
+        _resolved_files = await params.get_files()
+      }
+      return _resolved_files
+    }
 
-      if (mode_result === 'back') return 'back'
-      if (!mode_result) return undefined
-
-      initial_search_mode = mode_result
-      const search_mode = mode_result
-
-      await params.extension_context.workspaceState.update(
-        mode_state_key,
-        search_mode
-      )
-
-      let flow_result:
-        | { selected_paths: string[]; matched_paths: string[]; title: string }
-        | undefined
-        | 'back' = undefined
-
-      const flow_params = {
-        resolve_files,
+    const search_in_results = async (matched_paths: string[]) => {
+      return search_files({
+        get_files: async () => matched_paths,
         workspace_provider: params.workspace_provider,
         extension_context: params.extension_context,
-        show_back_button: params.show_back_button,
-        search_in_results,
+        websocket_manager: params.websocket_manager,
+        show_back_button: true,
+        is_sub_search: true,
         is_search_in_selected: params.is_search_in_selected,
-        is_sub_search: params.is_sub_search,
-        get_file_content: params.get_file_content
-      }
+        folder_path: params.folder_path,
+        get_file_content: params.get_file_content,
+        abort_signal: params.abort_signal
+      })
+    }
 
-      if (search_mode === 'phrase') {
-        flow_result = await perform_phrase_search_mode(flow_params)
-      } else if (search_mode === 'keywords') {
-        flow_result = await perform_keywords_search_mode(flow_params)
-      } else if (search_mode === 'intelligent') {
-        let files = await resolve_files()
-        let is_search_in_selected = params.is_search_in_selected
+    const is_folder_search =
+      !!params.folder_path &&
+      !params.is_workspace_action &&
+      !params.is_search_in_selected
 
-        if (!is_search_in_selected && !params.is_sub_search) {
-          if (!params.folder_path || params.is_workspace_action) {
-            const currently_selected =
-              params.workspace_provider.get_selected_files()
+    while (true) {
+      if (params.abort_signal?.aborted) return undefined
 
-            if (currently_selected.length === 0) {
-              vscode.window.showWarningMessage(
-                t('command.search-files-command.warning.no-files-selected')
-              )
-              continue
-            }
+      try {
+        const mode_result = await prompt_for_search_mode(
+          initial_search_mode,
+          params.show_back_button,
+          is_folder_search
+        )
 
-            let files_to_search = currently_selected
-            if (params.folder_path) {
-              files_to_search = currently_selected.filter((f) => {
-                const relative = path.relative(params.folder_path!, f)
-                return !relative.startsWith('..') && !path.isAbsolute(relative)
-              })
-            }
+        if (mode_result === 'back') return 'back'
+        if (!mode_result) return undefined
 
-            if (files_to_search.length === 0) {
-              vscode.window.showInformationMessage(
-                t('feature.search-files.info.no-files-selected-in-folder')
-              )
-              continue
-            }
+        initial_search_mode = mode_result
+        const search_mode = mode_result
 
-            files = files_to_search
-            is_search_in_selected = true
-          }
-        }
+        await params.extension_context.workspaceState.update(
+          mode_state_key,
+          search_mode
+        )
 
-        flow_result = await perform_intelligent_search_mode({
-          files,
+        let flow_result:
+          | { selected_paths: string[]; matched_paths: string[]; title: string }
+          | undefined
+          | 'back' = undefined
+
+        const flow_params = {
+          resolve_files,
           workspace_provider: params.workspace_provider,
           extension_context: params.extension_context,
-          websocket_manager: params.websocket_manager,
           show_back_button: params.show_back_button,
           search_in_results,
-          is_search_in_selected: is_search_in_selected,
+          is_search_in_selected: params.is_search_in_selected,
           is_sub_search: params.is_sub_search,
-          folder_path: params.folder_path,
           get_file_content: params.get_file_content
-        })
-      }
+        }
 
-      if (flow_result === 'back') {
-        continue
-      }
+        if (search_mode === 'phrase') {
+          flow_result = await perform_phrase_search_mode(flow_params)
+        } else if (search_mode === 'keywords') {
+          flow_result = await perform_keywords_search_mode(flow_params)
+        } else if (search_mode === 'intelligent') {
+          let files = await resolve_files()
+          let is_search_in_selected = params.is_search_in_selected
 
-      return flow_result
-    } catch (error) {
-      vscode.window.showErrorMessage(
-        t('feature.search-files.failed', {
-          error: get_error_message(error)
+          if (!is_search_in_selected && !params.is_sub_search) {
+            if (!params.folder_path || params.is_workspace_action) {
+              const currently_selected =
+                params.workspace_provider.get_selected_files()
+
+              if (currently_selected.length === 0) {
+                vscode.window.showWarningMessage(
+                  t('command.search-files-command.warning.no-files-selected')
+                )
+                continue
+              }
+
+              let files_to_search = currently_selected
+              if (params.folder_path) {
+                files_to_search = currently_selected.filter((f) => {
+                  const relative = path.relative(params.folder_path!, f)
+                  return (
+                    !relative.startsWith('..') && !path.isAbsolute(relative)
+                  )
+                })
+              }
+
+              if (files_to_search.length === 0) {
+                vscode.window.showInformationMessage(
+                  t('feature.search-files.info.no-files-selected-in-folder')
+                )
+                continue
+              }
+
+              files = files_to_search
+              is_search_in_selected = true
+            }
+          }
+
+          flow_result = await perform_intelligent_search_mode({
+            files,
+            workspace_provider: params.workspace_provider,
+            extension_context: params.extension_context,
+            websocket_manager: params.websocket_manager,
+            show_back_button: params.show_back_button,
+            search_in_results,
+            is_search_in_selected: is_search_in_selected,
+            is_sub_search: params.is_sub_search,
+            folder_path: params.folder_path,
+            get_file_content: params.get_file_content,
+            abort_signal: params.abort_signal
+          })
+        }
+
+        if (flow_result === 'back') {
+          continue
+        }
+
+        return flow_result
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          t('feature.search-files.failed', {
+            error: get_error_message(error)
+          })
+        )
+        Logger.error({
+          function_name: 'search_files',
+          message: 'Error searching files',
+          data: error
         })
-      )
-      Logger.error({
-        function_name: 'search_files',
-        message: 'Error searching files',
-        data: error
-      })
-      break
+        break
+      }
+    }
+  } finally {
+    if (params.abort_signal && abort_handler) {
+      params.abort_signal.removeEventListener('abort', abort_handler)
     }
   }
   return undefined

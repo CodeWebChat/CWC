@@ -115,7 +115,12 @@ const show_agent_quick_pick = async (options: {
   show_back_button?: boolean
   ignore_focus_out?: boolean
   on_hide_result: 'back' | undefined
+  abort_signal?: AbortSignal
 }): Promise<AgentSelectionResult> => {
+  if (options.abort_signal?.aborted) {
+    return undefined
+  }
+
   const close_button: vscode.QuickInputButton = {
     iconPath: new vscode.ThemeIcon('close'),
     tooltip: t('common.close')
@@ -163,6 +168,18 @@ const show_agent_quick_pick = async (options: {
   return await new Promise<AgentSelectionResult>((resolve) => {
     let is_resolved = false
 
+    const abort_handler = () => {
+      if (!is_resolved) {
+        is_resolved = true
+        resolve(undefined)
+        agent_quick_pick.hide()
+      }
+    }
+
+    if (options.abort_signal) {
+      options.abort_signal.addEventListener('abort', abort_handler)
+    }
+
     agent_quick_pick.onDidTriggerButton((button) => {
       if (button === vscode.QuickInputButtons.Back) {
         is_resolved = true
@@ -191,6 +208,9 @@ const show_agent_quick_pick = async (options: {
     agent_quick_pick.onDidHide(() => {
       if (!is_resolved) {
         resolve(options.on_hide_result)
+      }
+      if (options.abort_signal) {
+        options.abort_signal.removeEventListener('abort', abort_handler)
       }
       config_listener.dispose()
       agent_quick_pick.dispose()
@@ -252,6 +272,7 @@ export const invoke_agentic_cli = async (params: {
   allow_adding_invocations?: boolean
   target_folder?: string
   raw_instructions?: string
+  abort_signal?: AbortSignal
 }): Promise<
   | {
       agent_output: string
@@ -373,7 +394,8 @@ export const invoke_agentic_cli = async (params: {
         active_config_name: last_used,
         show_back_button: params.show_back_button,
         ignore_focus_out: !!params.show_back_button,
-        on_hide_result: 'back'
+        on_hide_result: 'back',
+        abort_signal: params.abort_signal
       })
 
       if (agent_selection_result === 'back') {
@@ -551,7 +573,25 @@ export const invoke_agentic_cli = async (params: {
 
           const res = await new Promise<string | undefined | 'back'>(
             (resolve) => {
+              if (params.abort_signal?.aborted) {
+                return resolve(undefined)
+              }
               let is_resolved = false
+
+              const quick_pick_abort_handler = () => {
+                if (!is_resolved) {
+                  is_resolved = true
+                  resolve(undefined)
+                  quick_pick.hide()
+                }
+              }
+
+              if (params.abort_signal) {
+                params.abort_signal.addEventListener(
+                  'abort',
+                  quick_pick_abort_handler
+                )
+              }
 
               quick_pick.onDidTriggerButton((button) => {
                 if (button === vscode.QuickInputButtons.Back) {
@@ -577,6 +617,12 @@ export const invoke_agentic_cli = async (params: {
               quick_pick.onDidHide(() => {
                 if (!is_resolved) {
                   resolve('back')
+                }
+                if (params.abort_signal) {
+                  params.abort_signal.removeEventListener(
+                    'abort',
+                    quick_pick_abort_handler
+                  )
                 }
                 quick_pick.dispose()
               })
@@ -801,7 +847,10 @@ export const invoke_agentic_cli = async (params: {
                   message: waiting_msg
                 })
 
-                if (token.isCancellationRequested) {
+                if (
+                  token.isCancellationRequested ||
+                  params.abort_signal?.aborted
+                ) {
                   cancelled_count++
                   return
                 }
@@ -831,6 +880,21 @@ export const invoke_agentic_cli = async (params: {
                       ? ['ignore', 'pipe', 'pipe']
                       : ['pipe', 'pipe', 'pipe']
                   })
+
+                  let is_aborted = false
+                  const child_abort_handler = () => {
+                    if (is_aborted) return
+                    is_aborted = true
+                    cancelled_count++
+                    child.kill()
+                  }
+
+                  if (params.abort_signal) {
+                    params.abort_signal.addEventListener(
+                      'abort',
+                      child_abort_handler
+                    )
+                  }
 
                   if (
                     !invocation_agent_info.get_prompt_file_args &&
@@ -892,12 +956,17 @@ export const invoke_agentic_cli = async (params: {
                   })
 
                   token.onCancellationRequested(() => {
-                    cancelled_count++
-                    child.kill()
-                    resolve()
+                    child_abort_handler()
                   })
 
                   child.on('close', async () => {
+                    if (params.abort_signal) {
+                      params.abort_signal.removeEventListener(
+                        'abort',
+                        child_abort_handler
+                      )
+                    }
+
                     if (
                       invocation_agent_info.parse_final_output &&
                       current_raw_stream_output.trim()
@@ -954,6 +1023,12 @@ export const invoke_agentic_cli = async (params: {
                   })
 
                   child.on('error', (err) => {
+                    if (params.abort_signal) {
+                      params.abort_signal.removeEventListener(
+                        'abort',
+                        child_abort_handler
+                      )
+                    }
                     Logger.error({
                       function_name: 'invoke_agentic_cli',
                       message: 'Agent execution failed',
@@ -1006,7 +1081,8 @@ export const invoke_agentic_cli = async (params: {
               active_config_name: last_invocation_config_name,
               show_back_button: false,
               ignore_focus_out: false,
-              on_hide_result: undefined
+              on_hide_result: undefined,
+              abort_signal: params.abort_signal
             })
 
             if (!selection || selection === 'back' || is_finished) {
@@ -1090,6 +1166,10 @@ export const invoke_agentic_cli = async (params: {
         await fs.promises
           .rm(temp_prompt_dir, { recursive: true, force: true })
           .catch(() => {})
+      }
+
+      if (params.abort_signal?.aborted) {
+        return undefined
       }
 
       if (cancelled_count === total_invocations) {

@@ -49,6 +49,7 @@ export const perform_intelligent_search_mode = async (params: {
   is_sub_search?: boolean
   folder_path?: string
   get_file_content?: (file_path: string) => Promise<string | undefined>
+  abort_signal?: AbortSignal
 }): Promise<
   | { selected_paths: string[]; matched_paths: string[]; title: string }
   | undefined
@@ -57,6 +58,8 @@ export const perform_intelligent_search_mode = async (params: {
   const local_queries: Record<string, string> = {}
 
   while (true) {
+    if (params.abort_signal?.aborted) return undefined
+
     const initial_search_term =
       local_queries[LAST_SEARCH_FILES_INTELLIGENT_QUERY_STATE_KEY] !== undefined
         ? local_queries[LAST_SEARCH_FILES_INTELLIGENT_QUERY_STATE_KEY]
@@ -432,7 +435,8 @@ export const perform_intelligent_search_mode = async (params: {
             agent_state_key: LAST_USED_AGENT_FOR_INTELLIGENT_SEARCH_STATE_KEY,
             default_agent_key: 'isDefaultForIntelligentSearch',
             show_back_button: true,
-            isolate_in_temp_dir: true
+            isolate_in_temp_dir: true,
+            abort_signal: params.abort_signal
           })
 
           if (invoke_cli_result === 'back') {

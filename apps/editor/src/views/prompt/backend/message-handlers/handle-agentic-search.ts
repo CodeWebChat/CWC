@@ -4,10 +4,18 @@ import { Logger } from '@shared/utils/logger'
 import { t } from '@/i18n'
 import { agentic_search } from '@/features/agentic-search'
 import { LAST_AGENTIC_SEARCH_QUERY_STATE_KEY } from '@/constants/state-keys'
+import { get_code_review_promise_resolve } from '@/features/apply-response/utils/code-review/vscode-ui'
 
 export const handle_agentic_search = async (
   prompt_view_provider: PromptViewProvider
 ) => {
+  if (get_code_review_promise_resolve()) {
+    vscode.window.showInformationMessage(
+      t('feature.agentic-search.info.disabled-during-code-review')
+    )
+    return
+  }
+
   if (prompt_view_provider.agentic_search_state.in_progress) {
     vscode.window.showInformationMessage(t('common.info.search-in-progress'))
     return
@@ -36,13 +44,15 @@ export const handle_agentic_search = async (
       workspace_provider: prompt_view_provider.workspace_provider,
       extension_context: prompt_view_provider.extension_context,
       websocket_manager: prompt_view_provider.websocket_server_instance,
+      prompt_view_provider,
       query: initial_query,
       current_instructions,
       completed_tasks:
         prompt_view_provider.prompt_type === 'edit'
           ? prompt_view_provider.completed_tasks
           : undefined,
-      skip_prompt_if_not_empty: current_instructions !== ''
+      skip_prompt_if_not_empty: current_instructions !== '',
+      abort_signal: prompt_view_provider.agentic_search_state.abort_signal
     })
 
     if (!result || result === 'back') return

@@ -174,87 +174,98 @@ export const restore_checkpoint = async (params: {
         if (loaded_history.length > 0) {
           params.prompt_view_provider.response_history = loaded_history
           params.prompt_view_provider.update_response_history()
-        } else if (params.checkpoint.trigger !== 'before-code-reviewed') {
+        } else if (
+          params.checkpoint.trigger !== 'before-code-reviewed' &&
+          params.checkpoint.trigger !== 'before-agentic-search'
+        ) {
           params.prompt_view_provider.response_history = []
           params.prompt_view_provider.update_response_history()
         }
 
-        let loaded_completed_tasks: string[] | undefined
-        try {
-          const completed_tasks_file_path = vscode.Uri.joinPath(
-            vscode.Uri.file(checkpoint_dir_path),
-            'completed-tasks.json'
-          )
-          const completed_tasks_data = await vscode.workspace.fs.readFile(
-            completed_tasks_file_path
-          )
-          loaded_completed_tasks = JSON.parse(
-            new TextDecoder().decode(completed_tasks_data)
-          )
-        } catch {
-          // Ignore
-        }
-
-        if (loaded_completed_tasks !== undefined) {
-          params.prompt_view_provider.completed_tasks = loaded_completed_tasks
-          await params.extension_context.workspaceState.update(
-            COMPLETED_TASKS_STATE_KEY,
-            loaded_completed_tasks
-          )
-          params.prompt_view_provider.send_message({
-            command: 'COMPLETED_TASKS',
-            completed_tasks: loaded_completed_tasks
-          })
-        } else if (params.checkpoint.trigger !== 'temporary') {
-          params.prompt_view_provider.completed_tasks = []
-          await params.extension_context.workspaceState.update(
-            COMPLETED_TASKS_STATE_KEY,
-            []
-          )
-          params.prompt_view_provider.send_message({
-            command: 'COMPLETED_TASKS',
-            completed_tasks: []
-          })
-        }
-
-        const active_file = open_files.find((f) => f.isActive)
-
-        for (const file of open_files) {
-          if (active_file && file === active_file) {
-            continue
-          }
+        if (params.checkpoint.trigger !== 'before-agentic-search') {
+          let loaded_completed_tasks: string[] | undefined
           try {
-            await vscode.workspace.fs.stat(file.uri)
-            const doc = await vscode.workspace.openTextDocument(file.uri)
-            await vscode.window.showTextDocument(doc, {
-              viewColumn: file.viewColumn,
-              preserveFocus: true,
-              preview: false
-            })
+            const completed_tasks_file_path = vscode.Uri.joinPath(
+              vscode.Uri.file(checkpoint_dir_path),
+              'completed-tasks.json'
+            )
+            const completed_tasks_data = await vscode.workspace.fs.readFile(
+              completed_tasks_file_path
+            )
+            loaded_completed_tasks = JSON.parse(
+              new TextDecoder().decode(completed_tasks_data)
+            )
           } catch {
             // Ignore
           }
-        }
 
-        if (active_file) {
-          try {
-            await vscode.workspace.fs.stat(active_file.uri)
-            const doc = await vscode.workspace.openTextDocument(active_file.uri)
-            await vscode.window.showTextDocument(doc, {
-              viewColumn: active_file.viewColumn,
-              preserveFocus: false,
-              preview: false
+          if (loaded_completed_tasks !== undefined) {
+            params.prompt_view_provider.completed_tasks = loaded_completed_tasks
+            await params.extension_context.workspaceState.update(
+              COMPLETED_TASKS_STATE_KEY,
+              loaded_completed_tasks
+            )
+            params.prompt_view_provider.send_message({
+              command: 'COMPLETED_TASKS',
+              completed_tasks: loaded_completed_tasks
             })
-          } catch {
-            // Ignore
+          } else if (params.checkpoint.trigger !== 'temporary') {
+            params.prompt_view_provider.completed_tasks = []
+            await params.extension_context.workspaceState.update(
+              COMPLETED_TASKS_STATE_KEY,
+              []
+            )
+            params.prompt_view_provider.send_message({
+              command: 'COMPLETED_TASKS',
+              completed_tasks: []
+            })
           }
         }
 
-        await params.extension_context.workspaceState.update(
-          CONTEXT_SELECTED_PATHS_STATE_KEY,
-          params.checkpoint.selected_files
-        )
-        params.workspace_provider.load_selected_files_state()
+        if (params.checkpoint.trigger !== 'before-agentic-search') {
+          const active_file = open_files.find((f) => f.isActive)
+
+          for (const file of open_files) {
+            if (active_file && file === active_file) {
+              continue
+            }
+            try {
+              await vscode.workspace.fs.stat(file.uri)
+              const doc = await vscode.workspace.openTextDocument(file.uri)
+              await vscode.window.showTextDocument(doc, {
+                viewColumn: file.viewColumn,
+                preserveFocus: true,
+                preview: false
+              })
+            } catch {
+              // Ignore
+            }
+          }
+
+          if (active_file) {
+            try {
+              await vscode.workspace.fs.stat(active_file.uri)
+              const doc = await vscode.workspace.openTextDocument(
+                active_file.uri
+              )
+              await vscode.window.showTextDocument(doc, {
+                viewColumn: active_file.viewColumn,
+                preserveFocus: false,
+                preview: false
+              })
+            } catch {
+              // Ignore
+            }
+          }
+        }
+
+        if (params.checkpoint.trigger !== 'before-agentic-search') {
+          await params.extension_context.workspaceState.update(
+            CONTEXT_SELECTED_PATHS_STATE_KEY,
+            params.checkpoint.selected_files
+          )
+          params.workspace_provider.load_selected_files_state()
+        }
 
         params.prompt_view_provider.send_token_count()
 
@@ -270,8 +281,7 @@ export const restore_checkpoint = async (params: {
         ) {
           const item_to_review = loaded_history.find(
             (item) =>
-              item.created_at ==
-              params.checkpoint.code_review_item_created_at
+              item.created_at == params.checkpoint.code_review_item_created_at
           )
           if (item_to_review) {
             apply_response({

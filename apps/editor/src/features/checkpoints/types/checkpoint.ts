@@ -10,13 +10,18 @@ export interface CheckpointTab {
   is_group_active: boolean
 }
 
-export type CheckpointTrigger =
+export type VisibleCheckpointTrigger =
   | 'manual'
   | 'response-accepted'
   | 'before-code-reviewed'
   | 'before-checkpoint-restored'
-  | 'temporary'
   | 'commit'
+
+export type HiddenCheckpointTrigger = 'temporary' | 'before-agentic-search'
+
+export type CheckpointTrigger =
+  | VisibleCheckpointTrigger
+  | HiddenCheckpointTrigger
 
 export interface Checkpoint {
   timestamp: number

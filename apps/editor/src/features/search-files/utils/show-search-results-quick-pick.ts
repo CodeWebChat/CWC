@@ -20,6 +20,7 @@ export const show_search_results_quick_pick = async (params: {
   restored_selected_paths?: string[]
   search_mode?: 'phrase' | 'keywords' | 'intelligent'
   search_term?: string
+  abort_signal?: AbortSignal
 }): Promise<
   | { selected_paths: string[]; matched_paths: string[]; title: string }
   | {
@@ -32,6 +33,10 @@ export const show_search_results_quick_pick = async (params: {
   | 'cancel'
   | undefined
 > => {
+  if (params.abort_signal?.aborted) {
+    return undefined
+  }
+
   const open_file_button = {
     iconPath: new vscode.ThemeIcon('go-to-file'),
     tooltip: t('common.go-to-file')
@@ -141,6 +146,21 @@ export const show_search_results_quick_pick = async (params: {
   return new Promise((resolve) => {
     let is_resolved = false
 
+    const abort_handler = () => {
+      if (!is_resolved) {
+        is_resolved = true
+        resolve(undefined)
+        quick_pick.hide()
+      }
+    }
+
+    if (params.abort_signal?.aborted) {
+      return abort_handler()
+    }
+    if (params.abort_signal) {
+      params.abort_signal.addEventListener('abort', abort_handler)
+    }
+
     quick_pick.onDidTriggerButton((button) => {
       if (button === vscode.QuickInputButtons.Back) {
         is_resolved = true
@@ -192,6 +212,9 @@ export const show_search_results_quick_pick = async (params: {
       if (is_showing_folder_quick_pick) return
       if (!is_resolved) {
         resolve(params.resolve_hide_as ?? 'back')
+      }
+      if (params.abort_signal) {
+        params.abort_signal.removeEventListener('abort', abort_handler)
       }
       quick_pick.dispose()
     })

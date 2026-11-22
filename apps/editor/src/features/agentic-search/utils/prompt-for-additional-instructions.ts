@@ -5,7 +5,12 @@ export const prompt_for_additional_instructions = async (options?: {
   show_back_button?: boolean
   initial_value?: string
   on_change?: (value: string) => void
+  abort_signal?: AbortSignal
 }): Promise<{ value: string | undefined; back?: boolean }> => {
+  if (options?.abort_signal?.aborted) {
+    return { value: undefined }
+  }
+
   const close_button = {
     iconPath: new vscode.ThemeIcon('close'),
     tooltip: t('common.close')
@@ -35,6 +40,19 @@ export const prompt_for_additional_instructions = async (options?: {
   return new Promise<{ value: string | undefined; back?: boolean }>(
     (resolve) => {
       let is_resolved = false
+
+      const abort_handler = () => {
+        if (!is_resolved) {
+          is_resolved = true
+          resolve({ value: undefined })
+          input_box.hide()
+        }
+      }
+
+      if (options?.abort_signal) {
+        options.abort_signal.addEventListener('abort', abort_handler)
+      }
+
       const disposables: vscode.Disposable[] = []
 
       disposables.push(
@@ -63,6 +81,9 @@ export const prompt_for_additional_instructions = async (options?: {
         input_box.onDidHide(() => {
           if (!is_resolved) {
             resolve({ value: undefined })
+          }
+          if (options?.abort_signal) {
+            options.abort_signal.removeEventListener('abort', abort_handler)
           }
           disposables.forEach((d) => d.dispose())
           input_box.dispose()

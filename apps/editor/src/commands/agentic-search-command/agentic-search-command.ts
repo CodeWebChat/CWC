@@ -4,19 +4,27 @@ import { WebSocketManager } from '@/services/websocket-manager'
 import { agentic_search, AgenticSearchState } from '@/features/agentic-search'
 import { t } from '@/i18n'
 import { Logger } from '@shared/utils/logger'
+import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { get_target_folder_path } from '../search-files-commands/utils/get-target-folder-path'
+import { get_code_review_promise_resolve } from '@/features/apply-response/utils/code-review/vscode-ui'
 
 export const agentic_search_command = (params: {
   workspace_provider: WorkspaceProvider
   extension_context: vscode.ExtensionContext
   websocket_manager: WebSocketManager
   agentic_search_state: AgenticSearchState
+  prompt_view_provider: PromptViewProvider
 }): vscode.Disposable[] => {
   const handler = async (item?: any) => {
-    if (params.agentic_search_state.in_progress) {
+    if (get_code_review_promise_resolve()) {
       vscode.window.showInformationMessage(
-        t('common.info.search-in-progress')
+        t('feature.agentic-search.info.disabled-during-code-review')
       )
+      return
+    }
+
+    if (params.agentic_search_state.in_progress) {
+      vscode.window.showInformationMessage(t('common.info.search-in-progress'))
       return
     }
 
@@ -27,15 +35,16 @@ export const agentic_search_command = (params: {
         workspace_provider: params.workspace_provider,
         extension_context: params.extension_context,
         websocket_manager: params.websocket_manager,
+        prompt_view_provider: params.prompt_view_provider,
         query: '',
         current_instructions: '',
-        folder_path
+        folder_path,
+        abort_signal: params.agentic_search_state.abort_signal
       })
 
       if (!result || result === 'back') return
 
-      const currently_selected =
-        params.workspace_provider.get_selected_files()
+      const currently_selected = params.workspace_provider.get_selected_files()
 
       const unchecked_paths = result.matched_paths.filter(
         (file_path) => !result.selected_paths.includes(file_path)
@@ -55,9 +64,7 @@ export const agentic_search_command = (params: {
         data: { paths: result.selected_paths }
       })
 
-      vscode.window.showInformationMessage(
-        t('common.success.context-updated')
-      )
+      vscode.window.showInformationMessage(t('common.success.context-updated'))
     } finally {
       params.agentic_search_state.in_progress = false
     }

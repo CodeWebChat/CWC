@@ -4,7 +4,10 @@ import { WorkspaceProvider } from '../../context/providers/workspace/workspace-p
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { t } from '@/i18n'
-import type { Checkpoint } from '@/features/checkpoints/types'
+import type {
+  Checkpoint,
+  VisibleCheckpointTrigger
+} from '@/features/checkpoints/types'
 import {
   create_checkpoint,
   delete_checkpoint,
@@ -122,7 +125,8 @@ export const history_command = (params: {
           }
 
           const visible_checkpoints = checkpoints.filter(
-            (c) => c.trigger !== 'temporary'
+            (c): c is Checkpoint & { trigger: VisibleCheckpointTrigger } =>
+              c.trigger !== 'temporary' && c.trigger !== 'before-agentic-search'
           )
 
           if (visible_checkpoints.length > 0 || temp_checkpoint_is_valid) {
@@ -135,7 +139,9 @@ export const history_command = (params: {
             return b.timestamp - a.timestamp
           })
 
-          const map_checkpoint_to_item = (c: Checkpoint) => {
+          const map_checkpoint_to_item = (
+            c: Checkpoint & { trigger: VisibleCheckpointTrigger }
+          ) => {
             const label_text = t(`command.history-command.trigger.${c.trigger}`)
             return {
               id: c.timestamp.toString(),
