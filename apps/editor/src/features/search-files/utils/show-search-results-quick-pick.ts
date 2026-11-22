@@ -106,9 +106,6 @@ export const show_search_results_quick_pick = async (params: {
     if (item.checked !== undefined) {
       return item.checked
     }
-    if (currently_selected.length === 0) {
-      return true
-    }
     return currently_selected.includes(item.file_path)
   })
   quick_pick.canSelectMany = true
