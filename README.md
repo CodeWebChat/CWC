@@ -40,7 +40,7 @@ No code, prompts, or usage data are collected.
 
 ## Introduction
 
-Autofill chatbots in your web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts).
+Autofill free chatbots in a web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts).
 
 **CWC is independent and free!**
 
@@ -72,14 +72,14 @@ When refining instructions, old ones are not dragged in an ever-growing session.
 <details>
 <summary><strong>Effective steering with examples</strong></summary>
 
-Guide the model with broader context for outputs you're looking for.
+Model is guided with broader context for outputs you're looking for.
 
 </details>
 
 <details>
 <summary><strong>First-class support for prompt caching</strong></summary>
 
-When including selected files, unchanged files are placed first, followed by recently modified ones, and task instructions are placed at the very end. Compare outputs from concurrent runs, at minimal cost.
+When including selected files, unchanged files are placed first, followed by recently modified ones, and task instructions are placed at the very end.
 
 </details>
 
