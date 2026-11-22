@@ -12,7 +12,7 @@ import { Notices as UiNotices } from '@ui/components/editor/settings-view/Notice
 import { WebConfiguration } from '@/types/web-configuration'
 import { Icon } from '@ui/components/editor/common/Icon'
 import { CHATBOTS } from '@shared/constants/chatbots'
-import { use_translation } from '../../i18n/use-translation'
+import { use_translation, Translation } from '../../i18n/use-translation'
 import { NavItem } from '../Home'
 
 type Props = {
@@ -396,7 +396,22 @@ export const WebSection = forwardRef<HTMLDivElement, Props>((props, ref) => {
               notices={[
                 {
                   type: 'info',
-                  message: t('web.remote-machines.notice')
+                  message: (
+                    <Translation
+                      id="web.remote-machines.notice"
+                      components={{
+                        link: (
+                          <a
+                            href="https://code.visualstudio.com/docs/debugtest/port-forwarding"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t('web.remote-machines.notice.link')}
+                          </a>
+                        )
+                      }}
+                    />
+                  )
                 }
               ]}
             />
