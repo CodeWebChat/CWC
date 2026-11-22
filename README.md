@@ -8,7 +8,7 @@
   </a>
 </p>
 
-<p align="center"><strong>Markdown prompts for free chatbots, APIs, and CLIs with seamless integration</strong></p>
+<p align="center"><strong>Markdown prompts for chatbots, APIs, and CLIs with seamless integration</strong></p>
 
 <p align="center"><img src="https://github.com/CodeWebChat/CWC/raw/HEAD/media/screenshot-1.png"></p>
 
@@ -40,7 +40,7 @@ No code, prompts, or usage data are collected.
 
 ## Introduction
 
-Autofill free chatbots in a web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts).
+Autofill chatbots in a web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts).
 
 **CWC is independent and free!**
 
