@@ -21,7 +21,7 @@
 
   &:disabled {
     opacity: var(--disabled-opacity);
-    cursor: default;
+    pointer-events: none;
   }
 
   &:checked::before {
