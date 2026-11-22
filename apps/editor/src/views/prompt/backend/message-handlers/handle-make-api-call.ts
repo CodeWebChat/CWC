@@ -63,7 +63,7 @@ export const handle_make_api_call = async (
     prompt_view_provider
   })
 
-  if (!collected_files) {
+  if (prompt_type === 'edit' && !collected_files) {
     await show_context_cannot_be_empty_warning(prompt_view_provider)
     return
   }

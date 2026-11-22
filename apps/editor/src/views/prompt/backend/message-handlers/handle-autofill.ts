@@ -32,31 +32,7 @@ export const handle_autofill = async (params: {
     return
   }
 
-  const resolution = await resolve_web_configuration({
-    prompt_view_provider: params.prompt_view_provider,
-    web_configuration_name: params.web_configuration_name,
-    extension_context: params.prompt_view_provider.extension_context,
-    show_quick_pick: params.show_quick_pick
-  })
-
-  if (!resolution.web_configuration_name) {
-    return
-  }
-  const resolved_web_configuration_name = resolution.web_configuration_name
-
-  if (params.web_configuration_name !== undefined) {
-    update_last_used_web_configuration({
-      prompt_view_provider: params.prompt_view_provider,
-      web_configuration_name: params.web_configuration_name
-    })
-  }
-
   await vscode.workspace.saveAll()
-
-  let sent = false
-
-  const current_instructions =
-    params.prompt_view_provider.current_instructions.trim()
 
   const {
     other_files,
@@ -78,6 +54,30 @@ export const handle_autofill = async (params: {
     await show_context_cannot_be_empty_warning(params.prompt_view_provider)
     return
   }
+
+  const resolution = await resolve_web_configuration({
+    prompt_view_provider: params.prompt_view_provider,
+    web_configuration_name: params.web_configuration_name,
+    extension_context: params.prompt_view_provider.extension_context,
+    show_quick_pick: params.show_quick_pick
+  })
+
+  if (!resolution.web_configuration_name) {
+    return
+  }
+  const resolved_web_configuration_name = resolution.web_configuration_name
+
+  if (params.web_configuration_name !== undefined) {
+    update_last_used_web_configuration({
+      prompt_view_provider: params.prompt_view_provider,
+      web_configuration_name: params.web_configuration_name
+    })
+  }
+
+  let sent = false
+
+  const current_instructions =
+    params.prompt_view_provider.current_instructions.trim()
 
   let output_formatting: string | undefined = undefined
   let completed_tasks: string[] | undefined = undefined
