@@ -30,13 +30,8 @@ export class PersistentPromptStorage<T extends 'text' | 'image'> {
   async save(content: string): Promise<string> {
     const is_text = this.type === 'text'
     const buffer = is_text ? null : Buffer.from(content, 'base64')
-    const hash_input = is_text ? content : new Uint8Array(buffer!)
 
-    const id = crypto
-      .createHash('sha256')
-      .update(hash_input)
-      .digest('hex')
-      .substring(0, 16)
+    const id = crypto.randomBytes(8).toString('hex')
 
     if (!fs.existsSync(this.dir_path)) {
       await fs.promises.mkdir(this.dir_path, { recursive: true })
@@ -44,15 +39,10 @@ export class PersistentPromptStorage<T extends 'text' | 'image'> {
     const filename = `${id}${this.extension}`
     const file_path = path.join(this.dir_path, filename)
 
-    if (fs.existsSync(file_path)) {
-      const now = new Date()
-      await fs.promises.utimes(file_path, now, now)
+    if (is_text) {
+      await fs.promises.writeFile(file_path, content, 'utf-8')
     } else {
-      if (is_text) {
-        await fs.promises.writeFile(file_path, content, 'utf-8')
-      } else {
-        await fs.promises.writeFile(file_path, new Uint8Array(buffer!))
-      }
+      await fs.promises.writeFile(file_path, new Uint8Array(buffer!))
     }
 
     return id
