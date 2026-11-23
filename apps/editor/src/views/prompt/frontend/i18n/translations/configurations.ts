@@ -196,5 +196,23 @@ export const configurations = {
     cs: 'Přepnout',
     hu: 'Váltás',
     bg: 'Превключване'
+  },
+  'configurations.preview': {
+    en: 'Preview',
+    pl: 'Podgląd',
+    'zh-cn': '预览',
+    ja: 'プレビュー',
+    'zh-tw': '預覽',
+    de: 'Vorschau',
+    es: 'Vista previa',
+    fr: 'Aperçu',
+    'pt-br': 'Pré-visualizar',
+    ru: 'Предпросмотр',
+    ko: '미리보기',
+    it: 'Anteprima',
+    tr: 'Önizleme',
+    cs: 'Náhled',
+    hu: 'Előnézet',
+    bg: 'Преглед'
   }
 } as const

@@ -477,7 +477,7 @@ export const Prompt = () => {
                     (web_prompt_type === 'edit' && selected_files.length === 0)
                   }
                 >
-                  {t('code-review.title')}
+                  {t('configurations.preview')}
                 </UiTextButton>
               }
             >
