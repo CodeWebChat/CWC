@@ -469,6 +469,15 @@ export class WorkspaceProvider
       return
     }
 
+    if (
+      created_file_path === workspace_root ||
+      this._checked_items.has(created_file_path) ||
+      !fs.existsSync(created_file_path)
+    ) {
+      this._schedule_refresh()
+      return
+    }
+
     this._file_workspace_map.set(created_file_path, workspace_root)
     const parent_dir = path.dirname(created_file_path)
 
