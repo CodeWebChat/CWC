@@ -66,7 +66,10 @@ export const run_generate_action = async (params: {
   let show_quick_pick = false
   let current_action: string | undefined = undefined
 
-  const repository = await get_repository_for_commit(params.source_control)
+  const repository = await get_repository_for_commit({
+    extension_context: params.extension_context,
+    source_control: params.source_control
+  })
   if (!repository) return
 
   const workspace_root = repository.rootUri.fsPath

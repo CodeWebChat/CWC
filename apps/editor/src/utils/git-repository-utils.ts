@@ -15,6 +15,7 @@ import { WebSocketManager } from '@/services/websocket-manager'
 import { search_files } from '@/features/search-files'
 import { CommitMessageDetails } from './commit-message-details'
 import { normalize_path } from './normalize-path'
+import { LAST_SELECTED_GIT_REPOSITORY_STATE_KEY } from '@/constants/state-keys'
 
 const execFileAsync = promisify(execFile)
 
@@ -66,20 +67,9 @@ const get_all_git_repositories = async (): Promise<GitRepository[] | null> => {
   return repositories
 }
 
-export const get_git_repository = async (
-  source_control?: vscode.SourceControl
-): Promise<GitRepository | null> => {
+export const get_git_repository = async (): Promise<GitRepository | null> => {
   const repositories = await get_all_git_repositories()
   if (!repositories) return null
-
-  if (source_control?.rootUri) {
-    const repository = repositories.find(
-      (repo) => repo.rootUri.toString() === source_control.rootUri!.toString()
-    )
-    if (repository) {
-      return repository
-    }
-  }
 
   if (repositories.length === 1) {
     return repositories[0]
@@ -102,6 +92,7 @@ export const get_git_repository = async (
     'command.generate-commit-message-command.select-repository'
   )
   quick_pick.items = picks
+
   quick_pick.buttons = [
     { iconPath: new vscode.ThemeIcon('close'), tooltip: t('common.close') }
   ]
@@ -140,15 +131,17 @@ export const get_git_repository = async (
   return selected.repository
 }
 
-export const get_repository_for_commit = async (
+export const get_repository_for_commit = async (params: {
+  extension_context: vscode.ExtensionContext
   source_control?: vscode.SourceControl
-): Promise<GitRepository | null> => {
+}): Promise<GitRepository | null> => {
   const repositories = await get_all_git_repositories()
   if (!repositories) return null
 
-  if (source_control?.rootUri) {
+  if (params.source_control?.rootUri) {
     const repository = repositories.find(
-      (repo) => repo.rootUri.toString() === source_control.rootUri!.toString()
+      (repo) =>
+        repo.rootUri.toString() === params.source_control!.rootUri!.toString()
     )
     if (repository) {
       return repository
@@ -193,6 +186,20 @@ export const get_repository_for_commit = async (
     'command.generate-commit-message-command.select-repository'
   )
   quick_pick.items = picks
+
+  const last_selected_path =
+    params.extension_context.workspaceState.get<string>(
+      LAST_SELECTED_GIT_REPOSITORY_STATE_KEY
+    )
+  if (last_selected_path) {
+    const active_item = picks.find(
+      (p) => p.repository.rootUri.fsPath === last_selected_path
+    )
+    if (active_item) {
+      quick_pick.activeItems = [active_item]
+    }
+  }
+
   quick_pick.buttons = [
     { iconPath: new vscode.ThemeIcon('close'), tooltip: t('common.close') }
   ]
@@ -226,6 +233,13 @@ export const get_repository_for_commit = async (
 
   if (!selected) {
     return null
+  }
+
+  if (params.extension_context) {
+    params.extension_context.workspaceState.update(
+      LAST_SELECTED_GIT_REPOSITORY_STATE_KEY,
+      selected.repository.rootUri.fsPath
+    )
   }
 
   return selected.repository
