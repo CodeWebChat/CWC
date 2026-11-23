@@ -38,20 +38,19 @@
     overflow: auto;
   }
 
-  &__collapse > span {
-    cursor: pointer;
-    font-style: italic;
-    font-size: 12px;
-    color: var(--cwc-text-color-dimmed);
+  &__collapse {
+    margin-top: 4px;
 
-    &:hover {
-      text-decoration: underline;
+    > span {
+      cursor: pointer;
+      font-style: italic;
+      font-size: 12px;
+      color: var(--cwc-text-color-dimmed);
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
-  }
-
-  > hr {
-    border-top: none;
-    border-color: var(--cwc-border-color-dimmed);
   }
 }
 
