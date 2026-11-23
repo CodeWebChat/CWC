@@ -250,18 +250,18 @@ const main = async () => {
     }
 
     if (chatbot?.setup_observer) {
-      const inject_button = stored_data.inject_apply_response_button ?? false
+      const bind_copy = stored_data.inject_apply_response_button ?? false
 
       set_session_state({
         client_id: stored_data.client_id,
         raw_instructions: stored_data.raw_instructions,
-        inject_button,
+        bind_copy,
         web_configuration_details: stored_data.web_configuration_details
       })
       chatbot.setup_observer({
         client_id: stored_data.client_id,
         raw_instructions: stored_data.raw_instructions,
-        inject_button
+        bind_copy
       })
     } else {
       set_session_state(null)
@@ -273,7 +273,7 @@ const main = async () => {
           chatbot.setup_observer({
             client_id: session_state.client_id,
             raw_instructions: session_state.raw_instructions,
-            inject_button: session_state.inject_button ?? true
+            bind_copy: session_state.bind_copy ?? true
           })
         }
       } catch (e) {

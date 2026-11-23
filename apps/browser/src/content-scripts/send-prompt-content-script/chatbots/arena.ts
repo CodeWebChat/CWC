@@ -1,8 +1,8 @@
 import { Chatbot } from '../types/chatbot'
 import {
-  add_apply_response_button,
+  bind_copy_button,
   observe_for_responses
-} from '../utils/add-apply-response-button'
+} from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const arena: Chatbot = {
@@ -33,25 +33,24 @@ export const arena: Chatbot = {
     input_element.dispatchEvent(new Event('input', { bubbles: true }))
   },
   setup_observer: (params) => {
-    const add_buttons = (footer: Element) => {
-      add_apply_response_button({
+    const bind_buttons = (footer: Element) => {
+      bind_copy_button({
         client_id: params.client_id,
         raw_instructions: params.raw_instructions,
         footer,
-        perform_copy: (f) => {
+        get_copy_button: (f) => {
           const copy_button = f.querySelector(
             'button:has([d="M15 9V4.6C15 4.26863 14.7314 4 14.4 4H4.6C4.26863 4 4 4.26863 4 4.6V14.4C4 14.7314 4.26863 15 4.6 15H9"])'
           ) as HTMLElement
           if (!copy_button) {
             report_initialization_error({
-              function_name: 'arena.perform_copy',
+              function_name: 'arena.get_copy_button',
               log_message: 'Copy button not found'
             })
-            return
+            return null
           }
-          copy_button.click()
-        },
-        insert_button: (f, b) => f.insertBefore(b, f.children[0])
+          return copy_button
+        }
       })
     }
 
@@ -60,7 +59,7 @@ export const arena: Chatbot = {
       is_generating: () => !!document.querySelector('ol .animate-spin'),
       footer_selector:
         'ol .bg-surface-primary > div:last-child > div > div, [role="presentation"] > div',
-      add_buttons: params.inject_button ? add_buttons : undefined
+      bind_buttons: params.bind_copy ? bind_buttons : undefined
     })
   }
 }

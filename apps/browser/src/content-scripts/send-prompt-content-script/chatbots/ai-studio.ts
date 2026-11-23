@@ -2,7 +2,7 @@ import { Message } from '@/types/messages'
 import { Chatbot } from '../types/chatbot'
 import { CHATBOTS } from '@shared/constants/chatbots'
 import { show_response_ready_notification } from '../utils/show-response-ready-notification'
-import { add_apply_response_button } from '../utils/add-apply-response-button'
+import { trigger_apply } from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const ai_studio: Chatbot = {
@@ -218,46 +218,13 @@ export const ai_studio: Chatbot = {
     await close_panel()
   },
   setup_observer: (params) => {
-    const add_buttons = (footer: Element) => {
-      add_apply_response_button({
-        client_id: params.client_id,
-        raw_instructions: params.raw_instructions,
-        footer,
-        perform_copy: (f) => {
-          const chat_turn_container = f.closest('.chat-turn-container')
-          if (!chat_turn_container) {
-            report_initialization_error({
-              function_name: 'ai_studio.perform_copy',
-              log_message: 'Chat turn container not found'
-            })
-            return
-          }
-          const options = chat_turn_container.querySelector(
-            'ms-chat-turn-options > div > button'
-          ) as HTMLElement
-          if (!options) {
-            report_initialization_error({
-              function_name: 'ai_studio.perform_copy',
-              log_message: 'Options button not found'
-            })
-            return
-          }
-          options.click()
-          const markdown_copy_button = Array.from(
-            document.querySelectorAll('button')
-          ).find((button) =>
-            button.textContent?.includes('markdown_copy')
-          ) as HTMLElement
-          if (!markdown_copy_button) {
-            report_initialization_error({
-              function_name: 'ai_studio.perform_copy',
-              log_message: 'Markdown copy button not found'
-            })
-            return
-          }
-          markdown_copy_button.click()
-        },
-        insert_button: (f, b) => f.insertBefore(b, f.children[2])
+    if (params.bind_copy) {
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement
+        const button = target.closest('button')
+        if (button && button.textContent?.includes('markdown_copy')) {
+          trigger_apply(params)
+        }
       })
     }
 
@@ -285,9 +252,6 @@ export const ai_studio: Chatbot = {
               })
               show_response_ready_notification({ chatbot_name: 'AI Studio' })
               footer.setAttribute('data-cwc-processed', 'true')
-            }
-            if (params.inject_button) {
-              add_buttons(footer)
             }
           }
         })

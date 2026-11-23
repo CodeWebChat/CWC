@@ -1,8 +1,8 @@
 import { Chatbot } from '../types/chatbot'
 import {
-  add_apply_response_button,
+  bind_copy_button,
   observe_for_responses
-} from '../utils/add-apply-response-button'
+} from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const kimi: Chatbot = {
@@ -40,27 +40,23 @@ export const kimi: Chatbot = {
     )
   },
   setup_observer: (params) => {
-    const add_buttons = (footer: Element) => {
-      add_apply_response_button({
+    const bind_buttons = (footer: Element) => {
+      bind_copy_button({
         client_id: params.client_id,
         raw_instructions: params.raw_instructions,
         footer,
-        perform_copy: (f) => {
+        get_copy_button: (f) => {
           const copy_button = f.querySelector(
             '.segment-assistant-actions-content > div:first-child'
           ) as HTMLElement
           if (!copy_button) {
             report_initialization_error({
-              function_name: 'kimi.perform_copy',
+              function_name: 'kimi.get_copy_button',
               log_message: 'Copy button not found'
             })
-            return
+            return null
           }
-          copy_button.click()
-        },
-        insert_button: (f, b) => {
-          // This relies on `document.querySelector` instead of a footer-relative one, which is brittle.
-          f.insertBefore(b, f.children[6])
+          return copy_button
         }
       })
     }
@@ -72,7 +68,7 @@ export const kimi: Chatbot = {
           'path[d="M331.946667 379.904c-11.946667 23.466667-11.946667 54.186667-11.946667 115.626667v32.938666c0 61.44 0 92.16 11.946667 115.626667 10.538667 20.650667 27.306667 37.418667 47.957333 47.957333 23.466667 11.946667 54.186667 11.946667 115.626667 11.946667h32.938666c61.44 0 92.16 0 115.626667-11.946667 20.650667-10.538667 37.418667-27.306667 47.957333-47.957333 11.946667-23.466667 11.946667-54.186667 11.946667-115.626667v-32.938666c0-61.44 0-92.16-11.946667-115.626667a109.696 109.696 0 0 0-47.957333-47.957333c-23.466667-11.946667-54.186667-11.946667-115.626667-11.946667h-32.938666c-61.44 0-92.16 0-115.626667 11.946667-20.650667 10.538667-37.418667 27.306667-47.957333 47.957333z"]'
         ),
       footer_selector: '.segment-assistant-actions-content',
-      add_buttons: params.inject_button ? add_buttons : undefined
+      bind_buttons: params.bind_copy ? bind_buttons : undefined
     })
   }
 }

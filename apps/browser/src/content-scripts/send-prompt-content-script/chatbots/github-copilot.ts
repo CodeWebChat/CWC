@@ -1,8 +1,8 @@
 import { Chatbot } from '../types/chatbot'
 import {
-  add_apply_response_button,
+  bind_copy_button,
   observe_for_responses
-} from '../utils/add-apply-response-button'
+} from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const github_copilot: Chatbot = {
@@ -34,25 +34,24 @@ export const github_copilot: Chatbot = {
     input_element.focus()
   },
   setup_observer: (params) => {
-    const add_buttons = (footer: Element) => {
-      add_apply_response_button({
+    const bind_buttons = (footer: Element) => {
+      bind_copy_button({
         client_id: params.client_id,
         raw_instructions: params.raw_instructions,
         footer,
-        perform_copy: (f) => {
+        get_copy_button: (f) => {
           const copy_button = f.querySelector(
             'button:nth-of-type(3)'
           ) as HTMLElement
           if (!copy_button) {
             report_initialization_error({
-              function_name: 'github_copilot.perform_copy',
+              function_name: 'github_copilot.get_copy_button',
               log_message: 'Copy button not found'
             })
-            return
+            return null
           }
-          copy_button.click()
-        },
-        insert_button: (f, b) => f.insertBefore(b, f.children[7])
+          return copy_button
+        }
       })
     }
 
@@ -63,7 +62,7 @@ export const github_copilot: Chatbot = {
           'path[d="M5.75 4h4.5c.966 0 1.75.784 1.75 1.75v4.5A1.75 1.75 0 0 1 10.25 12h-4.5A1.75 1.75 0 0 1 4 10.25v-4.5C4 4.784 4.784 4 5.75 4Z"]'
         ),
       footer_selector: 'div[data-testid="nonshared-toolbar"]',
-      add_buttons: params.inject_button ? add_buttons : undefined
+      bind_buttons: params.bind_copy ? bind_buttons : undefined
     })
   }
 }

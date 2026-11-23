@@ -1,9 +1,9 @@
 import { Chatbot } from '../types/chatbot'
 import { CHATBOTS } from '@shared/constants/chatbots'
 import {
-  add_apply_response_button,
+  bind_copy_button,
   observe_for_responses
-} from '../utils/add-apply-response-button'
+} from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const doubao: Chatbot = {
@@ -115,26 +115,24 @@ export const doubao: Chatbot = {
     input_element.dispatchEvent(new Event('input', { bubbles: true }))
   },
   setup_observer: (params) => {
-    const add_buttons = (footer: Element) => {
-      add_apply_response_button({
+    const bind_buttons = (footer: Element) => {
+      bind_copy_button({
         client_id: params.client_id,
         raw_instructions: params.raw_instructions,
         footer,
-        perform_copy: (f) => {
+        get_copy_button: (f) => {
           const copy_button = f.querySelector(
             'button[data-testid="message_action_copy"]'
           ) as HTMLElement
           if (!copy_button) {
             report_initialization_error({
-              function_name: 'doubao.perform_copy',
+              function_name: 'doubao.get_copy_button',
               log_message: 'Copy button not found'
             })
-            return
+            return null
           }
-          copy_button.click()
-        },
-        insert_button: (f, b) =>
-          f.insertBefore(b, f.children[f.children.length])
+          return copy_button
+        }
       })
     }
 
@@ -146,7 +144,7 @@ export const doubao: Chatbot = {
           ?.classList.contains('!hidden'),
       footer_selector:
         'div[data-testid="message_action_bar"] > div > div > div',
-      add_buttons: params.inject_button ? add_buttons : undefined
+      bind_buttons: params.bind_copy ? bind_buttons : undefined
     })
   }
 }

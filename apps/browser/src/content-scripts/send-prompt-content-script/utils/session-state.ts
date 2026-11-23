@@ -1,7 +1,7 @@
 export let session_state: {
   client_id: string
   raw_instructions?: string
-  inject_button?: boolean
+  bind_copy?: boolean
   web_configuration_details?: {
     chatbot: string
     model?: string

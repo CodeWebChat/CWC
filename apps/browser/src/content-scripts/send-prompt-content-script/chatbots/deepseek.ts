@@ -1,9 +1,9 @@
 import { CHATBOTS } from '@shared/constants/chatbots'
 import { Chatbot } from '../types/chatbot'
 import {
-  add_apply_response_button,
+  bind_copy_button,
   observe_for_responses
-} from '../utils/add-apply-response-button'
+} from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const deepseek: Chatbot = {
@@ -95,33 +95,24 @@ export const deepseek: Chatbot = {
     input_element.dispatchEvent(new Event('input', { bubbles: true }))
   },
   setup_observer: (params) => {
-    const add_buttons = (footer: Element) => {
-      add_apply_response_button({
+    const bind_buttons = (footer: Element) => {
+      bind_copy_button({
         client_id: params.client_id,
         raw_instructions: params.raw_instructions,
         footer,
-        perform_copy: (f) => {
+        get_copy_button: (f) => {
           const copy_button = f.querySelector(
             'div[role="button"]'
           ) as HTMLElement
           if (!copy_button) {
             report_initialization_error({
-              function_name: 'deepseek.perform_copy',
+              function_name: 'deepseek.get_copy_button',
               log_message: 'Copy button not found'
             })
-            return
+            return null
           }
-          if (!copy_button) {
-            report_initialization_error({
-              function_name: 'deepseek.perform_copy',
-              log_message: 'Copy button not found'
-            })
-            return
-          }
-          copy_button.click()
-        },
-        insert_button: (f, b) =>
-          f.insertBefore(b, f.children[f.children.length])
+          return copy_button
+        }
       })
     }
 
@@ -132,7 +123,7 @@ export const deepseek: Chatbot = {
           'path[d="M2 4.88C2 3.68009 2 3.08013 2.30557 2.65954C2.40426 2.52371 2.52371 2.40426 2.65954 2.30557C3.08013 2 3.68009 2 4.88 2H11.12C12.3199 2 12.9199 2 13.3405 2.30557C13.4763 2.40426 13.5957 2.52371 13.6944 2.65954C14 3.08013 14 3.68009 14 4.88V11.12C14 12.3199 14 12.9199 13.6944 13.3405C13.5957 13.4763 13.4763 13.5957 13.3405 13.6944C12.9199 14 12.3199 14 11.12 14H4.88C3.68009 14 3.08013 14 2.65954 13.6944C2.52371 13.5957 2.40426 13.4763 2.30557 13.3405C2 12.9199 2 12.3199 2 11.12V4.88Z"]'
         ),
       footer_selector: 'div.ds-message + div > div.ds-flex',
-      add_buttons: params.inject_button ? add_buttons : undefined
+      bind_buttons: params.bind_copy ? bind_buttons : undefined
     })
   }
 }

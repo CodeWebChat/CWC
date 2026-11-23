@@ -1,8 +1,8 @@
 import { Chatbot } from '../types/chatbot'
 import {
-  add_apply_response_button,
+  bind_copy_button,
   observe_for_responses
-} from '../utils/add-apply-response-button'
+} from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const mistral: Chatbot = {
@@ -112,32 +112,24 @@ export const mistral: Chatbot = {
     await new Promise((r) => requestAnimationFrame(r))
   },
   setup_observer: (params) => {
-    const add_buttons = (footer: Element) => {
-      add_apply_response_button({
+    const bind_buttons = (footer: Element) => {
+      bind_copy_button({
         client_id: params.client_id,
         raw_instructions: params.raw_instructions,
         footer,
-        perform_copy: (f) => {
+        get_copy_button: (f) => {
           const copy_button = f.querySelector(
             'button:nth-child(5)'
           ) as HTMLElement
           if (!copy_button) {
             report_initialization_error({
-              function_name: 'mistral.perform_copy',
+              function_name: 'mistral.get_copy_button',
               log_message: 'Copy button not found'
             })
-            return
+            return null
           }
-          if (!copy_button) {
-            report_initialization_error({
-              function_name: 'mistral.perform_copy',
-              log_message: 'Copy button not found'
-            })
-            return
-          }
-          copy_button.click()
-        },
-        insert_button: (f, b) => f.insertBefore(b, f.children[0])
+          return copy_button
+        }
       })
     }
 
@@ -147,7 +139,7 @@ export const mistral: Chatbot = {
         is_generating: () => !!document.querySelector('form rect[rx="2"]'),
         footer_selector:
           'div[data-message-author-role="assistant"] > div > div:last-child > div:first-child',
-        add_buttons: params.inject_button ? add_buttons : undefined
+        bind_buttons: params.bind_copy ? bind_buttons : undefined
       })
     })
   }

@@ -1,9 +1,9 @@
 import { CHATBOTS } from '@shared/constants/chatbots'
 import { Chatbot } from '../types/chatbot'
 import {
-  add_apply_response_button,
+  bind_copy_button,
   observe_for_responses
-} from '../utils/add-apply-response-button'
+} from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const chatgpt: Chatbot = {
@@ -14,16 +14,8 @@ export const chatgpt: Chatbot = {
           'div[contenteditable="true"]'
         ) as HTMLElement
 
-        // const thread_header_button = document.querySelector(
-        //   'div[data-testid="thread-header-right-actions"] > div:first-child button'
-        // )
-
-        // const reasoning_effort_button = document.querySelector(
-        //   'div[data-composer-transition-slot="trailing"] > div:first-child button'
-        // )
-
         const is_ready = true
-        // thread_header_button !== null || reasoning_effort_button !== null
+        // thread_heder_button !== null || reasoning_effort_button !== null
 
         if (input_element && is_ready) {
           input_element.innerText = ' '
@@ -180,26 +172,24 @@ export const chatgpt: Chatbot = {
     input_element.dispatchEvent(new Event('input', { bubbles: true }))
   },
   setup_observer: (params) => {
-    const add_buttons = (footer: Element) => {
-      add_apply_response_button({
+    const bind_buttons = (footer: Element) => {
+      bind_copy_button({
         client_id: params.client_id,
         raw_instructions: params.raw_instructions,
         footer,
-        perform_copy: (f) => {
+        get_copy_button: (f) => {
           const copy_button = f.querySelector(
             'button:first-child'
           ) as HTMLElement
           if (!copy_button) {
             report_initialization_error({
-              function_name: 'chatgpt.perform_copy',
+              function_name: 'chatgpt.get_copy_button',
               log_message: 'Copy button not found'
             })
-            return
+            return null
           }
-          copy_button.click()
-        },
-        insert_button: (f, b) =>
-          f.insertBefore(b, f.children[f.children.length])
+          return copy_button
+        }
       })
     }
 
@@ -211,7 +201,7 @@ export const chatgpt: Chatbot = {
         ),
       footer_selector:
         'div[data-talvt-turn-state="complete"] > div:last-child > div',
-      add_buttons: params.inject_button ? add_buttons : undefined
+      bind_buttons: params.bind_copy ? bind_buttons : undefined
     })
   }
 }

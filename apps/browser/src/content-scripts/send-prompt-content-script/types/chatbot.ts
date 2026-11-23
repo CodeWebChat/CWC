@@ -9,7 +9,7 @@ export type Chatbot = {
   setup_observer?: (params: {
     client_id: string
     raw_instructions?: string
-    inject_button: boolean
+    bind_copy: boolean
   }) => void
   enter_message?: (params: { message: string }) => Promise<void>
 }
