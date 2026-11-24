@@ -2,7 +2,7 @@ import { Message } from '@/types/messages'
 import { Chatbot } from '../types/chatbot'
 import { CHATBOTS } from '@shared/constants/chatbots'
 import { show_response_ready_notification } from '../utils/show-response-ready-notification'
-import { trigger_apply } from '../utils/bind-copy-button'
+import { wait_for_copy_and_apply } from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
 export const ai_studio: Chatbot = {
@@ -223,7 +223,7 @@ export const ai_studio: Chatbot = {
         const target = e.target as HTMLElement
         const button = target.closest('button')
         if (button && button.textContent?.includes('markdown_copy')) {
-          trigger_apply(params)
+          wait_for_copy_and_apply(params)
         }
       })
     }

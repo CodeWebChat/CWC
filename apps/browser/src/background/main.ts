@@ -3,7 +3,7 @@ import { setup_keep_alive } from './keep-alive'
 import { setup_message_listeners } from './message-handler'
 import { clear_chat_init_data } from './clear-chat-init-data'
 
-async function init() {
+const init = async () => {
   await clear_chat_init_data()
   check_and_recover_connection()
   setup_keep_alive()
