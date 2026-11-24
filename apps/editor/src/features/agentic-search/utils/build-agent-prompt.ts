@@ -19,13 +19,13 @@ export const build_agent_prompt = (
 
   prompt += `\n\n# Query\n\n${query}`
 
+  if (search_instructions && search_instructions.trim() !== '') {
+    prompt += `\n${search_instructions.trim()}`
+  }
+
   if (completed_tasks && completed_tasks.length > 0) {
     const tasks_str = completed_tasks.map((t) => `- [x] ${t}`).join('\n')
     prompt += `\n\n## Past instructions\n\n${tasks_str}`
-  }
-
-  if (search_instructions && search_instructions.trim() !== '') {
-    prompt += `\n\n## Search instructions\n\n${search_instructions.trim()}`
   }
 
   return prompt
