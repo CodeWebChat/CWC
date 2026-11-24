@@ -1001,6 +1001,19 @@
           "scope": "resource",
           "default": true
         },
+        "codeWebChat.defaultActionForCommitMessage": {
+          "type": "string",
+          "scope": "resource",
+          "enum": [
+            "ask",
+            "send-request",
+            "invoke-agent",
+            "autofill-chatbot",
+            "enter-manually",
+            "copy-prompt"
+          ],
+          "default": "ask"
+        },
         "codeWebChat.defaultOptionForVoiceInput": {
           "type": "string",
           "scope": "resource",

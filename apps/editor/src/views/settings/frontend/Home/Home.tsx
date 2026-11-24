@@ -9,7 +9,8 @@ import {
   ApiConfiguration,
   Provider,
   PromptInstruction,
-  PromptInstructionKey
+  PromptInstructionKey,
+  DefaultActionForCommitMessage
 } from '@/views/settings/types/messages'
 import { WebConfiguration } from '@/types/web-configuration'
 import { CliConfiguration } from '@/types/cli-configuration'
@@ -140,6 +141,7 @@ type Props = {
   attach_ascii_tree_of_context: 'ask' | 'always' | 'never'
   use_context_files_in_commit_message_prompt: 'ask' | 'always' | 'never'
   select_all_prompts_in_commit_messages_by_default: boolean
+  default_action_for_commit_message: DefaultActionForCommitMessage
   update_check_frequency: 'hourly' | 'daily' | 'weekly' | 'monthly'
   on_update_check_frequency_change: (
     value: 'hourly' | 'daily' | 'weekly' | 'monthly'
@@ -206,6 +208,9 @@ type Props = {
   ) => void
   on_select_all_prompts_in_commit_messages_by_default_change: (
     enabled: boolean
+  ) => void
+  on_default_action_for_commit_message_change: (
+    value: DefaultActionForCommitMessage
   ) => void
   on_edit_files_system_instructions_change: (instructions: string) => void
   on_gemini_user_id_change: (id: number | null) => void
@@ -401,6 +406,12 @@ export const Home: React.FC<Props> = (props) => {
           }
           on_select_all_prompts_in_commit_messages_by_default_change={
             props.on_select_all_prompts_in_commit_messages_by_default_change
+          }
+          default_action_for_commit_message={
+            props.default_action_for_commit_message
+          }
+          on_default_action_for_commit_message_change={
+            props.on_default_action_for_commit_message_change
           }
           default_option_for_voice_input={props.default_option_for_voice_input}
           on_default_option_for_voice_input_change={

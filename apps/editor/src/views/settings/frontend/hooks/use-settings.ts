@@ -4,7 +4,8 @@ import {
   ApiConfiguration,
   Provider,
   PromptInstruction,
-  PromptInstructionKey
+  PromptInstructionKey,
+  DefaultActionForCommitMessage
 } from '@/views/settings/types/messages'
 import { ApiFeature } from '@/views/shared/types/api-features'
 import { post_message } from '../utils/post-message'
@@ -78,6 +79,10 @@ export const use_settings = (vscode: any) => {
     select_all_prompts_in_commit_messages_by_default,
     set_select_all_prompts_in_commit_messages_by_default
   ] = useState<boolean | undefined>(undefined)
+  const [
+    default_action_for_commit_message,
+    set_default_action_for_commit_message
+  ] = useState<DefaultActionForCommitMessage | undefined>(undefined)
   const [edit_files_system_instructions, set_edit_files_system_instructions] =
     useState<string | undefined>(undefined)
   const [
@@ -123,6 +128,9 @@ export const use_settings = (vscode: any) => {
     })
     post_message(vscode, {
       command: 'GET_SELECT_ALL_PROMPTS_IN_COMMIT_MESSAGES_BY_DEFAULT'
+    })
+    post_message(vscode, {
+      command: 'GET_DEFAULT_ACTION_FOR_COMMIT_MESSAGE'
     })
     post_message(vscode, { command: 'GET_GEMINI_USER_ID' })
     post_message(vscode, { command: 'GET_AI_STUDIO_USER_ID' })
@@ -179,6 +187,8 @@ export const use_settings = (vscode: any) => {
         message.command === 'SELECT_ALL_PROMPTS_IN_COMMIT_MESSAGES_BY_DEFAULT'
       ) {
         set_select_all_prompts_in_commit_messages_by_default(message.enabled)
+      } else if (message.command === 'DEFAULT_ACTION_FOR_COMMIT_MESSAGE') {
+        set_default_action_for_commit_message(message.value)
       } else if (message.command === 'GEMINI_USER_ID') {
         set_gemini_user_id(message.geminiUserId)
       } else if (message.command === 'AI_STUDIO_USER_ID') {
@@ -428,6 +438,16 @@ export const use_settings = (vscode: any) => {
     })
   }
 
+  const handle_default_action_for_commit_message_change = (
+    value: DefaultActionForCommitMessage
+  ) => {
+    set_default_action_for_commit_message(value)
+    post_message(vscode, {
+      command: 'UPDATE_DEFAULT_ACTION_FOR_COMMIT_MESSAGE',
+      value
+    })
+  }
+
   const handle_edit_files_system_instructions_change = (instructions: string) =>
     post_message(vscode, {
       command: 'UPDATE_EDIT_FILES_SYSTEM_INSTRUCTIONS',
@@ -570,6 +590,7 @@ export const use_settings = (vscode: any) => {
     attach_ascii_tree_of_context,
     use_context_files_in_commit_message_prompt,
     select_all_prompts_in_commit_messages_by_default,
+    default_action_for_commit_message,
     edit_files_system_instructions,
     default_edit_files_system_instructions,
     gemini_user_id,
@@ -604,6 +625,7 @@ export const use_settings = (vscode: any) => {
     handle_attach_ascii_tree_of_context_change,
     handle_use_context_files_in_commit_message_prompt_change,
     handle_select_all_prompts_in_commit_messages_by_default_change,
+    handle_default_action_for_commit_message_change,
     handle_edit_files_system_instructions_change,
     handle_open_editor_settings,
     handle_open_ignore_patterns_settings,

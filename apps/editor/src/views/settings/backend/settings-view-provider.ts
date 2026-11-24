@@ -139,6 +139,16 @@ export class SettingsViewProvider {
           await handlers.handle_update_include_prompts_in_commit_messages(
             message
           )
+        } else if (
+          message.command === 'GET_DEFAULT_ACTION_FOR_COMMIT_MESSAGE'
+        ) {
+          await handlers.handle_get_default_action_for_commit_message(this)
+        } else if (
+          message.command === 'UPDATE_DEFAULT_ACTION_FOR_COMMIT_MESSAGE'
+        ) {
+          await handlers.handle_update_default_action_for_commit_message(
+            message
+          )
         } else if (message.command === 'GET_UPDATE_CHECK_FREQUENCY') {
           await handlers.handle_get_update_check_frequency(this)
         } else if (message.command === 'UPDATE_UPDATE_CHECK_FREQUENCY') {
@@ -275,6 +285,7 @@ export class SettingsViewProvider {
             this
           )
           void handlers.handle_get_include_prompts_in_commit_messages(this)
+          void handlers.handle_get_default_action_for_commit_message(this)
           void handlers.handle_get_update_check_frequency(this)
           void handlers.handle_get_minimum_release_age(this)
           void handlers.handle_get_default_option_for_voice_input(this)

@@ -89,6 +89,23 @@ export interface UpdateSelectAllPromptsInCommitMessagesByDefaultMessage {
   enabled: boolean
 }
 
+export type DefaultActionForCommitMessage =
+  | 'ask'
+  | 'send-request'
+  | 'invoke-agent'
+  | 'autofill-chatbot'
+  | 'enter-manually'
+  | 'copy-prompt'
+
+export interface GetDefaultActionForCommitMessageMessage {
+  command: 'GET_DEFAULT_ACTION_FOR_COMMIT_MESSAGE'
+}
+
+export interface UpdateDefaultActionForCommitMessageMessage {
+  command: 'UPDATE_DEFAULT_ACTION_FOR_COMMIT_MESSAGE'
+  value: DefaultActionForCommitMessage
+}
+
 export interface GetDefaultOptionForVoiceInputMessage {
   command: 'GET_DEFAULT_OPTION_FOR_VOICE_INPUT'
 }
@@ -455,6 +472,8 @@ export type FrontendMessage =
   | UpdateUseContextFilesInCommitMessagePromptMessage
   | GetSelectAllPromptsInCommitMessagesByDefaultMessage
   | UpdateSelectAllPromptsInCommitMessagesByDefaultMessage
+  | GetDefaultActionForCommitMessageMessage
+  | UpdateDefaultActionForCommitMessageMessage
   | GetDefaultOptionForVoiceInputMessage
   | UpdateDefaultOptionForVoiceInputMessage
   | GetUpdateCheckFrequencyMessage
@@ -554,6 +573,11 @@ export interface UseContextFilesInCommitMessagePromptMessage {
 export interface SelectAllPromptsInCommitMessagesByDefaultMessage {
   command: 'SELECT_ALL_PROMPTS_IN_COMMIT_MESSAGES_BY_DEFAULT'
   enabled: boolean
+}
+
+export interface DefaultActionForCommitMessageMessage {
+  command: 'DEFAULT_ACTION_FOR_COMMIT_MESSAGE'
+  value: DefaultActionForCommitMessage
 }
 
 export interface DefaultOptionForVoiceInputMessage {
@@ -765,6 +789,7 @@ export type BackendMessage =
   | AttachAsciiTreeOfContextMessage
   | UseContextFilesInCommitMessagePromptMessage
   | SelectAllPromptsInCommitMessagesByDefaultMessage
+  | DefaultActionForCommitMessageMessage
   | DefaultOptionForVoiceInputMessage
   | UpdateCheckFrequencyMessage
   | MinimumReleaseAgeMessage

@@ -12,7 +12,8 @@ import { Translation, use_translation } from '../../i18n/use-translation'
 import { NavItem } from '../Home'
 import {
   PromptInstruction,
-  PromptInstructionKey
+  PromptInstructionKey,
+  DefaultActionForCommitMessage
 } from '@/views/settings/types/messages'
 import { TemplatesForm } from '../../forms/TemplatesForm'
 import { SnippetsForm } from '../../forms/SnippetsForm'
@@ -42,6 +43,10 @@ type Props = {
   select_all_prompts_in_commit_messages_by_default: boolean
   on_select_all_prompts_in_commit_messages_by_default_change: (
     enabled: boolean
+  ) => void
+  default_action_for_commit_message: DefaultActionForCommitMessage
+  on_default_action_for_commit_message_change: (
+    value: DefaultActionForCommitMessage
   ) => void
   default_option_for_voice_input: 'ask' | 'send-request' | 'invoke-agent'
   on_default_option_for_voice_input_change: (
@@ -313,6 +318,44 @@ export const GeneralSection = forwardRef<HTMLDivElement, Props>(
                 on_action_click={props.on_restore_commit_instructions}
               />
             </UiItem>
+            <UiItem
+              title={t('general.commits.default-action.title')}
+              description={t('general.commits.default-action.description')}
+              slot_right={
+                <UiDropdown
+                  options={[
+                    {
+                      value: 'ask',
+                      label: t('common.ask')
+                    },
+                    {
+                      value: 'send-request',
+                      label: t('general.commits.default-action.send-request')
+                    },
+                    {
+                      value: 'invoke-agent',
+                      label: t('general.commits.default-action.invoke-agent')
+                    },
+                    {
+                      value: 'autofill-chatbot',
+                      label: t(
+                        'general.commits.default-action.autofill-chatbot'
+                      )
+                    },
+                    {
+                      value: 'enter-manually',
+                      label: t('general.commits.default-action.enter-manually')
+                    },
+                    {
+                      value: 'copy-prompt',
+                      label: t('general.commits.default-action.copy-prompt')
+                    }
+                  ]}
+                  value={props.default_action_for_commit_message}
+                  onChange={props.on_default_action_for_commit_message_change}
+                />
+              }
+            />
             <UiItem
               title={t(
                 'general.commits.use-context-files-in-commit-message-prompt.title'

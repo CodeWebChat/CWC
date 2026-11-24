@@ -138,6 +138,70 @@ export const run_generate_action = async (params: {
       const action_enter_manually = t('common.action.enter-manually')
       const action_copy_prompt = t('common.action.copy-prompt')
 
+      const default_action = vscode.workspace
+        .getConfiguration('codeWebChat')
+        .get<
+          | 'ask'
+          | 'send-request'
+          | 'invoke-agent'
+          | 'autofill-chatbot'
+          | 'enter-manually'
+          | 'copy-prompt'
+        >('defaultActionForCommitMessage', 'ask')
+
+      const map_default_action_to_id = (
+        action: typeof default_action
+      ): string | undefined => {
+        switch (action) {
+          case 'send-request':
+            return 'make-api'
+          case 'invoke-agent':
+            return 'invoke-agent'
+          case 'autofill-chatbot':
+            return 'autofill'
+          case 'enter-manually':
+            return 'manual'
+          case 'copy-prompt':
+            return 'copy'
+          default:
+            return undefined
+        }
+      }
+
+      const go_back_before_action = async (): Promise<
+        'context' | 'prompt_data' | 'return'
+      > => {
+        const diffs_only_tokens = Math.ceil(
+          prompt_diffs_only.api_prompt.length / 4
+        )
+        const skip_tokens = Math.ceil(
+          prompt_without_context.api_prompt.length / 4
+        )
+        const additional_tokens = prompt_with_context
+          ? Math.ceil(prompt_with_context.api_prompt.length / 4) - skip_tokens
+          : 0
+        if (
+          setting === 'ask' &&
+          (additional_tokens > 0 || diffs_only_tokens < skip_tokens)
+        ) {
+          return 'context'
+        }
+
+        if (was_empty_stage) {
+          if (!show_back_button) {
+            await vscode.commands.executeCommand('git.unstageAll', repository)
+            return 'return'
+          }
+
+          await vscode.commands.executeCommand('git.unstageAll', repository)
+          files_staged_by_action = false
+          is_single_change_flow = false
+          return 'prompt_data'
+        }
+        return 'return'
+      }
+
+      let skip_default_action = false
       let go_back_to_prompt_data = false
       let action_completed = false
       let final_api_prompt: string | undefined = undefined
@@ -328,163 +392,144 @@ export const run_generate_action = async (params: {
           }
         } else if (step === 'action') {
           if (!current_action) {
-            current_action = await new Promise<string | undefined | 'back'>(
-              (resolve) => {
-                const quick_pick = vscode.window.createQuickPick<
-                  vscode.QuickPickItem & { id: string }
-                >()
-                quick_pick.items = [
-                  { label: action_make_api, id: 'make-api' },
-                  { label: action_invoke_agent, id: 'invoke-agent' },
-                  ...(params.websocket_manager.is_connected_with_browser()
-                    ? [{ label: action_autofill_chatbot, id: 'autofill' }]
-                    : []),
-                  { label: action_enter_manually, id: 'manual' },
-                  { label: action_copy_prompt, id: 'copy' }
-                ]
+            const mapped_default = !skip_default_action
+              ? map_default_action_to_id(default_action)
+              : undefined
 
-                const last_action_id =
-                  params.extension_context.workspaceState.get<string>(
-                    LAST_USED_COMMIT_MESSAGE_ACTION_STATE_KEY
+            if (mapped_default) {
+              current_action = mapped_default
+            } else {
+              skip_default_action = false
+              current_action = await new Promise<string | undefined | 'back'>(
+                (resolve) => {
+                  const quick_pick = vscode.window.createQuickPick<
+                    vscode.QuickPickItem & { id: string }
+                  >()
+                  quick_pick.items = [
+                    { label: action_make_api, id: 'make-api' },
+                    { label: action_invoke_agent, id: 'invoke-agent' },
+                    ...(params.websocket_manager.is_connected_with_browser()
+                      ? [{ label: action_autofill_chatbot, id: 'autofill' }]
+                      : []),
+                    { label: action_enter_manually, id: 'manual' },
+                    { label: action_copy_prompt, id: 'copy' }
+                  ]
+
+                  const last_action_id =
+                    params.extension_context.workspaceState.get<string>(
+                      LAST_USED_COMMIT_MESSAGE_ACTION_STATE_KEY
+                    )
+
+                  const active_item = last_action_id
+                    ? quick_pick.items.find((i) => i.id === last_action_id)
+                    : undefined
+
+                  if (active_item) {
+                    quick_pick.activeItems = [active_item]
+                  } else if (quick_pick.items.length > 0) {
+                    quick_pick.activeItems = [quick_pick.items[0]]
+                  }
+
+                  quick_pick.title = t(
+                    'command.generate-commit-message-command.action-quick-pick.title'
                   )
 
-                const active_item = last_action_id
-                  ? quick_pick.items.find((i) => i.id === last_action_id)
-                  : undefined
+                  const token_count = Math.ceil(final_api_prompt!.length / 4)
+                  quick_pick.placeholder = t(
+                    'command.generate-commit-message-command.action-quick-pick.placeholder',
+                    { tokens: display_token_count(token_count) }
+                  )
 
-                if (active_item) {
-                  quick_pick.activeItems = [active_item]
-                } else if (quick_pick.items.length > 0) {
-                  quick_pick.activeItems = [quick_pick.items[0]]
-                }
+                  const diffs_only_tokens = Math.ceil(
+                    prompt_diffs_only.api_prompt.length / 4
+                  )
+                  const skip_tokens = Math.ceil(
+                    prompt_without_context.api_prompt.length / 4
+                  )
+                  const additional_tokens = prompt_with_context
+                    ? Math.ceil(prompt_with_context.api_prompt.length / 4) -
+                      skip_tokens
+                    : 0
+                  const can_go_back_to_context =
+                    setting === 'ask' &&
+                    (additional_tokens > 0 || diffs_only_tokens < skip_tokens)
 
-                quick_pick.title = t(
-                  'command.generate-commit-message-command.action-quick-pick.title'
-                )
+                  const show_back_btn_here =
+                    show_back_button || can_go_back_to_context
 
-                const token_count = Math.ceil(final_api_prompt!.length / 4)
-                quick_pick.placeholder = t(
-                  'command.generate-commit-message-command.action-quick-pick.placeholder',
-                  { tokens: display_token_count(token_count) }
-                )
+                  quick_pick.ignoreFocusOut = show_back_btn_here
 
-                const diffs_only_tokens = Math.ceil(
-                  prompt_diffs_only.api_prompt.length / 4
-                )
-                const skip_tokens = Math.ceil(
-                  prompt_without_context.api_prompt.length / 4
-                )
-                const additional_tokens = prompt_with_context
-                  ? Math.ceil(prompt_with_context.api_prompt.length / 4) -
-                    skip_tokens
-                  : 0
-                const can_go_back_to_context =
-                  setting === 'ask' &&
-                  (additional_tokens > 0 || diffs_only_tokens < skip_tokens)
-
-                const show_back_btn_here =
-                  show_back_button || can_go_back_to_context
-
-                quick_pick.ignoreFocusOut = show_back_btn_here
-
-                const close_button = {
-                  iconPath: new vscode.ThemeIcon('close'),
-                  tooltip: t('common.close')
-                }
-
-                quick_pick.buttons = [
-                  ...(show_back_btn_here
-                    ? [vscode.QuickInputButtons.Back]
-                    : []),
-                  close_button
-                ]
-
-                let is_resolved = false
-
-                quick_pick.onDidTriggerButton((button) => {
-                  if (button === vscode.QuickInputButtons.Back) {
-                    is_resolved = true
-                    resolve('back')
-                    quick_pick.hide()
-                  } else if (button === close_button) {
-                    is_resolved = true
-                    resolve(undefined)
-                    quick_pick.hide()
+                  const close_button = {
+                    iconPath: new vscode.ThemeIcon('close'),
+                    tooltip: t('common.close')
                   }
-                })
 
-                quick_pick.onDidAccept(() => {
-                  is_resolved = true
-                  resolve(quick_pick.selectedItems[0]?.id)
-                  quick_pick.hide()
-                })
+                  quick_pick.buttons = [
+                    ...(show_back_btn_here
+                      ? [vscode.QuickInputButtons.Back]
+                      : []),
+                    close_button
+                  ]
 
-                quick_pick.onDidHide(() => {
-                  if (!is_resolved) {
-                    resolve(show_back_btn_here ? 'back' : undefined)
-                  }
-                  quick_pick.dispose()
-                })
+                  let is_resolved = false
 
-                quick_pick.show()
-              }
-            )
+                  quick_pick.onDidTriggerButton((button) => {
+                    if (button === vscode.QuickInputButtons.Back) {
+                      is_resolved = true
+                      resolve('back')
+                      quick_pick.hide()
+                    } else if (button === close_button) {
+                      is_resolved = true
+                      resolve(undefined)
+                      quick_pick.hide()
+                    }
+                  })
 
-            if (current_action === 'back') {
-              current_action = undefined
-              const diffs_only_tokens = Math.ceil(
-                prompt_diffs_only.api_prompt.length / 4
+                  quick_pick.onDidAccept(() => {
+                    is_resolved = true
+                    resolve(quick_pick.selectedItems[0]?.id)
+                    quick_pick.hide()
+                  })
+
+                  quick_pick.onDidHide(() => {
+                    if (!is_resolved) {
+                      resolve(show_back_btn_here ? 'back' : undefined)
+                    }
+                    quick_pick.dispose()
+                  })
+
+                  quick_pick.show()
+                }
               )
-              const skip_tokens = Math.ceil(
-                prompt_without_context.api_prompt.length / 4
-              )
-              const additional_tokens = prompt_with_context
-                ? Math.ceil(prompt_with_context.api_prompt.length / 4) -
-                  skip_tokens
-                : 0
-              if (
-                setting === 'ask' &&
-                (additional_tokens > 0 || diffs_only_tokens < skip_tokens)
-              ) {
-                step = 'context'
-                continue
+
+              if (current_action === 'back') {
+                current_action = undefined
+                const back_target = await go_back_before_action()
+                if (back_target === 'context') {
+                  step = 'context'
+                  continue
+                } else if (back_target === 'prompt_data') {
+                  go_back_to_prompt_data = true
+                  break
+                }
+                return
               }
 
-              if (was_empty_stage) {
-                if (!show_back_button) {
+              if (!current_action) {
+                if (was_empty_stage) {
                   await vscode.commands.executeCommand(
                     'git.unstageAll',
                     repository
                   )
-                  return
                 }
-
-                await vscode.commands.executeCommand(
-                  'git.unstageAll',
-                  repository
-                )
-                files_staged_by_action = false
-                is_single_change_flow = false
-                go_back_to_prompt_data = true
-                break
+                return
               }
-              return
-            }
 
-            if (!current_action) {
-              if (was_empty_stage) {
-                await vscode.commands.executeCommand(
-                  'git.unstageAll',
-                  repository
-                )
-              }
-              return
+              params.extension_context.workspaceState.update(
+                LAST_USED_COMMIT_MESSAGE_ACTION_STATE_KEY,
+                current_action
+              )
             }
-
-            params.extension_context.workspaceState.update(
-              LAST_USED_COMMIT_MESSAGE_ACTION_STATE_KEY,
-              current_action
-            )
           }
 
           step = 'execute'
@@ -509,6 +554,7 @@ export const run_generate_action = async (params: {
 
           if (action === 'autofill') {
             if (!params.websocket_manager.is_connected_with_browser()) {
+              skip_default_action = true
               current_action = undefined
               step = 'action'
               continue
@@ -524,6 +570,7 @@ export const run_generate_action = async (params: {
 
             if (valid_web_configurations.length === 0) {
               show_incomplete_setup_warning('web')
+              skip_default_action = true
               current_action = undefined
               step = 'action'
               continue
@@ -558,6 +605,17 @@ export const run_generate_action = async (params: {
 
               if (result === 'back') {
                 current_action = undefined
+                if (default_action !== 'ask' && !skip_default_action) {
+                  const back_target = await go_back_before_action()
+                  if (back_target === 'context') {
+                    step = 'context'
+                    continue
+                  } else if (back_target === 'prompt_data') {
+                    go_back_to_prompt_data = true
+                    break
+                  }
+                  return
+                }
                 step = 'action'
                 continue
               } else if (!result) {
@@ -621,6 +679,17 @@ export const run_generate_action = async (params: {
 
             if (invoke_cli_result === 'back') {
               current_action = undefined
+              if (default_action !== 'ask' && !skip_default_action) {
+                const back_target = await go_back_before_action()
+                if (back_target === 'context') {
+                  step = 'context'
+                  continue
+                } else if (back_target === 'prompt_data') {
+                  go_back_to_prompt_data = true
+                  break
+                }
+                return
+              }
               step = 'action'
               continue
             }
@@ -675,6 +744,17 @@ export const run_generate_action = async (params: {
 
             if (api_configuration_data === 'back') {
               current_action = undefined
+              if (default_action !== 'ask' && !skip_default_action) {
+                const back_target = await go_back_before_action()
+                if (back_target === 'context') {
+                  step = 'context'
+                  continue
+                } else if (back_target === 'prompt_data') {
+                  go_back_to_prompt_data = true
+                  break
+                }
+                return
+              }
               step = 'action'
               continue
             }
