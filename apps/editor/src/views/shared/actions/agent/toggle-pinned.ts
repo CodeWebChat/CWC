@@ -4,7 +4,8 @@ export const toggle_pinned = async (params: {
   cli_configuration_name: string
 }): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const current_configs = config.get<any[]>('agents', []) || []
+  const default_configs = config.inspect<any[]>('agents')!.defaultValue!
+  const current_configs = config.get<any[]>('agents') ?? default_configs
 
   const updated_configs = current_configs.map((c) => {
     if (c.name === params.cli_configuration_name) {

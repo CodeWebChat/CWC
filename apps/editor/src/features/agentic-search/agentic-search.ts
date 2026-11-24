@@ -73,7 +73,12 @@ export const agentic_search = async (params: {
 
   while (true) {
     const config = vscode.workspace.getConfiguration('codeWebChat')
-    const invocation_count = config.get<number>('agenticSearchInvocationCount')
+    const default_invocation_count = config.inspect<number>(
+      'agenticSearchInvocationCount'
+    )!.defaultValue!
+    const invocation_count =
+      config.get<number>('agenticSearchInvocationCount') ??
+      default_invocation_count
 
     let snapshot_checkpoint: Checkpoint | undefined
 

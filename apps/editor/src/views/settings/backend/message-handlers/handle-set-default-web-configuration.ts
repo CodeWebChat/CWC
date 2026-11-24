@@ -5,7 +5,8 @@ export const handle_set_default_web_configuration = async (
   message: SetDefaultWebConfigurationMessage
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const web_configs = config.get<any[]>('chatbots', []) || []
+  const default_web_configs = config.inspect<any[]>('chatbots')!.defaultValue!
+  const web_configs = config.get<any[]>('chatbots') ?? default_web_configs
   const updated = web_configs.map((c) => {
     const new_c = { ...c }
     if (message.web_feature === 'code-at-cursor') {

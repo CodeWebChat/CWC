@@ -5,7 +5,10 @@ export const handle_get_browser_profiles = async (
   settings_provider: SettingsViewProvider
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const browser_profiles = config.get<string[]>('browserProfiles', []) || []
+  const default_browser_profiles =
+    config.inspect<string[]>('browserProfiles')!.defaultValue!
+  const browser_profiles =
+    config.get<string[]>('browserProfiles') ?? default_browser_profiles
   settings_provider.postMessage({
     command: 'BROWSER_PROFILES',
     browser_profiles

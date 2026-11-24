@@ -267,7 +267,10 @@ export class WebSocketManager {
           this._on_connection_status_change.fire(this.has_connected_browser)
 
           const config = vscode.workspace.getConfiguration('codeWebChat')
-          const forwarded_ports = config.get<number[]>('forwardedPorts') ?? []
+          const default_forwarded_ports =
+            config.inspect<number[]>('forwardedPorts')!.defaultValue!
+          const forwarded_ports =
+            config.get<number[]>('forwardedPorts') ?? default_forwarded_ports
           this.send_forwarded_ports(forwarded_ports)
         } else if (message.action === 'apply-response') {
           const apply_msg = message as ApplyResponseMessage
@@ -342,10 +345,19 @@ export class WebSocketManager {
     }
 
     const config = vscode.workspace.getConfiguration('codeWebChat')
+    const default_web_configurations =
+      config.inspect<ConfigWebConfigurationFormat[]>('chatbots')!.defaultValue!
     const web_configurations =
-      config.get<ConfigWebConfigurationFormat[]>('chatbots') ?? []
-    const gemini_user_id = config.get<number | null>('geminiUserId')
-    const ai_studio_user_id = config.get<number | null>('aiStudioUserId')
+      config.get<ConfigWebConfigurationFormat[]>('chatbots') ??
+      default_web_configurations
+    const default_gemini_user_id =
+      config.inspect<number | null>('geminiUserId')?.defaultValue ?? null
+    const gemini_user_id =
+      config.get<number | null>('geminiUserId') ?? default_gemini_user_id
+    const default_ai_studio_user_id =
+      config.inspect<number | null>('aiStudioUserId')?.defaultValue ?? null
+    const ai_studio_user_id =
+      config.get<number | null>('aiStudioUserId') ?? default_ai_studio_user_id
 
     const web_configuration = web_configurations.find(
       (p) => p.name === params.web_configuration_name
@@ -377,7 +389,10 @@ export class WebSocketManager {
       } else {
         url = chatbot.url
       }
-    } else if (web_configuration.chatbot === 'Gemini' && gemini_user_id) {
+    } else if (
+      web_configuration.chatbot === 'Gemini' &&
+      gemini_user_id !== null
+    ) {
       url = `https://gemini.google.com/u/${gemini_user_id}/app`
     } else if (chatbot.supports_url_override && web_configuration.newUrl) {
       try {
@@ -444,8 +459,14 @@ export class WebSocketManager {
     }
 
     const config = vscode.workspace.getConfiguration('codeWebChat')
-    const gemini_user_number = config.get<number | null>('geminiUserNumber')
-    const ai_studio_user_id = config.get<number | null>('aiStudioUserId')
+    const default_gemini_user_id =
+      config.inspect<number | null>('geminiUserId')?.defaultValue ?? null
+    const gemini_user_id =
+      config.get<number | null>('geminiUserId') ?? default_gemini_user_id
+    const default_ai_studio_user_id =
+      config.inspect<number | null>('aiStudioUserId')?.defaultValue ?? null
+    const ai_studio_user_id =
+      config.get<number | null>('aiStudioUserId') ?? default_ai_studio_user_id
 
     const chatbot =
       CHATBOTS[params.web_configuration.chatbot as keyof typeof CHATBOTS]
@@ -473,10 +494,10 @@ export class WebSocketManager {
       }
     } else if (
       params.web_configuration.chatbot === 'Gemini' &&
-      gemini_user_number !== undefined &&
-      gemini_user_number !== null
+      gemini_user_id !== undefined &&
+      gemini_user_id !== null
     ) {
-      url = `https://gemini.google.com/u/${gemini_user_number}`
+      url = `https://gemini.google.com/u/${gemini_user_id}`
     } else if (
       chatbot.supports_url_override &&
       params.web_configuration.new_url

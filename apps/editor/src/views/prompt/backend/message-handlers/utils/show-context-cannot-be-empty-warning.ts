@@ -7,10 +7,12 @@ export const show_context_cannot_be_empty_warning = async (
   prompt_view_provider: PromptViewProvider
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const run_automatically = config.get<boolean>(
-    'agenticSearchRunAutomatically',
-    false
-  )
+  const default_run_automatically = config.inspect<boolean>(
+    'agenticSearchRunAutomatically'
+  )!.defaultValue!
+  const run_automatically =
+    config.get<boolean>('agenticSearchRunAutomatically') ??
+    default_run_automatically
 
   if (run_automatically) {
     void vscode.window.showWarningMessage(

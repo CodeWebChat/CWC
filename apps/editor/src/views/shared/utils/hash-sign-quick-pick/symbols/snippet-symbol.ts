@@ -17,8 +17,16 @@ export const handle_snippet_item = async (
   const config = vscode.workspace.getConfiguration('codeWebChat')
   let instructions: { name: string; instruction: string }[] = []
 
-  const ask_instructions = config.get<any[]>('snippetsForAskAboutFiles') || []
-  const edit_instructions = config.get<any[]>('snippetsForEditFiles') || []
+  const default_ask_instructions = config.inspect<any[]>(
+    'snippetsForAskAboutFiles'
+  )!.defaultValue!
+  const ask_instructions =
+    config.get<any[]>('snippetsForAskAboutFiles') ?? default_ask_instructions
+  const default_edit_instructions = config.inspect<any[]>(
+    'snippetsForEditFiles'
+  )!.defaultValue!
+  const edit_instructions =
+    config.get<any[]>('snippetsForEditFiles') ?? default_edit_instructions
 
   if (prompt_type === 'ask') {
     instructions = ask_instructions

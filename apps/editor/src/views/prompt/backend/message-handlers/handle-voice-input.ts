@@ -177,12 +177,19 @@ const stop_recording = async (prompt_view_provider: PromptViewProvider) => {
     prompt_view_provider.audio_chunks = []
 
     const config = vscode.workspace.getConfiguration('codeWebChat')
-    const default_option = config.get<'ask' | 'send-request' | 'invoke-agent'>(
-      'defaultOptionForVoiceInput'
-    )
-    const voice_input_task_instructions = config.get<string>(
+    const default_option_default = config.inspect<
+      'ask' | 'send-request' | 'invoke-agent'
+    >('defaultOptionForVoiceInput')!.defaultValue!
+    const default_option =
+      config.get<'ask' | 'send-request' | 'invoke-agent'>(
+        'defaultOptionForVoiceInput'
+      ) ?? default_option_default
+    const default_voice_input_instructions = config.inspect<string>(
       'voiceInputInstructions'
-    )
+    )!.defaultValue!
+    const voice_input_task_instructions =
+      config.get<string>('voiceInputInstructions') ??
+      default_voice_input_instructions
 
     let current_action =
       prompt_view_provider.extension_context.workspaceState.get<string>(
@@ -478,7 +485,10 @@ export const handle_voice_input = async (
     const api_configurations = await providers_manager.get_api_configurations()
 
     const config_codeWebChat = vscode.workspace.getConfiguration('codeWebChat')
-    const agent_configs = config_codeWebChat.get<any[]>('agents', []) || []
+    const default_agent_configs =
+      config_codeWebChat.inspect<any[]>('agents')!.defaultValue!
+    const agent_configs =
+      config_codeWebChat.get<any[]>('agents') ?? default_agent_configs
 
     if (api_configurations.length === 0 && agent_configs.length === 0) {
       show_incomplete_setup_warning('api')

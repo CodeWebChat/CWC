@@ -7,7 +7,10 @@ export const handle_get_web_configurations = async (
   settings_provider: SettingsViewProvider
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const web_configurations_config = config.get<any[]>('chatbots', []) || []
+  const default_web_configurations =
+    config.inspect<any[]>('chatbots')!.defaultValue!
+  const web_configurations_config =
+    config.get<any[]>('chatbots') ?? default_web_configurations
 
   settings_provider.postMessage({
     command: 'WEB_CONFIGURATIONS',

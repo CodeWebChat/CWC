@@ -1442,7 +1442,10 @@ export class WorkspaceProvider
 
   private _load_ignore_patterns() {
     const config = vscode.workspace.getConfiguration('codeWebChat')
-    const patterns = config.get<string[]>('ignorePatterns')
+    const default_ignore_patterns =
+      config.inspect<string[]>('ignorePatterns')!.defaultValue!
+    const patterns =
+      config.get<string[]>('ignorePatterns') ?? default_ignore_patterns
     this._user_ignore_patterns = new Ignore()
     if (patterns) {
       this._user_ignore_patterns.add(patterns)
@@ -1454,7 +1457,10 @@ export class WorkspaceProvider
       ...IGNORED_LOCK_FILES
     ])
 
-    const allow_patterns = config.get<string[]>('allowPatterns')
+    const default_allow_patterns =
+      config.inspect<string[]>('allowPatterns')!.defaultValue!
+    const allow_patterns =
+      config.get<string[]>('allowPatterns') ?? default_allow_patterns
     this._user_allow_patterns = new Ignore()
     if (allow_patterns) {
       this._user_allow_patterns.add(allow_patterns)

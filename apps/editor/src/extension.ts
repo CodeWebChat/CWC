@@ -329,7 +329,10 @@ export const activate = async (extension_context: vscode.ExtensionContext) => {
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('codeWebChat.forwardedPorts')) {
         const config = vscode.workspace.getConfiguration('codeWebChat')
-        const forwarded_ports = config.get<number[]>('forwardedPorts') ?? []
+        const default_forwarded_ports =
+          config.inspect<number[]>('forwardedPorts')!.defaultValue!
+        const forwarded_ports =
+          config.get<number[]>('forwardedPorts') ?? default_forwarded_ports
         websocket_server_instance?.send_forwarded_ports(forwarded_ports)
       }
     })

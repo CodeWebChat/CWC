@@ -31,7 +31,10 @@ export const handle_delete_browser_profile = async (
   }
 
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const existing_profiles = config.get<string[]>('browserProfiles', []) || []
+  const default_profiles =
+    config.inspect<string[]>('browserProfiles')!.defaultValue!
+  const existing_profiles =
+    config.get<string[]>('browserProfiles') ?? default_profiles
   const updated_profiles = existing_profiles.filter((p) => p.trim() !== profile)
 
   await config.update(

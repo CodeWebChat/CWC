@@ -35,7 +35,9 @@ export const handle_template_quick_pick = async (
   if (!templates_key) return
 
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const templates = config.get<Template[]>(templates_key, []) || []
+  const default_templates =
+    config.inspect<Template[]>(templates_key)!.defaultValue!
+  const templates = config.get<Template[]>(templates_key) ?? default_templates
 
   if (!templates.length) {
     prompt_view_provider.send_message({ command: 'FOCUS_PROMPT_FIELD' })

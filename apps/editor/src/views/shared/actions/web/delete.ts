@@ -5,8 +5,11 @@ import { get_error_message } from '@/utils/get-error-message'
 
 export const remove = async (params: { name: string }): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
+  const default_web_configurations =
+    config.inspect<ConfigWebConfigurationFormat[]>('chatbots')!.defaultValue!
   const current_web_configurations =
-    config.get<ConfigWebConfigurationFormat[]>('chatbots', []) || []
+    config.get<ConfigWebConfigurationFormat[]>('chatbots') ??
+    default_web_configurations
 
   const index = current_web_configurations.findIndex(
     (c, i) => (c.name ?? `unnamed-${i}`) === params.name
@@ -60,8 +63,14 @@ export const remove = async (params: { name: string }): Promise<void> => {
 
     if (choice === undo_action) {
       const current_config = vscode.workspace.getConfiguration('codeWebChat')
-      const current_web_configs =
-        current_config.get<ConfigWebConfigurationFormat[]>('chatbots', []) || []
+      const current_default_web_configs =
+        current_config.inspect<ConfigWebConfigurationFormat[]>(
+          'chatbots'
+        )!.defaultValue!
+      const current_web_configs = [
+        ...(current_config.get<ConfigWebConfigurationFormat[]>('chatbots') ??
+          current_default_web_configs)
+      ]
       current_web_configs.splice(index, 0, item_to_delete)
       await current_config.update(
         'chatbots',

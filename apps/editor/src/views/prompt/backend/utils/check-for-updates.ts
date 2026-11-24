@@ -16,9 +16,11 @@ export const check_for_updates = async (
   if (!current_version) return
 
   const config = vscode.workspace.getConfiguration('codeWebChat')
+  const default_minimum_release_age =
+    config.inspect<number>('minimumReleaseAge')!.defaultValue!
   const minimum_release_age = force
     ? 0
-    : config.get<number>('minimumReleaseAge', 0)
+    : (config.get<number>('minimumReleaseAge') ?? default_minimum_release_age)
 
   if (!force) {
     const last_check = provider.extension_context.globalState.get<number>(
@@ -26,10 +28,13 @@ export const check_for_updates = async (
       0
     )
     const now = Date.now()
-    const frequency = config.get<'hourly' | 'daily' | 'weekly' | 'monthly'>(
-      'updateCheckFrequency',
-      'hourly'
-    )
+    const default_frequency = config.inspect<
+      'hourly' | 'daily' | 'weekly' | 'monthly'
+    >('updateCheckFrequency')!.defaultValue!
+    const frequency =
+      config.get<'hourly' | 'daily' | 'weekly' | 'monthly'>(
+        'updateCheckFrequency'
+      ) ?? default_frequency
 
     let required_elapsed_time = 60 * 60 * 1000
     if (frequency === 'daily') {

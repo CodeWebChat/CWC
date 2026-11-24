@@ -15,16 +15,20 @@ export const handle_get_prompt_instructions = async (
     command: 'PROMPT_INSTRUCTIONS',
     prompt_instructions: {
       templatesForEditFiles: map_templates(
-        config.get('templatesForEditFiles', [])
+        config.get<any[]>('templatesForEditFiles') ??
+          config.inspect<any[]>('templatesForEditFiles')!.defaultValue!
       ),
       templatesForAskAboutFiles: map_templates(
-        config.get('templatesForAskAboutFiles', [])
+        config.get<any[]>('templatesForAskAboutFiles') ??
+          config.inspect<any[]>('templatesForAskAboutFiles')!.defaultValue!
       ),
       snippetsForEditFiles: map_instructions(
-        config.get('snippetsForEditFiles', [])
+        config.get<any[]>('snippetsForEditFiles') ??
+          config.inspect<any[]>('snippetsForEditFiles')!.defaultValue!
       ),
       snippetsForAskAboutFiles: map_instructions(
-        config.get('snippetsForAskAboutFiles', [])
+        config.get<any[]>('snippetsForAskAboutFiles') ??
+          config.inspect<any[]>('snippetsForAskAboutFiles')!.defaultValue!
       )
     }
   })

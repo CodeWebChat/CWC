@@ -6,7 +6,8 @@ export const handle_select_default_cli_configuration = async (
   message: SelectDefaultAgentConfigurationMessage
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const agent_configs = config.get<any[]>('agents', []) || []
+  const default_agent_configs = config.inspect<any[]>('agents')!.defaultValue!
+  const agent_configs = config.get<any[]>('agents') ?? default_agent_configs
   if (agent_configs.length === 0) return
 
   const items = agent_configs.map((c) => {

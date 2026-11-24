@@ -18,7 +18,9 @@ export const show_incomplete_setup_warning = async (
   if (result === open_settings_label) {
     if (type === 'api') {
       const config = vscode.workspace.getConfiguration('codeWebChat')
-      const providers = config.get<any[]>('providers', [])
+      const default_providers =
+        config.inspect<any[]>('providers')!.defaultValue!
+      const providers = config.get<any[]>('providers') ?? default_providers
 
       if (providers.length === 0) {
         open_settings.api.providers()

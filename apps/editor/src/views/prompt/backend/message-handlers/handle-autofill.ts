@@ -187,10 +187,11 @@ const resolve_web_configuration = async (params: {
     params.prompt_view_provider.web_prompt_type
   )
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const all_web_configurations = config.get<ConfigWebConfigurationFormat[]>(
-    'chatbots',
-    []
-  )
+  const default_web_configurations =
+    config.inspect<ConfigWebConfigurationFormat[]>('chatbots')!.defaultValue!
+  const all_web_configurations =
+    config.get<ConfigWebConfigurationFormat[]>('chatbots') ??
+    default_web_configurations
 
   const valid_web_configurations = all_web_configurations.filter(
     (c) => c.chatbot && Object.keys(CHATBOTS).includes(c.chatbot)

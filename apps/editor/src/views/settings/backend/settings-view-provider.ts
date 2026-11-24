@@ -87,7 +87,7 @@ export class SettingsViewProvider {
         } else if (message.command === 'CREATE_PROMPT_INSTRUCTION') {
           await handlers.handle_create_prompt_instruction(this, message)
         } else if (message.command === 'DELETE_PROMPT_INSTRUCTION') {
-          await handlers.handle_delete_prompt_instruction(this, message)
+          await handlers.handle_delete_prompt_instruction(message)
         } else if (message.command === 'CANCEL_PROMPT_INSTRUCTION_EDIT') {
           await handlers.handle_cancel_prompt_instruction_edit(this, message)
         } else if (message.command === 'GET_API_CONFIGURATIONS') {

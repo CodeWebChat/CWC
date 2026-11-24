@@ -256,11 +256,12 @@ export const perform_intelligent_search_mode = async (params: {
           }
 
           const config = vscode.workspace.getConfiguration('codeWebChat')
+          const default_instructions = config.inspect<string>(
+            'intelligentSearchInstructions'
+          )!.defaultValue!
           const base_instructions =
-            config.get<string>('intelligentSearchInstructions') ||
-            config.inspect<string>('intelligentSearchInstructions')
-              ?.defaultValue ||
-            ''
+            config.get<string>('intelligentSearchInstructions') ??
+            default_instructions
 
           let display_folder_path = params.folder_path
           if (params.folder_path) {
@@ -321,9 +322,13 @@ export const perform_intelligent_search_mode = async (params: {
           }
 
           if (action === 'autofill') {
-            const all_web_configurations = config.get<
-              ConfigWebConfigurationFormat[]
-            >('chatbots', [])
+            const default_web_configurations =
+              config.inspect<ConfigWebConfigurationFormat[]>(
+                'chatbots'
+              )!.defaultValue!
+            const all_web_configurations =
+              config.get<ConfigWebConfigurationFormat[]>('chatbots') ??
+              default_web_configurations
             const valid_web_configurations = all_web_configurations.filter(
               (c) => c.chatbot
             )
@@ -416,11 +421,12 @@ export const perform_intelligent_search_mode = async (params: {
           }
 
           const config = vscode.workspace.getConfiguration('codeWebChat')
+          const default_instructions = config.inspect<string>(
+            'intelligentSearchInstructions'
+          )!.defaultValue!
           const base_instructions =
-            config.get<string>('intelligentSearchInstructions') ||
-            config.inspect<string>('intelligentSearchInstructions')
-              ?.defaultValue ||
-            ''
+            config.get<string>('intelligentSearchInstructions') ??
+            default_instructions
 
           const cli_prompt = `# Files\n\n${md_files}# Task\n\n${base_instructions}\n\n# Output formatting\n\n${ai_file_search_format_instructions}\n\n# Requirements\n\n- ${cli_edit_ask_requirements.preloaded_context}\n- ${cli_edit_ask_requirements.disable_tool_calling}\n\n# Query\n\n${search_term}`
 

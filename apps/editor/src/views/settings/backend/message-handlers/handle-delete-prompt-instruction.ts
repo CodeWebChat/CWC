@@ -1,14 +1,13 @@
 import * as vscode from 'vscode'
 import { DeletePromptInstructionMessage } from '@/views/settings/types/messages'
-import { SettingsViewProvider } from '../settings-view-provider'
 import { t } from '@/i18n'
 
 export const handle_delete_prompt_instruction = async (
-  provider: SettingsViewProvider,
   message: DeletePromptInstructionMessage
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const items = config.get<any[]>(message.key, [])
+  const default_items = config.inspect<any[]>(message.key)!.defaultValue!
+  const items = config.get<any[]>(message.key) ?? default_items
 
   if (message.index < 0 || message.index >= items.length) {
     return
@@ -45,7 +44,12 @@ export const handle_delete_prompt_instruction = async (
 
   if (choice === undo_action) {
     const current_config = vscode.workspace.getConfiguration('codeWebChat')
-    const current_items = current_config.get<any[]>(message.key, [])
+    const current_default_items = current_config.inspect<any[]>(
+      message.key
+    )!.defaultValue!
+    const current_items = [
+      ...(current_config.get<any[]>(message.key) ?? current_default_items)
+    ]
     current_items.splice(message.index, 0, deleted_item)
     await current_config.update(
       message.key,

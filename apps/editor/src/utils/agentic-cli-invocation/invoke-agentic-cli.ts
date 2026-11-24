@@ -73,10 +73,11 @@ const parse_flags = (flags_string?: string): string[] => {
 
 const build_agent_picks = (): AgentPickItem[] => {
   const agent_picks: AgentPickItem[] = []
+  const config = vscode.workspace.getConfiguration('codeWebChat')
+  const default_agents =
+    config.inspect<ConfigAgentConfigurationFormat[]>('agents')!.defaultValue!
   const current_agents_config =
-    vscode.workspace
-      .getConfiguration('codeWebChat')
-      .get<ConfigAgentConfigurationFormat[]>('agents', []) || []
+    config.get<ConfigAgentConfigurationFormat[]>('agents') ?? default_agents
 
   for (const agent_config of current_agents_config) {
     const agent_info = CLI_AGENTS.find((a) => a.label === agent_config.agent)
@@ -297,8 +298,10 @@ export const invoke_agentic_cli = async (params: {
 
   while (true) {
     const config = vscode.workspace.getConfiguration('codeWebChat')
+    const default_agents =
+      config.inspect<ConfigAgentConfigurationFormat[]>('agents')!.defaultValue!
     const agents_config =
-      config.get<ConfigAgentConfigurationFormat[]>('agents', []) || []
+      config.get<ConfigAgentConfigurationFormat[]>('agents') ?? default_agents
 
     if (agents_config.length === 0) {
       vscode.window.showInformationMessage(

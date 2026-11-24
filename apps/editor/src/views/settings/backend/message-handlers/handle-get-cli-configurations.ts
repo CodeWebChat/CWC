@@ -7,7 +7,10 @@ export const handle_get_cli_configurations = async (
   settings_provider: SettingsViewProvider
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const cli_configurations_config = config.get<any[]>('agents', []) || []
+  const default_cli_configurations =
+    config.inspect<any[]>('agents')!.defaultValue!
+  const cli_configurations_config =
+    config.get<any[]>('agents') ?? default_cli_configurations
 
   settings_provider.postMessage({
     command: 'CLI_CONFIGURATIONS',

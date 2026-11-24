@@ -166,7 +166,9 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
 
   private _send_send_with_shift_enter() {
     const config = vscode.workspace.getConfiguration('codeWebChat')
-    const enabled = config.get<boolean>('sendWithShiftEnter', false)
+    const default_enabled =
+      config.inspect<boolean>('sendWithShiftEnter')!.defaultValue!
+    const enabled = config.get<boolean>('sendWithShiftEnter') ?? default_enabled
     this.send_message({
       command: 'SEND_WITH_SHIFT_ENTER',
       enabled
@@ -175,7 +177,11 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
 
   private _send_voice_input_push_to_talk() {
     const config = vscode.workspace.getConfiguration('codeWebChat')
-    const enabled = config.get<boolean>('voiceInputPushToTalk', false)
+    const default_enabled = config.inspect<boolean>(
+      'voiceInputPushToTalk'
+    )!.defaultValue!
+    const enabled =
+      config.get<boolean>('voiceInputPushToTalk') ?? default_enabled
     this.send_message({
       command: 'VOICE_INPUT_PUSH_TO_TALK',
       enabled
@@ -217,9 +223,12 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
 
   send_targets_order() {
     const config = vscode.workspace.getConfiguration('codeWebChat')
+    const default_targets_order =
+      config.inspect<Target[]>('targetsOrder')!.defaultValue!
     this.send_message({
       command: 'TARGETS_ORDER',
-      targets_order: config.get<Target[]>('targetsOrder', [...TARGET])
+      targets_order:
+        config.get<Target[]>('targetsOrder') ?? default_targets_order
     })
   }
 
@@ -1073,8 +1082,11 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
   send_cli_configurations_to_webview(_: vscode.Webview) {
     const config = vscode.workspace.getConfiguration('codeWebChat')
 
+    const default_cli_configurations =
+      config.inspect<ConfigAgentConfigurationFormat[]>('agents')!.defaultValue!
     const cli_configurations_config =
-      config.get<ConfigAgentConfigurationFormat[]>('agents', []) || []
+      config.get<ConfigAgentConfigurationFormat[]>('agents') ??
+      default_cli_configurations
     const cli_configurations_ui = cli_configurations_config.map(
       config_cli_configuration_to_ui_format
     )
@@ -1106,8 +1118,11 @@ export class PromptViewProvider implements vscode.WebviewViewProvider {
   send_web_configurations_to_webview(_: vscode.Webview) {
     const config = vscode.workspace.getConfiguration('codeWebChat')
 
+    const default_web_configurations =
+      config.inspect<ConfigWebConfigurationFormat[]>('chatbots')!.defaultValue!
     const web_configurations_config =
-      config.get<ConfigWebConfigurationFormat[]>('chatbots', []) || []
+      config.get<ConfigWebConfigurationFormat[]>('chatbots') ??
+      default_web_configurations
     const web_configurations_ui = get_valid_web_configurations(
       web_configurations_config
     )

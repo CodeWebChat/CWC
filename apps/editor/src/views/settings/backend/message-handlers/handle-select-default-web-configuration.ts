@@ -7,7 +7,8 @@ export const handle_select_default_web_configuration = async (
   message: SelectDefaultWebConfigurationMessage
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const web_configs = config.get<any[]>('chatbots', []) || []
+  const default_web_configs = config.inspect<any[]>('chatbots')!.defaultValue!
+  const web_configs = config.get<any[]>('chatbots') ?? default_web_configs
   if (web_configs.length === 0) return
 
   const items = web_configs.map((c) => {

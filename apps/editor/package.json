@@ -1026,7 +1026,8 @@
         },
         "codeWebChat.voiceInputPushToTalk": {
           "type": "boolean",
-          "scope": "resource"
+          "scope": "resource",
+          "default": false
         },
         "codeWebChat.sendWithShiftEnter": {
           "type": "boolean",
@@ -1054,14 +1055,16 @@
           "scope": "resource",
           "items": {
             "type": "string"
-          }
+          },
+          "default": []
         },
         "codeWebChat.allowPatterns": {
           "type": "array",
           "scope": "resource",
           "items": {
             "type": "string"
-          }
+          },
+          "default": []
         },
         "codeWebChat.intelligentSearchInstructions": {
           "type": "string",
@@ -1285,7 +1288,8 @@
             "required": [
               "template"
             ]
-          }
+          },
+          "default": []
         },
         "codeWebChat.templatesForEditFiles": {
           "type": "array",
@@ -1303,7 +1307,8 @@
             "required": [
               "template"
             ]
-          }
+          },
+          "default": []
         },
         "codeWebChat.snippetsForAskAboutFiles": {
           "type": "array",
@@ -1321,7 +1326,8 @@
             "required": [
               "instruction"
             ]
-          }
+          },
+          "default": []
         },
         "codeWebChat.snippetsForEditFiles": {
           "type": "array",
@@ -1339,7 +1345,8 @@
             "required": [
               "instruction"
             ]
-          }
+          },
+          "default": []
         },
         "codeWebChat.providers": {
           "type": "array",
@@ -1361,7 +1368,8 @@
               "name",
               "baseUrl"
             ]
-          }
+          },
+          "default": []
         },
         "codeWebChat.models": {
           "type": "array",
@@ -1401,7 +1409,8 @@
               "providerName",
               "model"
             ]
-          }
+          },
+          "default": []
         }
       }
     }

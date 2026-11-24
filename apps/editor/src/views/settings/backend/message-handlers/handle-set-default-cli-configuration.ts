@@ -5,7 +5,8 @@ export const handle_set_default_cli_configuration = async (
   message: SetDefaultAgentConfigurationMessage
 ): Promise<void> => {
   const config = vscode.workspace.getConfiguration('codeWebChat')
-  const agent_configs = config.get<any[]>('agents', []) || []
+  const default_agent_configs = config.inspect<any[]>('agents')!.defaultValue!
+  const agent_configs = config.get<any[]>('agents') ?? default_agent_configs
   const updated = agent_configs.map((c) => {
     const new_c = { ...c }
     if (message.cli_feature === 'agentic-search') {

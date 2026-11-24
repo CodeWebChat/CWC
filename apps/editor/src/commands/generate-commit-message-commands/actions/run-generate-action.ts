@@ -138,16 +138,24 @@ export const run_generate_action = async (params: {
       const action_enter_manually = t('common.action.enter-manually')
       const action_copy_prompt = t('common.action.copy-prompt')
 
-      const default_action = vscode.workspace
-        .getConfiguration('codeWebChat')
-        .get<
+      const config = vscode.workspace.getConfiguration('codeWebChat')
+      const default_action_default = config.inspect<
+        | 'ask'
+        | 'send-request'
+        | 'invoke-agent'
+        | 'autofill-chatbot'
+        | 'enter-manually'
+        | 'copy-prompt'
+      >('defaultActionForCommitMessage')!.defaultValue!
+      const default_action =
+        config.get<
           | 'ask'
           | 'send-request'
           | 'invoke-agent'
           | 'autofill-chatbot'
           | 'enter-manually'
           | 'copy-prompt'
-        >('defaultActionForCommitMessage', 'ask')
+        >('defaultActionForCommitMessage') ?? default_action_default
 
       const map_default_action_to_id = (
         action: typeof default_action
@@ -561,9 +569,13 @@ export const run_generate_action = async (params: {
             }
 
             const config = vscode.workspace.getConfiguration('codeWebChat')
-            const all_web_configurations = config.get<
-              ConfigWebConfigurationFormat[]
-            >('chatbots', [])
+            const default_web_configurations =
+              config.inspect<ConfigWebConfigurationFormat[]>(
+                'chatbots'
+              )!.defaultValue!
+            const all_web_configurations =
+              config.get<ConfigWebConfigurationFormat[]>('chatbots') ??
+              default_web_configurations
             const valid_web_configurations = all_web_configurations.filter(
               (c) => c.chatbot
             )
@@ -810,9 +822,13 @@ export const run_generate_action = async (params: {
       CommitMessageDetails.load_all(params.extension_context)[workspace_root] ||
       []
 
-    const select_prompts_setting = vscode.workspace
-      .getConfiguration('codeWebChat')
-      .get<boolean>('selectAllPromptsInCommitMessagesByDefault', true)
+    const config = vscode.workspace.getConfiguration('codeWebChat')
+    const default_select_prompts = config.inspect<boolean>(
+      'selectAllPromptsInCommitMessagesByDefault'
+    )!.defaultValue!
+    const select_prompts_setting =
+      config.get<boolean>('selectAllPromptsInCommitMessagesByDefault') ??
+      default_select_prompts
 
     const all_relevant_prompts = all_prompts
       .filter((p) =>
@@ -868,9 +884,12 @@ export const run_generate_action = async (params: {
         return ''
       }
 
-      const attach_tree_setting = vscode.workspace
-        .getConfiguration('codeWebChat')
-        .get<string>('attachAsciiTreeOfContext', 'ask')
+      const config = vscode.workspace.getConfiguration('codeWebChat')
+      const default_attach_tree = config.inspect<string>(
+        'attachAsciiTreeOfContext'
+      )!.defaultValue!
+      const attach_tree_setting =
+        config.get<string>('attachAsciiTreeOfContext') ?? default_attach_tree
 
       let attach_tree = false
       if (attach_tree_setting === 'always') {
