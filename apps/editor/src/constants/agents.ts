@@ -13,6 +13,10 @@ export const AGENTS = {
     homepage_url: 'https://antigravity.google/product/antigravity-cli/',
     flags_placeholder: "--model 'Gemini 4 Hydrogen (Medium)'",
     example_flags: [
+      "--model 'Gemini 4 Neon (XHigh)'",
+      "--model 'Gemini 4 Neon (High)'",
+      "--model 'Gemini 4 Neon (Medium)'",
+      "--model 'Gemini 4 Neon (Low)'",
       "--model 'Gemini 4 Carbon (High)'",
       "--model 'Gemini 4 Carbon (Medium)'",
       "--model 'Gemini 4 Carbon (Low)'",
