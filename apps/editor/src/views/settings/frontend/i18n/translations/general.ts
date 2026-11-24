@@ -451,7 +451,7 @@ export const translations = {
     bg: 'Изберете как да се процедира по подразбиране.'
   },
   'general.commits.default-action.send-request': {
-    en: 'Send request',
+    en: 'Send Request',
     pl: 'Wyślij zapytanie',
     'zh-cn': '发送请求',
     ja: 'リクエストを送信',
@@ -469,7 +469,7 @@ export const translations = {
     bg: 'Изпращане на заявка'
   },
   'general.commits.default-action.invoke-agent': {
-    en: 'Invoke agent',
+    en: 'Invoke Agent',
     pl: 'Wywołaj agenta',
     'zh-cn': '调用代理',
     ja: 'エージェントを呼び出す',
@@ -487,7 +487,7 @@ export const translations = {
     bg: 'Извикване на агент'
   },
   'general.commits.default-action.autofill-chatbot': {
-    en: 'Autofill chatbot',
+    en: 'Autofill Chatbot',
     pl: 'Wypełnij czatbota',
     'zh-cn': '自动填充聊天机器人',
     ja: 'チャットボットに自動入力',
@@ -505,7 +505,7 @@ export const translations = {
     bg: 'Автоматично попълване на чатбот'
   },
   'general.commits.default-action.enter-manually': {
-    en: 'Enter manually',
+    en: 'Enter Manually',
     pl: 'Wpisz ręcznie',
     'zh-cn': '手动输入',
     ja: '手動で入力',
@@ -523,7 +523,7 @@ export const translations = {
     bg: 'Ръчно въвеждане'
   },
   'general.commits.default-action.copy-prompt': {
-    en: 'Copy prompt',
+    en: 'Copy Prompt',
     pl: 'Kopiuj prompt',
     'zh-cn': '复制提示',
     ja: 'プロンプトをコピー',
@@ -595,7 +595,7 @@ export const translations = {
     bg: 'Поведение в процеса на генериране на commit.'
   },
   'general.commits.use-context-files-in-commit-message-prompt.title': {
-    en: 'Use context files',
+    en: 'Use Context Files',
     pl: 'Używaj plików kontekstu',
     'zh-cn': '使用上下文文件',
     ja: 'コンテキストファイルを使用する',
@@ -867,7 +867,7 @@ export const translations = {
     bg: "Инструкции за генериране на код във формат 'diff'."
   },
   'general.action.restore-default': {
-    en: 'Restore default',
+    en: 'Restore Default',
     pl: 'Przywróć domyślne',
     'zh-cn': '恢复默认',
     ja: 'デフォルトにリセット',
@@ -1173,7 +1173,7 @@ export const translations = {
     bg: 'Изберете как да се процедира по подразбиране.'
   },
   'general.voice-input.default-action.send-request': {
-    en: 'Send request',
+    en: 'Send Request',
     pl: 'Wyślij zapytanie',
     'zh-cn': '发送请求',
     ja: 'リクエストを送信',
@@ -1191,7 +1191,7 @@ export const translations = {
     bg: 'Изпращане на заявка'
   },
   'general.voice-input.default-action.invoke-agent': {
-    en: 'Invoke agent',
+    en: 'Invoke Agent',
     pl: 'Wywołaj agenta',
     'zh-cn': '调用代理',
     ja: 'エージェントを呼び出す',

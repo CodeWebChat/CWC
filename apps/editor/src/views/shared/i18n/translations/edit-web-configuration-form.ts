@@ -126,7 +126,7 @@ export const translations = {
     bg: 'Група'
   },
   'edit-web-configuration-form.url-override': {
-    en: 'URL override',
+    en: 'URL Override',
     pl: 'Nadpisanie URL',
     'zh-cn': 'URL 覆盖',
     ja: 'URL のオーバーライド',

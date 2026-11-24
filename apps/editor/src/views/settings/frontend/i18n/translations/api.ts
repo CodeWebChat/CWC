@@ -77,7 +77,7 @@ export const translations = {
     bg: 'API ключовете се съхраняват сигурно в {link} на вашата машина.'
   },
   'api.providers.action.edit': {
-    en: 'Edit provider',
+    en: 'Edit Provider',
     pl: 'Edytuj providera',
     'zh-cn': '编辑提供商',
     ja: 'プロバイダーを編集',
@@ -95,7 +95,7 @@ export const translations = {
     bg: 'Редактиране на доставчик'
   },
   'api.providers.action.delete': {
-    en: 'Delete provider',
+    en: 'Delete Provider',
     pl: 'Usuń providera',
     'zh-cn': '删除提供商',
     ja: 'プロバイダーを削除',
@@ -203,7 +203,7 @@ export const translations = {
     bg: 'Изпращане на заявки.'
   },
   'api.configurations.action.edit': {
-    en: 'Edit model',
+    en: 'Edit Model',
     pl: 'Edytuj model',
     'zh-cn': '编辑模型',
     ja: 'モデルを編集',
@@ -221,7 +221,7 @@ export const translations = {
     bg: 'Редактиране на модел'
   },
   'api.configurations.action.duplicate': {
-    en: 'Duplicate model',
+    en: 'Duplicate Model',
     pl: 'Duplikuj model',
     'zh-cn': '复制模型',
     ja: 'モデルを複製',
@@ -239,7 +239,7 @@ export const translations = {
     bg: 'Дублиране на модел'
   },
   'api.configurations.action.delete': {
-    en: 'Delete model',
+    en: 'Delete Model',
     pl: 'Usuń model',
     'zh-cn': '删除模型',
     ja: 'モデルを削除',
@@ -257,7 +257,7 @@ export const translations = {
     bg: 'Изтриване на модел'
   },
   'api.configurations.action.select-default': {
-    en: 'Select default model',
+    en: 'Select Default Model',
     pl: 'Wybierz domyślny model',
     'zh-cn': '选择默认模型',
     ja: 'デフォルトモデルを選択',
@@ -275,7 +275,7 @@ export const translations = {
     bg: 'Избор на модел по подразбиране'
   },
   'api.configurations.action.restore-default': {
-    en: 'Restore to default',
+    en: 'Restore to Default',
     pl: 'Przywróć domyślne',
     'zh-cn': '恢复默认',
     ja: 'デフォルトに戻す',
@@ -365,7 +365,7 @@ export const translations = {
     bg: 'Системни инструкции'
   },
   'api.system-instructions.edit-files.title': {
-    en: 'Editing files',
+    en: 'Editing Files',
     pl: 'Edytowanie plików',
     'zh-cn': '编辑文件',
     ja: 'ファイルの編集',

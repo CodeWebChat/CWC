@@ -145,7 +145,7 @@ export const translations = {
     bg: 'Включете разширено кеширане на промптове за заявки, включващи избраните файлове.'
   },
   'edit-provider-form.extended-cache.learn-more': {
-    en: 'Learn more',
+    en: 'Learn More',
     pl: 'Dowiedz się więcej',
     'zh-cn': '了解更多',
     ja: '詳細はこちら',

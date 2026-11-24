@@ -18,7 +18,7 @@ export const translations = {
     bg: 'Добавяне на нов'
   },
   'actions.insert': {
-    en: 'Insert configuration',
+    en: 'Insert Configuration',
     pl: 'Wstaw konfigurację',
     'zh-cn': '插入配置',
     ja: '設定を挿入',

@@ -1,6 +1,6 @@
 export const translations = {
   'agents.configurations.action.select-default': {
-    en: 'Select default agent',
+    en: 'Select Default Agent',
     pl: 'Wybierz domyślnego agenta',
     'zh-cn': '选择默认智能体',
     ja: 'デフォルトエージェントを選択',
@@ -91,7 +91,7 @@ export const translations = {
     bg: 'Агенти'
   },
   'agents.configurations.action.edit': {
-    en: 'Edit agent',
+    en: 'Edit Agent',
     pl: 'Edytuj agenta',
     'zh-cn': '编辑智能体',
     ja: 'エージェントを編集',
@@ -109,7 +109,7 @@ export const translations = {
     bg: 'Редактиране на агент'
   },
   'agents.configurations.action.delete': {
-    en: 'Delete agent',
+    en: 'Delete Agent',
     pl: 'Usuń agenta',
     'zh-cn': '删除智能体',
     ja: 'エージェントを削除',
@@ -218,7 +218,7 @@ export const translations = {
     bg: 'Инструкции, използвани за насочване на поведението при агентско търсене.'
   },
   'cli.agentic-search.invocation-count.title': {
-    en: 'Invocation count',
+    en: 'Invocation Count',
     pl: 'Liczba wywołań',
     'zh-cn': '调用次数',
     ja: '呼び出し回数',
@@ -254,7 +254,7 @@ export const translations = {
     bg: 'Брой пъти, когато агентът се извиква по време на търсене.'
   },
   'cli.agentic-search.run-automatically.title': {
-    en: 'Run automatically',
+    en: 'Run Automatically',
     pl: 'Uruchamiaj automatycznie',
     'zh-cn': '自动运行',
     ja: '自動的に実行',

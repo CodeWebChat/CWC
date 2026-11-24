@@ -198,7 +198,7 @@ export const translations = {
     bg: 'Агентно търсене'
   },
   'common.unset-default': {
-    en: 'Unset default',
+    en: 'Unset Default',
     pl: 'Usuń domyślne',
     'zh-cn': '取消默认',
     ja: 'デフォルトを解除',

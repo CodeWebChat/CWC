@@ -111,7 +111,7 @@ export const translations = {
     bg: 'По подразбиране'
   },
   'web.browser.profiles.delete': {
-    en: 'Remove profile',
+    en: 'Remove Profile',
     pl: 'Usuń profil',
     'zh-cn': '移除配置文件',
     ja: 'プロファイルを削除',
@@ -166,7 +166,7 @@ export const translations = {
     bg: 'пренасочете порт'
   },
   'web.remote-machines.title': {
-    en: 'Remote machines',
+    en: 'Remote Machines',
     pl: 'Maszyny zdalne',
     'zh-cn': '远程机器',
     ja: 'リモートマシン',
@@ -202,7 +202,7 @@ export const translations = {
     bg: 'Портове'
   },
   'forwarded-ports.add.title': {
-    en: 'Forwarded ports',
+    en: 'Forwarded Ports',
     pl: 'Przekierowane porty',
     'zh-cn': '转发端口',
     ja: '転送ポート',
@@ -275,7 +275,7 @@ export const translations = {
     bg: 'Добавяне'
   },
   'forwarded-ports.delete': {
-    en: 'Remove port',
+    en: 'Remove Port',
     pl: 'Usuń port',
     'zh-cn': '移除端口',
     ja: 'ポートを削除',
@@ -348,7 +348,7 @@ export const translations = {
     bg: 'Чатботове'
   },
   'chatbots.configurations.action.edit': {
-    en: 'Edit chatbot',
+    en: 'Edit Chatbot',
     pl: 'Edytuj chatbota',
     'zh-cn': '编辑聊天机器人',
     ja: 'チャットボットを編集',
@@ -366,7 +366,7 @@ export const translations = {
     bg: 'Редактиране на чатбот'
   },
   'chatbots.configurations.action.duplicate': {
-    en: 'Duplicate chatbot',
+    en: 'Duplicate Chatbot',
     pl: 'Duplikuj chatbota',
     'zh-cn': '复制聊天机器人',
     ja: 'チャットボットを複製',
@@ -384,7 +384,7 @@ export const translations = {
     bg: 'Дублиране на чатбот'
   },
   'chatbots.configurations.action.delete': {
-    en: 'Delete chatbot',
+    en: 'Delete Chatbot',
     pl: 'Usuń chatbota',
     'zh-cn': '删除聊天机器人',
     ja: 'チャットボットを削除',
@@ -533,7 +533,7 @@ export const translations = {
     bg: 'Стартиране като друг потребител. Проверете URL за ID.'
   },
   'chatbots.configurations.action.select-default': {
-    en: 'Select default chatbot',
+    en: 'Select Default Chatbot',
     pl: 'Wybierz domyślnego chatbota',
     'zh-cn': '选择默认聊天机器人',
     ja: 'デフォルトチャットボットを選択',
