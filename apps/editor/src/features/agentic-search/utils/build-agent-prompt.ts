@@ -25,7 +25,7 @@ export const build_agent_prompt = (
 
   if (completed_tasks && completed_tasks.length > 0) {
     const tasks_str = completed_tasks.map((t) => `- [x] ${t}`).join('\n')
-    prompt += `\n\n## Past instructions\n\n${tasks_str}`
+    prompt += `\n\n${tasks_str}`
   }
 
   return prompt

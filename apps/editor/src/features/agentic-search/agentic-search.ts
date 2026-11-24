@@ -139,7 +139,7 @@ export const agentic_search = async (params: {
 
               first_run = false
 
-              current_query = `## Instructions\n\n${query.trim()}`
+              current_query = query.trim()
               additional_instructions =
                 additional_instructions_result.value.trim()
             } else {
