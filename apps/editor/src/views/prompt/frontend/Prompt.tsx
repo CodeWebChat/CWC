@@ -826,6 +826,7 @@ export const Prompt = () => {
           <div className={styles.slot}>
             <UiAutoClosingModal
               title={auto_closing_modal_data.title}
+              description={auto_closing_modal_data.description}
               duration={3000}
               on_close={() => {
                 set_auto_closing_modal_data(undefined)

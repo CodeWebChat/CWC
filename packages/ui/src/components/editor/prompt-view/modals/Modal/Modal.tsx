@@ -4,6 +4,7 @@ import styles from './Modal.module.scss'
 
 type Props = {
   title?: string
+  description?: string
   content_slot?: React.ReactNode
   footer_slot?: React.ReactNode
   content_max_height?: string
@@ -25,13 +26,16 @@ export const Modal: React.FC<Props> = (props) => {
           [styles['container--full-width']]: props.use_full_width
         })}
       >
-        {props.title && (
+        {(props.title || props.description) && (
           <div
             className={cn(styles.header, {
               [styles['header--without-content']]: !props.content_slot
             })}
           >
-            <div className={styles.title}>{props.title}</div>
+            {props.title && <div className={styles.title}>{props.title}</div>}
+            {props.description && (
+              <div className={styles.description}>{props.description}</div>
+            )}
           </div>
         )}
 

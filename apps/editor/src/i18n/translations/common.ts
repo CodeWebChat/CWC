@@ -1223,6 +1223,24 @@ export const translations = {
     hu: 'Folytatás a böngészőben.',
     bg: 'Продължете в браузъра.'
   },
+  'common.info.copy-response-when-ready': {
+    en: 'Copy response when ready',
+    pl: 'Skopiuj odpowiedź, gdy będzie gotowa',
+    'zh-cn': '准备好后复制回复',
+    ja: '準備ができたら応答をコピーしてください',
+    'zh-tw': '準備好後複製回覆',
+    de: 'Antwort kopieren, wenn bereit',
+    es: 'Copia la respuesta cuando esté lista',
+    fr: 'Copiez la réponse lorsqu’elle est prête',
+    'pt-br': 'Copie a resposta quando estiver pronta',
+    ru: 'Скопируйте ответ, когда он будет готов',
+    ko: '준비가 되면 응답을 복사하세요',
+    it: 'Copia la risposta quando è pronta',
+    tr: 'Hazır olduğunda yanıtı kopyalayın',
+    cs: 'Až bude odpověď připravena, zkopírujte ji',
+    hu: 'Másolja ki a választ, ha elkészült',
+    bg: 'Копирайте отговора, когато е готов'
+  },
   'common.confirm-action': {
     en: 'Confirm action',
     pl: 'Potwierdź działanie',

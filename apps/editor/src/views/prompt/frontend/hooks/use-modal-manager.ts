@@ -14,6 +14,7 @@ export const use_modal_manager = () => {
   const [auto_closing_modal_data, set_auto_closing_modal_data] = useState<
     | {
         title: string
+        description?: string
         non_dismissable?: boolean
       }
     | undefined
@@ -40,6 +41,7 @@ export const use_modal_manager = () => {
       } else if (message.command === 'SHOW_AUTO_CLOSING_MODAL') {
         set_auto_closing_modal_data({
           title: message.title,
+          description: message.description,
           non_dismissable: message.non_dismissable
         })
       } else if (message.command === 'SHOW_PREVIEW_ONGOING_MODAL') {
