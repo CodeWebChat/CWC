@@ -166,7 +166,7 @@ export const EditWebConfigurationForm: React.FC<Props> = (props) => {
             />
           </UiField>
 
-          {(Object.keys(models).length > 0 || chatbot === 'OpenRouter') && (
+          {Object.keys(models).length > 0 && (
             <UiField
               label={t('edit-web-configuration-form.model')}
               html_for="model"
@@ -216,11 +216,7 @@ export const EditWebConfigurationForm: React.FC<Props> = (props) => {
             <UiField
               label={t('edit-web-configuration-form.reasoning-effort')}
               html_for="reasoning-effort"
-              info={
-                chatbot === 'OpenRouter'
-                  ? `${t('common.reasoning-effort-info')} ${t('edit-web-configuration-form.reasoning-effort.requires-reasoning-model')}`
-                  : t('common.reasoning-effort-info')
-              }
+              info={t('common.reasoning-effort-info')}
               action={
                 reasoning_effort !== undefined && (
                   <UiTextButton

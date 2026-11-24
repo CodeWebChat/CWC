@@ -162,21 +162,6 @@ export const CHATBOTS = {
     supports_user_provided_model: true,
     default_system_instructions: "You're a helpful coding assistant."
   } as Chatbot,
-  OpenRouter: {
-    url: 'https://openrouter.ai/chat',
-    supports_system_instructions: true,
-    supports_reasoning_effort: true,
-    supported_reasoning_efforts: [
-      'None',
-      'Minimal',
-      'Low',
-      'Medium',
-      'High',
-      'XHigh',
-      'Max'
-    ],
-    default_system_instructions: "You're a helpful coding assistant."
-  } as Chatbot,
   Qwen: {
     url: 'https://chat.qwen.ai/',
     supports_url_override: true,

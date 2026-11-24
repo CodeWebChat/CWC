@@ -88,20 +88,7 @@ const process_next_chat = async () => {
     }
   })
 
-  let target_url = ''
-  // OpenRouter is a special case—model handling via search params
-  if (current_chat_message.url === 'https://openrouter.ai/chat') {
-    // https://openrouter.ai/chat?models=openrouter/quasar-alpha
-    const search_params = new URLSearchParams()
-    if (current_chat_message.model) {
-      search_params.set('models', current_chat_message.model)
-    }
-    target_url = `${
-      current_chat_message.url
-    }?${search_params.toString()}#cwc-${batch_id}`
-  } else {
-    target_url = `${current_chat_message.url}#cwc-${batch_id}`
-  }
+  const target_url = `${current_chat_message.url}#cwc-${batch_id}`
 
   let tab_reused = false
 

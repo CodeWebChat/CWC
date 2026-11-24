@@ -17,11 +17,7 @@ export const get_valid_web_configurations = (
           chatbot_info.supports_user_provided_model
         const is_model_predefined = chatbot_info.models?.[model]
 
-        if (
-          !is_user_provided_supported &&
-          !is_model_predefined &&
-          config.chatbot !== 'OpenRouter'
-        ) {
+        if (!is_user_provided_supported && !is_model_predefined) {
           model = undefined
         }
       }

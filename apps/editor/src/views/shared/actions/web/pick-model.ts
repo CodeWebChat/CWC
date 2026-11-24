@@ -1,5 +1,4 @@
 import * as vscode from 'vscode'
-import axios from 'axios'
 import { CHATBOTS } from '@shared/constants/chatbots'
 import { Logger } from '@shared/utils/logger'
 import { t } from '@/i18n'
@@ -11,23 +10,13 @@ export const pick_model = async (params: {
   try {
     let items: (vscode.QuickPickItem & { model_id: string })[] = []
 
-    if (params.chatbot_name === 'OpenRouter') {
-      const response = await axios.get('https://openrouter.ai/api/v1/models')
-      const models = response.data.data
-
-      items = models.map((model: any) => ({
-        label: model.name,
-        model_id: model.id
+    const chatbot_config =
+      CHATBOTS[params.chatbot_name as keyof typeof CHATBOTS]
+    if (chatbot_config && chatbot_config.models) {
+      items = Object.entries(chatbot_config.models).map(([id, data]) => ({
+        label: (data as any).label || id,
+        model_id: id
       }))
-    } else {
-      const chatbot_config =
-        CHATBOTS[params.chatbot_name as keyof typeof CHATBOTS]
-      if (chatbot_config && chatbot_config.models) {
-        items = Object.entries(chatbot_config.models).map(([id, data]) => ({
-          label: (data as any).label || id,
-          model_id: id
-        }))
-      }
     }
 
     const quick_pick = vscode.window.createQuickPick()
@@ -80,11 +69,7 @@ export const pick_model = async (params: {
       data: error
     })
     vscode.window.showErrorMessage(
-      params.chatbot_name === 'OpenRouter'
-        ? t(
-            'views.shared.actions.web.pick-model.error.failed-to-fetch-open-router-models'
-          )
-        : t('views.shared.actions.web.pick-model.error.failed-to-pick')
+      t('views.shared.actions.web.pick-model.error.failed-to-pick')
     )
     return undefined
   }

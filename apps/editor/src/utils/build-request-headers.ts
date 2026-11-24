@@ -17,10 +17,5 @@ export const build_request_headers = (params: {
     }
   }
 
-  if (params.base_url === PROVIDERS.OpenRouter.base_url) {
-    headers['HTTP-Referer'] = 'https://codeweb.chat/'
-    headers['X-Title'] = 'Code Web Chat'
-  }
-
   return headers
 }

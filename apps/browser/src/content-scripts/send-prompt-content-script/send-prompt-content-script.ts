@@ -11,7 +11,6 @@ import {
   open_webui,
   deepseek,
   grok,
-  openrouter,
   qwen,
   yuanbao,
   doubao,
@@ -35,9 +34,6 @@ const is_ai_studio = current_url.startsWith(ai_studio_url)
 
 const gemini_url = 'https://gemini.google.com/'
 const is_gemini = current_url.startsWith(gemini_url)
-
-const openrouter_url = 'https://openrouter.ai/chat'
-const is_openrouter = current_url.startsWith(openrouter_url)
 
 const chatgpt_url = 'https://chatgpt.com/'
 const is_chatgpt = current_url.startsWith(chatgpt_url)
@@ -122,8 +118,6 @@ if (is_ai_studio) {
   chatbot = deepseek
 } else if (is_grok) {
   chatbot = grok
-} else if (is_openrouter) {
-  chatbot = openrouter
 } else if (is_qwen) {
   chatbot = qwen
 } else if (is_yuanbao) {

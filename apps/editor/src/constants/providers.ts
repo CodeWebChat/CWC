@@ -32,9 +32,6 @@ export const PROVIDERS = {
   OpenAI: {
     base_url: 'https://api.openai.com/v1'
   },
-  OpenRouter: {
-    base_url: 'https://openrouter.ai/api/v1'
-  },
   TogetherAI: {
     base_url: 'https://api.together.xyz/v1'
   },
