@@ -8,7 +8,6 @@ import {
   copilot,
   claude,
   mistral,
-  open_webui,
   deepseek,
   grok,
   qwen,
@@ -89,9 +88,6 @@ const is_z_ai =
   current_url.startsWith(z_ai_global_url) ||
   current_url.startsWith(z_ai_china_url)
 
-const open_webui_url = 'http://openwebui/'
-const is_open_webui = current_url.startsWith(open_webui_url)
-
 let chatbot: Chatbot | null = null
 
 if (is_ai_studio) {
@@ -112,8 +108,6 @@ if (is_ai_studio) {
   chatbot = arena
 } else if (is_mistral) {
   chatbot = mistral
-} else if (is_open_webui) {
-  chatbot = open_webui
 } else if (is_deepseek) {
   chatbot = deepseek
 } else if (is_grok) {

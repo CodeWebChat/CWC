@@ -381,8 +381,6 @@ export class WebSocketManager {
       } else {
         url = base_url
       }
-    } else if (web_configuration.chatbot === 'Open WebUI') {
-      url = 'http://openwebui/'
     } else if (web_configuration.chatbot === 'Arena') {
       if (web_configuration.model) {
         url = `https://arena.ai/?mode=direct&model=${web_configuration.model}`
@@ -484,8 +482,6 @@ export class WebSocketManager {
       } else {
         url = base_url
       }
-    } else if (params.web_configuration.chatbot === 'Open WebUI') {
-      url = 'http://openwebui/'
     } else if (params.web_configuration.chatbot === 'Arena') {
       if (params.web_configuration.model) {
         url = `https://arena.ai/?mode=direct&model=${params.web_configuration.model}`

@@ -181,7 +181,6 @@ const chatbot_to_icon: Record<keyof typeof CHATBOTS, Icon.Variant> = {
   Mistral: 'MISTRAL',
   'Meta AI': 'META',
   Arena: 'ARENA',
-  'Open WebUI': 'OPEN_WEBUI',
   Qwen: 'QWEN',
   Together: 'TOGETHER',
   Yuanbao: 'YUANBAO',

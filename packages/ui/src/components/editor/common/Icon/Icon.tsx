@@ -17,7 +17,6 @@ import HashSign from '../../../../assets/icons/hash-sign.svg'
 import HuggingChat from '../../../../assets/icons/hugging-chat.svg'
 import Kimi from '../../../../assets/icons/kimi.svg'
 import Mistral from '../../../../assets/icons/mistral.svg'
-import OpenWebUI from '../../../../assets/icons/open-webui.svg'
 import Qwen from '../../../../assets/icons/qwen.svg'
 import Together from '../../../../assets/icons/together.svg'
 import X from '../../../../assets/icons/x.svg'
@@ -46,7 +45,6 @@ export namespace Icon {
     | 'KIMI'
     | 'ARENA'
     | 'MISTRAL'
-    | 'OPEN_WEBUI'
     | 'QWEN'
     | 'TOGETHER'
     | 'X'
@@ -119,9 +117,6 @@ export const Icon: React.FC<Icon.Props> = ({ variant }) => {
       break
     case 'MISTRAL':
       icon = <Mistral />
-      break
-    case 'OPEN_WEBUI':
-      icon = <OpenWebUI />
       break
     case 'QWEN':
       icon = <Qwen />

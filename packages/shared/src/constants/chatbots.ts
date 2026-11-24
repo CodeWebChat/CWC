@@ -156,12 +156,6 @@ export const CHATBOTS = {
       think: 'Think'
     }
   } as Chatbot,
-  'Open WebUI': {
-    url: 'http://openwebui/',
-    supports_system_instructions: true,
-    supports_user_provided_model: true,
-    default_system_instructions: "You're a helpful coding assistant."
-  } as Chatbot,
   Qwen: {
     url: 'https://chat.qwen.ai/',
     supports_url_override: true,

@@ -155,22 +155,20 @@ const handle_initialize_chat_message = async (
 ) => {
   try {
     const parsed_url = new URL(message.url)
-    let is_allowed = parsed_url.hostname === 'openwebui'
+    let is_allowed = false
 
-    if (!is_allowed) {
-      for (const key of Object.keys(CHATBOTS)) {
-        const chatbot = CHATBOTS[key as keyof typeof CHATBOTS] as any
-        try {
-          if (chatbot?.url) {
-            const chatbot_url = new URL(chatbot.url)
-            if (parsed_url.hostname === chatbot_url.hostname) {
-              is_allowed = true
-              break
-            }
+    for (const key of Object.keys(CHATBOTS)) {
+      const chatbot = CHATBOTS[key as keyof typeof CHATBOTS] as any
+      try {
+        if (chatbot?.url) {
+          const chatbot_url = new URL(chatbot.url)
+          if (parsed_url.hostname === chatbot_url.hostname) {
+            is_allowed = true
+            break
           }
-        } catch {
-          // Ignore
         }
+      } catch {
+        // Ignore
       }
     }
 
