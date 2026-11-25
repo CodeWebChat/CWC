@@ -47,6 +47,13 @@ No code, prompts, or usage data are collected.
 > Click ▶ to expand.
 
 <details>
+<summary><strong>It's free</strong></summary>
+
+CWC works with your own chatbot accounts, API keys, and CLI tools.
+
+</details>
+
+<details>
 <summary><strong>Attaching files</strong></summary>
 
 Selected files are sent alongside task instructions so the model has everything it needs from the start.
