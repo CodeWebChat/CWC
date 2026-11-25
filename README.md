@@ -40,11 +40,7 @@ powershell -c "irm https://github.com/CodeWebChat/CWC/raw/refs/heads/main/instal
 
 No code, prompts, or usage data are collected.
 
-## Introduction
-
-Autofill chatbots in a web browser, send API requests, or invoke agentic CLIs using [markdown prompts](#markdown-prompts).
-
-**CWC is independent and free.**
+## About
 
 > [!TIP]
 >
