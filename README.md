@@ -10,7 +10,7 @@
 
 <p align="center"><strong>Blazing fast AI coding</strong></p>
 
-<p align="center"><i>Autofill chatbots, send API requests, or invoke CLIs with [markdown prompts](#markdown-prompts)!</i></p>
+<p align="center"><i>Autofill chatbots, send API requests, or invoke CLIs with <a href="#markdown-prompts">markdown prompts</a>!</i></p>
 
 <p align="center"><img src="https://github.com/CodeWebChat/CWC/raw/HEAD/media/screenshot-1.png"></p>
 
