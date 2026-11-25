@@ -8,7 +8,7 @@
   </a>
 </p>
 
-<p align="center"><strong>Blazing fast AI coding</strong></p>
+<p align="center"><strong>No cost AI coding in free chatbots</strong></p>
 
 <p align="center"><img src="https://github.com/CodeWebChat/CWC/raw/HEAD/media/screenshot-1.png"></p>
 
