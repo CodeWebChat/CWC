@@ -548,6 +548,24 @@ export const translations = {
     hu: 'Az ellenőrzőpontok csak munkaterületen használhatók.',
     bg: 'Контролните точки могат да се използват само в работно пространство.'
   },
+  'command.history-command.error.checkpoints-require-git': {
+    en: 'Checkpoints can only be used in a Git repository.',
+    pl: 'Punkty kontrolne mogą być używane tylko w repozytorium Git.',
+    'zh-cn': '检查点只能在 Git 仓库中使用。',
+    ja: 'チェックポイントは Git リポジトリ内でのみ使用できます。',
+    'zh-tw': '檢查點只能在 Git 儲存庫中使用。',
+    de: 'Checkpoints können nur in einem Git-Repository verwendet werden.',
+    es: 'Los puntos de control solo se pueden usar en un repositorio de Git.',
+    fr: 'Les points de contrôle ne peuvent être utilisés que dans un dépôt Git.',
+    'pt-br': 'Pontos de verificação só podem ser usados em um repositório Git.',
+    ru: 'Контрольные точки могут использоваться только в Git-репозитории.',
+    ko: '체크포인트는 Git 저장소에서만 사용할 수 있습니다.',
+    it: 'I punti di controllo possono essere utilizzati solo in un repository Git.',
+    tr: 'Kontrol noktaları yalnızca bir Git deposunda kullanılabilir.',
+    cs: 'Kontrolní body lze použít pouze v repozitáři Git.',
+    hu: 'Az ellenőrzőpontok csak Git-tárolóban használhatók.',
+    bg: 'Контролните точки могат да се използват само в Git хранилище.'
+  },
   'command.history-command.error.could-not-find-temp-checkpoint': {
     en: 'Could not find temporary checkpoint to revert.',
     pl: 'Nie znaleziono tymczasowego punktu kontrolnego do przywrócenia.',

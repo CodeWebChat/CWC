@@ -35,5 +35,24 @@ export const translations = {
     cs: 'V současné době probíhá jiná operace s kontrolními body. Počkejte prosím na její dokončení.',
     hu: 'Jelenleg egy másik ellenőrzőpont művelet van folyamatban. Kérjük, várja meg, amíg befejeződik.',
     bg: 'В момента се изпълнява друга операция с контролна точка. Моля, изчакайте да завърши.'
+  },
+  'feature.checkpoints.info.skipped-folders': {
+    en: 'Some workspace folders were not included in the checkpoint because they are not Git repositories.',
+    pl: 'Niektóre foldery obszaru roboczego nie zostały uwzględnione w punkcie kontrolnym, ponieważ nie są repozytoriami Git.',
+    'zh-cn': '由于不是 Git 仓库，某些工作区文件夹未包含在检查点中。',
+    ja: 'Git リポジトリではないため、一部のワークスペースフォルダはチェックポイントに含まれませんでした。',
+    'zh-tw': '由於不是 Git 儲存庫，某些工作區資料夾未包含在檢查點中。',
+    de: 'Einige Arbeitsbereichsordner wurden nicht in den Prüfpunkt aufgenommen, da sie keine Git-Repositories sind.',
+    es: 'Algunas carpetas del espacio de trabajo no se incluyeron en el punto de control porque no son repositorios de Git.',
+    fr: 'Certains dossiers de l’espace de travail n’ont pas été inclus dans le point de contrôle car ce ne sont pas des dépôts Git.',
+    'pt-br':
+      'Algumas pastas do espaço de trabalho não foram incluídas no ponto de verificação porque não são repositórios Git.',
+    ru: 'Некоторые папки рабочей области не были включены в контрольную точку, так как они не являются репозиториями Git.',
+    ko: '일부 작업 영역 폴더는 Git 저장소가 아니므로 체크포인트에 포함되지 않았습니다.',
+    it: 'Alcune cartelle dell’area di lavoro non sono state incluse nel punto di controllo perché non sono repository Git.',
+    tr: 'Bazı çalışma alanı klasörleri Git deposu olmadıkları için kontrol noktasına dahil edilmedi.',
+    cs: 'Některé složky pracovního prostoru nebyly zahrnuty do kontrolního bodu, protože nejsou repozitáři Git.',
+    hu: 'Egyes munkaterületi mappák nem kerültek bele az ellenőrzőpontba, mert nem Git-tárolók.',
+    bg: 'Някои папки от работното пространство не бяха включени в контролната точка, тъй като не са Git хранилища.'
   }
 } as const

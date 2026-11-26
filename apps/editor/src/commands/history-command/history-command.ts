@@ -25,6 +25,7 @@ import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { get_checkpoint_path } from '@/features/checkpoints/utils'
 import { get_code_review_promise_resolve } from '@/features/apply-response/utils/code-review'
 import { simplify_prompt_symbols } from '@shared/utils/simplify-prompt-symbols'
+import { has_git_repository } from '@/utils/git-utils'
 
 dayjs.extend(relativeTime)
 
@@ -56,6 +57,14 @@ export const history_command = (params: {
         )
         return
       }
+
+      if (!(await has_git_repository(vscode.workspace.workspaceFolders))) {
+        vscode.window.showErrorMessage(
+          t('command.history-command.error.checkpoints-require-git')
+        )
+        return
+      }
+
       const checkpoint = await create_checkpoint({
         workspace_provider: params.workspace_provider,
         extension_context: params.extension_context,
@@ -85,6 +94,13 @@ export const history_command = (params: {
       ) {
         vscode.window.showErrorMessage(
           t('command.history-command.error.checkpoints-only-in-workspace')
+        )
+        return
+      }
+
+      if (!(await has_git_repository(vscode.workspace.workspaceFolders))) {
+        vscode.window.showErrorMessage(
+          t('command.history-command.error.checkpoints-require-git')
         )
         return
       }

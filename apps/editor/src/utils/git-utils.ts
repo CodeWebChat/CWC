@@ -157,3 +157,12 @@ export const is_git_repository = async (
     return false
   }
 }
+
+export const has_git_repository = async (
+  workspace_folders: readonly vscode.WorkspaceFolder[]
+): Promise<boolean> => {
+  const statuses = await Promise.all(
+    workspace_folders.map((folder) => is_git_repository(folder))
+  )
+  return statuses.some((has_git) => has_git)
+}

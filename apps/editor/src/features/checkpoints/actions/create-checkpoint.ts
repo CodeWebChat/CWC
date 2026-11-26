@@ -8,6 +8,7 @@ import type { Checkpoint, CheckpointTab, CheckpointTrigger } from '../types'
 import { get_checkpoints, remove_old_checkpoints } from './get-checkpoints'
 import { get_checkpoint_path, get_incremented_description } from '../utils'
 import { create_workspace_snapshot } from '@/utils/workspace-snapshot'
+import { has_git_repository } from '@/utils/git-utils'
 import { Logger } from '@shared/utils/logger'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { code_review_promise_resolve } from '@/features/apply-response/utils/code-review'
@@ -24,6 +25,11 @@ export const create_checkpoint = async (params: {
   hide_notification?: boolean
 }): Promise<Checkpoint | undefined> => {
   try {
+    const workspace_folders = vscode.workspace.workspaceFolders
+    if (!workspace_folders || !(await has_git_repository(workspace_folders))) {
+      return undefined
+    }
+
     const trigger = params.trigger ?? 'manual'
 
     const operation_in_progress =
@@ -82,10 +88,28 @@ export const create_checkpoint = async (params: {
       const checkpoint_dir_uri = vscode.Uri.file(checkpoint_dir_path)
       await vscode.workspace.fs.createDirectory(checkpoint_dir_uri)
 
-      const snapshot_data = await create_workspace_snapshot(
-        checkpoint_dir_path,
-        params.workspace_provider
-      )
+      const snapshot_data = await create_workspace_snapshot(checkpoint_dir_path)
+
+      if (
+        trigger === 'manual' &&
+        snapshot_data.skipped_folders &&
+        snapshot_data.skipped_folders.length > 0
+      ) {
+        vscode.window.showWarningMessage(
+          t('feature.checkpoints.info.skipped-folders')
+        )
+      }
+
+      if (!snapshot_data.uses_git || !snapshot_data.git_data) {
+        await vscode.workspace.fs.delete(checkpoint_dir_uri, {
+          recursive: true
+        })
+        await params.extension_context.workspaceState.update(
+          CHECKPOINT_OPERATION_IN_PROGRESS_STATE_KEY,
+          undefined
+        )
+        return
+      }
 
       let checkpoints = await get_checkpoints(params.extension_context)
 

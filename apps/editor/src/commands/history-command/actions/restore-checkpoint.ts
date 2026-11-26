@@ -15,6 +15,7 @@ import {
 import { create_temporary_checkpoint } from './create-temporary-checkpoint'
 import { get_checkpoint_path } from '@/features/checkpoints/utils'
 import { restore_workspace_snapshot } from '@/utils/workspace-snapshot'
+import { has_git_repository } from '@/utils/git-utils'
 import { Logger } from '@shared/utils/logger'
 import { PromptViewProvider } from '@/views/prompt/backend/prompt-view-provider'
 import { code_review_promise_resolve } from '@/features/apply-response/utils/code-review'
@@ -35,6 +36,11 @@ export const restore_checkpoint = async (params: {
     hide_notification?: boolean
   }
 }) => {
+  const workspace_folders = vscode.workspace.workspaceFolders
+  if (!workspace_folders || !(await has_git_repository(workspace_folders))) {
+    return
+  }
+
   const operation_in_progress =
     params.extension_context.workspaceState.get<number>(
       CHECKPOINT_OPERATION_IN_PROGRESS_STATE_KEY
