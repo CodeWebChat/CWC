@@ -5,8 +5,8 @@ import { show_response_ready_notification } from '../utils/show-response-ready-n
 import { wait_for_copy_and_apply } from '../utils/bind-copy-button'
 import { report_initialization_error } from '../utils/report-initialization-error'
 
-let is_copy_listener_added = false
-let active_observer: MutationObserver | null = null
+let is_click_listener_added = false
+let active_ai_studio_observer: MutationObserver | null = null
 
 export const ai_studio: Chatbot = {
   wait_until_ready: async () => {
@@ -221,8 +221,8 @@ export const ai_studio: Chatbot = {
     await close_panel()
   },
   setup_observer: (params) => {
-    if (params.bind_copy && !is_copy_listener_added) {
-      is_copy_listener_added = true
+    if (params.bind_copy && !is_click_listener_added) {
+      is_click_listener_added = true
       document.addEventListener('click', (e) => {
         const target = e.target as HTMLElement
         const button = target.closest('button')
@@ -232,15 +232,15 @@ export const ai_studio: Chatbot = {
       })
     }
 
-    if (active_observer) {
-      active_observer.disconnect()
+    if (active_ai_studio_observer) {
+      active_ai_studio_observer.disconnect()
     }
 
     // AI Studio is quite sluggish with showing already generated tokens,
     // therefore we handle waiting for finished response differently than
     // in other chatbots.
     let debounce_timer: NodeJS.Timeout
-    active_observer = new MutationObserver(() => {
+    const observer = new MutationObserver(() => {
       clearTimeout(debounce_timer)
       debounce_timer = setTimeout(() => {
         const all_footers = document.querySelectorAll(
@@ -266,7 +266,9 @@ export const ai_studio: Chatbot = {
       }, 100)
     })
 
-    active_observer.observe(document.documentElement, {
+    active_ai_studio_observer = observer
+
+    observer.observe(document.documentElement, {
       childList: true,
       subtree: true,
       characterData: true
