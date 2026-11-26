@@ -1,11 +1,9 @@
 <p align="center" title="Code Web Chat">
-  <a href="https://codeweb.chat">
-    <picture>
+   <picture>
       <source srcset="https://github.com/CodeWebChat/CWC/raw/HEAD/media/readme-heading-dark.svg" media="(prefers-color-scheme: dark)">
       <source srcset="https://github.com/CodeWebChat/CWC/raw/HEAD/media/readme-heading-light.svg" media="(prefers-color-scheme: light)">
       <img alt="Logo" width="680" src="https://github.com/CodeWebChat/CWC/raw/HEAD/media/readme-heading-light.svg">
-    </picture>
-  </a>
+   </picture>
 </p>
 
 <p align="center"><strong>Blazing fast AI coding</strong></p>
