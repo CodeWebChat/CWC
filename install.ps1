@@ -419,16 +419,120 @@ if (!$nodeIsGood) {
     }
 }
 
+function Join-PathSafe {
+    param([string]$Base, [string]$Child)
+    if ([string]::IsNullOrEmpty($Base)) { return $null }
+    return Join-Path $Base $Child
+}
+
 $editorsToCheck = @(
-    @{ Name = "VS Code"; Cmd = "code"; Scheme = "vscode" },
-    @{ Name = "VS Code Insiders"; Cmd = "code-insiders"; Scheme = "vscode-insiders" },
-    @{ Name = "VSCodium"; Cmd = "codium"; Scheme = "vscodium" },
-    @{ Name = "Cursor"; Cmd = "cursor"; Scheme = "cursor" },
-    @{ Name = "Antigravity"; Cmd = "agy-ide"; Scheme = "antigravity-ide" },
-    @{ Name = "Devin"; Cmd = "devin-desktop"; Scheme = "devin" }
+    @{
+        Name = "VS Code"
+        Cmd = "code"
+        Scheme = "vscode"
+        FallbackDirs = @(
+            (Join-PathSafe $env:LOCALAPPDATA "Programs\Microsoft VS Code"),
+            (Join-PathSafe $env:ProgramFiles "Microsoft VS Code")
+        )
+    },
+    @{
+        Name = "VS Code Insiders"
+        Cmd = "code-insiders"
+        Scheme = "vscode-insiders"
+        FallbackDirs = @(
+            (Join-PathSafe $env:LOCALAPPDATA "Programs\Microsoft VS Code Insiders"),
+            (Join-PathSafe $env:ProgramFiles "Microsoft VS Code Insiders")
+        )
+    },
+    @{
+        Name = "VSCodium"
+        Cmd = "codium"
+        Scheme = "vscodium"
+        FallbackDirs = @(
+            (Join-PathSafe $env:LOCALAPPDATA "Programs\VSCodium"),
+            (Join-PathSafe $env:ProgramFiles "VSCodium")
+        )
+    },
+    @{
+        Name = "Cursor"
+        Cmd = "cursor"
+        Scheme = "cursor"
+        FallbackDirs = @(
+            (Join-PathSafe $env:LOCALAPPDATA "Programs\cursor"),
+            (Join-PathSafe $env:ProgramFiles "cursor")
+        )
+    },
+    @{
+        Name = "Antigravity"
+        Cmd = "agy-ide"
+        Scheme = "antigravity-ide"
+        FallbackDirs = @(
+            (Join-PathSafe $env:LOCALAPPDATA "Programs\Antigravity"),
+            (Join-PathSafe $env:ProgramFiles "Antigravity")
+        )
+    },
+    @{
+        Name = "Devin"
+        Cmd = "devin-desktop"
+        Scheme = "devin"
+        FallbackDirs = @(
+            (Join-PathSafe $env:LOCALAPPDATA "Programs\Devin"),
+            (Join-PathSafe $env:LOCALAPPDATA "Programs\devin-desktop"),
+            (Join-PathSafe $env:ProgramFiles "Devin")
+        )
+    }
 )
 
-$availableEditors = @($editorsToCheck | Where-Object { Get-Command $_.Cmd -ErrorAction SilentlyContinue })
+function Resolve-EditorCli {
+    param([hashtable]$Editor)
+
+    # Tier 1: PATH
+    $inPath = Get-Command $Editor.Cmd -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($inPath -and $inPath.Source) { return $inPath.Source }
+
+    # Tier 2: Registered URI scheme -> derive CLI wrapper from GUI .exe path
+    $regPaths = @(
+        "Registry::HKEY_CURRENT_USER\Software\Classes\$($Editor.Scheme)\shell\open\command",
+        "Registry::HKEY_LOCAL_MACHINE\Software\Classes\$($Editor.Scheme)\shell\open\command"
+    )
+    foreach ($regPath in $regPaths) {
+        if (-not (Test-Path $regPath)) { continue }
+        $item = Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue
+        $raw = if ($item) { $item.'(default)' } else { $null }
+        if ($raw -and ($raw -match '^"([^"]+\.exe)"' -or $raw -match '^(.+?\.exe)')) {
+            $exeDir = Split-Path $matches[1] -Parent
+            $candidates = @(
+                (Join-Path $exeDir "bin\$($Editor.Cmd).cmd"),
+                (Join-Path $exeDir "resources\app\bin\$($Editor.Cmd).cmd")
+            )
+            foreach ($cli in $candidates) {
+                if (Test-Path -Path $cli -PathType Leaf) { return $cli }
+            }
+        }
+    }
+
+    # Tier 3: Known default directories (if registry entry is missing)
+    foreach ($dir in $Editor.FallbackDirs) {
+        if (-not $dir) { continue }
+        foreach ($rel in @("bin\$($Editor.Cmd).cmd", "resources\app\bin\$($Editor.Cmd).cmd")) {
+            $cli = Join-Path $dir $rel
+            if (Test-Path -Path $cli -PathType Leaf) { return $cli }
+        }
+    }
+
+    return $null
+}
+
+$availableEditors = @(
+    foreach ($ed in $editorsToCheck) {
+        $resolvedCli = Resolve-EditorCli -Editor $ed
+        if ($resolvedCli) {
+            $entry = $ed.Clone()
+            $entry.ResolvedCli = $resolvedCli
+            $entry
+        }
+    }
+)
 
 if ($availableEditors.Count -eq 0) {
     Fail $msg_no_editors
@@ -615,7 +719,7 @@ if (!$vsixFile) {
 }
 
 $ok = Invoke-Step "$msg_step_install $($editor.Name)..." {
-    & $editor.Cmd --install-extension $vsixFile.FullName --force
+    & $editor.ResolvedCli --install-extension $vsixFile.FullName --force
     if ($LASTEXITCODE -ne 0) { throw "Extension install failed" }
 }
     

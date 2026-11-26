@@ -19,8 +19,6 @@ msg_git_required="git is required but not installed."
 msg_node_required="Failed to find a compatible Node.js version and no supported version manager (nvm, fnm, n) could switch it."
 msg_no_editors="No supported editors found in your PATH."
 msg_invalid="Invalid choice. Exiting."
-msg_hint="Hint: If your editor is installed but not listed, you might need to add its command to your PATH."
-msg_hint2="Open your editor, open the Command Palette (Ctrl+Shift+P / Cmd+Shift+P), and find a command like: \"Shell Command: Install 'cursor' command in PATH\" (or 'agy-ide', etc.)."
 msg_all_editors="All detected editors"
 msg_quit="Quit"
 msg_select_install="Select where to install CWC to: "
@@ -41,8 +39,6 @@ case "$LANGUAGE" in
     msg_node_required="Nie znaleziono kompatybilnej wersji Node.js i żaden obsługiwany menedżer wersji (nvm, fnm, n) nie mógł jej przełączyć."
     msg_no_editors="W zmiennej PATH nie znaleziono obsługiwanych edytorów."
     msg_invalid="Nieprawidłowy wybór. Zakończenie."
-    msg_hint="Wskazówka: Jeśli Twój edytor jest zainstalowany, ale nie znajduje się na liście, może być konieczne dodanie jego polecenia do zmiennej PATH."
-    msg_hint2="Otwórz edytor, otwórz Paletę Poleceń (Ctrl+Shift+P / Cmd+Shift+P) i znajdź polecenie w stylu: \"Shell Command: Install 'cursor' command in PATH\" (lub 'agy-ide', itp.)."
     msg_all_editors="Wszystkie wykryte edytory"
     msg_quit="Wyjdź"
     msg_select_install="Wybierz, gdzie zainstalować CWC: "
@@ -62,8 +58,6 @@ case "$LANGUAGE" in
     msg_node_required="找不到相容的 Node.js 版本，且沒有支援的版本管理工具 (nvm, fnm, n) 可以切換。"
     msg_no_editors="在你的 PATH 中找不到支援的編輯器。"
     msg_invalid="無效的選擇。退出中。"
-    msg_hint="提示：如果你的編輯器已安裝但未列出，你可能需要將其指令加入至 PATH。"
-    msg_hint2="開啟你的編輯器，開啟指令選擇區 (Ctrl+Shift+P / Cmd+Shift+P)，然後找到類似的指令：「Shell Command: Install 'cursor' command in PATH」（或 'agy-ide' 等）。"
     msg_all_editors="所有偵測到的編輯器"
     msg_quit="退出"
     msg_select_install="選擇要安裝 CWC 的位置： "
@@ -83,8 +77,6 @@ case "$LANGUAGE" in
     msg_node_required="找不到兼容的 Node.js 版本，并且没有支持的版本管理器 (nvm, fnm, n) 可以切换它。"
     msg_no_editors="在您的 PATH 中未找到支持的编辑器。"
     msg_invalid="无效的选择。正在退出。"
-    msg_hint="提示：如果您的编辑器已安装但未列出，您可能需要将其命令添加到您的 PATH 中。"
-    msg_hint2="打开您的编辑器，打开命令面板 (Ctrl+Shift+P / Cmd+Shift+P)，然后找到类似以下的命令：\"Shell Command: Install 'cursor' command in PATH\"（或 'agy-ide' 等）。"
     msg_all_editors="所有检测到的编辑器"
     msg_quit="退出"
     msg_select_install="选择将 CWC 安装到哪里： "
@@ -104,8 +96,6 @@ case "$LANGUAGE" in
     msg_node_required="互換性のあるNode.jsバージョンが見つからず、サポートされているバージョンマネージャー (nvm, fnm, n) でも切り替えられませんでした。"
     msg_no_editors="PATHにサポートされているエディターが見つかりません。"
     msg_invalid="無効な選択です。終了します。"
-    msg_hint="ヒント: エディターがインストールされているのにリストにない場合、PATHにそのコマンドを追加する必要があるかもしれません。"
-    msg_hint2="エディターを開き、コマンドパレット (Ctrl+Shift+P / Cmd+Shift+P) を開いて、次のようなコマンドを見つけます：「Shell Command: Install 'cursor' command in PATH」（または 'agy-ide' など）。"
     msg_all_editors="検出されたすべてのエディター"
     msg_quit="終了"
     msg_select_install="CWCのインストール先を選択してください: "
@@ -125,8 +115,6 @@ case "$LANGUAGE" in
     msg_node_required="Es konnte keine kompatible Node.js-Version gefunden werden und kein unterstützter Versionsmanager (nvm, fnm, n) konnte sie wechseln."
     msg_no_editors="Keine unterstützten Editoren in Ihrem PATH gefunden."
     msg_invalid="Ungültige Auswahl. Beenden."
-    msg_hint="Tipp: Wenn Ihr Editor installiert, aber nicht aufgeführt ist, müssen Sie möglicherweise seinen Befehl zu Ihrem PATH hinzufügen."
-    msg_hint2="Öffnen Sie Ihren Editor, öffnen Sie die Befehlspalette (Ctrl+Shift+P / Cmd+Shift+P) und suchen Sie nach einem Befehl wie: \"Shell Command: Install 'cursor' command in PATH\" (oder 'agy-ide' usw.)."
     msg_all_editors="Alle erkannten Editoren"
     msg_quit="Beenden"
     msg_select_install="Wählen Sie aus, wo CWC installiert werden soll: "
@@ -146,8 +134,6 @@ case "$LANGUAGE" in
     msg_node_required="No se pudo encontrar una versión compatible de Node.js y ningún administrador de versiones soportado (nvm, fnm, n) pudo cambiarla."
     msg_no_editors="No se encontraron editores soportados en su PATH."
     msg_invalid="Elección inválida. Saliendo."
-    msg_hint="Sugerencia: Si su editor está instalado pero no aparece en la lista, es posible que deba agregar su comando a su PATH."
-    msg_hint2="Abra su editor, abra la Paleta de comandos (Ctrl+Shift+P / Cmd+Shift+P) y busque un comando como: \"Shell Command: Install 'cursor' command in PATH\" (o 'agy-ide', etc.)."
     msg_all_editors="Todos los editores detectados"
     msg_quit="Salir"
     msg_select_install="Seleccione dónde instalar CWC: "
@@ -167,8 +153,6 @@ case "$LANGUAGE" in
     msg_node_required="Impossible de trouver une version compatible de Node.js et aucun gestionnaire de versions pris en charge (nvm, fnm, n) n'a pu la modifier."
     msg_no_editors="Aucun éditeur pris en charge trouvé dans votre PATH."
     msg_invalid="Choix invalide. Sortie."
-    msg_hint="Astuce : Si votre éditeur est installé mais ne figure pas dans la liste, vous devrez peut-être ajouter sa commande à votre PATH."
-    msg_hint2="Ouvrez votre éditeur, ouvrez la Palette de commandes (Ctrl+Shift+P / Cmd+Shift+P) et cherchez une commande comme : \"Shell Command: Install 'cursor' command in PATH\" (ou 'agy-ide', etc.)."
     msg_all_editors="Tous les éditeurs détectés"
     msg_quit="Quitter"
     msg_select_install="Choisissez où installer CWC : "
@@ -188,8 +172,6 @@ case "$LANGUAGE" in
     msg_node_required="Falha ao encontrar uma versão compatível do Node.js e nenhum gerenciador de versões suportado (nvm, fnm, n) pôde alterná-la."
     msg_no_editors="Nenhum editor suportado encontrado no seu PATH."
     msg_invalid="Escolha inválida. Saindo."
-    msg_hint="Dica: Se o seu editor está instalado mas não está listado, você pode precisar adicionar o comando dele ao seu PATH."
-    msg_hint2="Abra o seu editor, abra a Paleta de Comandos (Ctrl+Shift+P / Cmd+Shift+P) e encontre um comando como: \"Shell Command: Install 'cursor' command in PATH\" (ou 'agy-ide', etc.)."
     msg_all_editors="Todos os editores detectados"
     msg_quit="Sair"
     msg_select_install="Selecione onde instalar o CWC: "
@@ -209,8 +191,6 @@ case "$LANGUAGE" in
     msg_node_required="Не удалось найти совместимую версию Node.js, и ни один поддерживаемый менеджер версий (nvm, fnm, n) не смог её переключить."
     msg_no_editors="В вашем PATH не найдено поддерживаемых редакторов."
     msg_invalid="Неверный выбор. Выход."
-    msg_hint="Подсказка: Если ваш редактор установлен, но его нет в списке, возможно, вам нужно добавить его команду в PATH."
-    msg_hint2="Откройте редактор, откройте Палитру команд (Ctrl+Shift+P / Cmd+Shift+P) и найдите команду, подобную: \"Shell Command: Install 'cursor' command in PATH\" (или 'agy-ide' и т. д.)."
     msg_all_editors="Все обнаруженные редакторы"
     msg_quit="Выход"
     msg_select_install="Выберите, куда установить CWC: "
@@ -230,8 +210,6 @@ case "$LANGUAGE" in
     msg_node_required="호환되는 Node.js 버전을 찾지 못했으며 지원되는 버전 관리자(nvm, fnm, n)로 전환할 수 없습니다."
     msg_no_editors="PATH에서 지원되는 편집기를 찾을 수 없습니다."
     msg_invalid="잘못된 선택입니다. 종료합니다."
-    msg_hint="힌트: 편집기가 설치되어 있지만 목록에 없는 경우 해당 명령을 PATH에 추가해야 할 수 있습니다."
-    msg_hint2="편집기를 열고 명령 팔레트(Ctrl+Shift+P / Cmd+Shift+P)를 열어 다음과 같은 명령을 찾습니다: \"Shell Command: Install 'cursor' command in PATH\" (또는 'agy-ide' 등)."
     msg_all_editors="감지된 모든 편집기"
     msg_quit="종료"
     msg_select_install="CWC를 설치할 위치 선택: "
@@ -251,8 +229,6 @@ case "$LANGUAGE" in
     msg_node_required="Impossibile trovare una versione di Node.js compatibile e nessun gestore di versioni supportato (nvm, fnm, n) ha potuto modificarla."
     msg_no_editors="Nessun editor supportato trovato nel tuo PATH."
     msg_invalid="Scelta non valida. Uscita."
-    msg_hint="Suggerimento: Se il tuo editor è installato ma non in elenco, potresti dover aggiungere il suo comando al tuo PATH."
-    msg_hint2="Apri il tuo editor, apri la Riquadro comandi (Ctrl+Shift+P / Cmd+Shift+P) e cerca un comando come: \"Shell Command: Install 'cursor' command in PATH\" (o 'agy-ide', ecc.)."
     msg_all_editors="Tutti gli editor rilevati"
     msg_quit="Esci"
     msg_select_install="Seleziona dove installare CWC: "
@@ -272,8 +248,6 @@ case "$LANGUAGE" in
     msg_node_required="Uyumlu bir Node.js sürümü bulunamadı ve desteklenen hiçbir sürüm yöneticisi (nvm, fnm, n) geçiş yapamadı."
     msg_no_editors="PATH'inizde desteklenen hiçbir düzenleyici bulunamadı."
     msg_invalid="Geçersiz seçim. Çıkılıyor."
-    msg_hint="İpucu: Düzenleyiciniz yüklüyse ancak listede yoksa, komutunu PATH'inize eklemeniz gerekebilir."
-    msg_hint2="Düzenleyicinizi açın, Komut Paleti'ni açın (Ctrl+Shift+P / Cmd+Shift+P) ve şu şekilde bir komut bulun: \"Shell Command: Install 'cursor' command in PATH\" (veya 'agy-ide', vb.)."
     msg_all_editors="Algılanan tüm düzenleyiciler"
     msg_quit="Çıkış"
     msg_select_install="CWC'nin nereye kurulacağını seçin: "
@@ -293,8 +267,6 @@ case "$LANGUAGE" in
     msg_node_required="Nepodařilo se najít kompatibilní verzi Node.js a žádný podporovaný správce verzí (nvm, fnm, n) ji nedokázal přepnout."
     msg_no_editors="Ve vaší proměnné PATH nebyly nalezeny žádné podporované editory."
     msg_invalid="Neplatná volba. Ukončování."
-    msg_hint="Tip: Pokud je váš editor nainstalován, ale není uveden v seznamu, možná budete muset přidat jeho příkaz do PATH."
-    msg_hint2="Otevřete svůj editor, otevřete Paletu příkazů (Ctrl+Shift+P / Cmd+Shift+P) a najděte příkaz jako: \"Shell Command: Install 'cursor' command in PATH\" (nebo 'agy-ide' atd.)."
     msg_all_editors="Všechny zjištěné editory"
     msg_quit="Ukončit"
     msg_select_install="Vyberte, kam nainstalovat CWC: "
@@ -314,8 +286,6 @@ case "$LANGUAGE" in
     msg_node_required="Nem sikerült kompatibilis Node.js verziót találni, és egyik támogatott verziókezelő (nvm, fnm, n) sem tudott átváltani rá."
     msg_no_editors="Nem található támogatott szerkesztő a PATH-ban."
     msg_invalid="Érvénytelen választás. Kilépés."
-    msg_hint="Tipp: Ha a szerkesztő telepítve van, de nem szerepel a listán, előfordulhat, hogy hozzá kell adnia a parancsát a PATH-hoz."
-    msg_hint2="Nyissa meg a szerkesztőt, nyissa meg a Parancskatalógust (Ctrl+Shift+P / Cmd+Shift+P), és keressen egy ilyen parancsot: \"Shell Command: Install 'cursor' command in PATH\" (vagy 'agy-ide', stb.)."
     msg_all_editors="Minden észlelt szerkesztő"
     msg_quit="Kilépés"
     msg_select_install="Válassza ki, hová telepítse a CWC-t: "
@@ -335,8 +305,6 @@ case "$LANGUAGE" in
     msg_node_required="Не бе намерен съвместим Node.js и никой поддържан мениджър на версии (nvm, fnm, n) не можа да го превключи."
     msg_no_editors="Не са намерени поддържани редактори във вашия PATH."
     msg_invalid="Невалиден избор. Изход."
-    msg_hint="Подсказка: Ако вашият редактор е инсталиран, но не е в списъка, може да се наложи да добавите неговата команда към PATH."
-    msg_hint2="Отворете вашия редактор, отворете Палитрата с команди (Ctrl+Shift+P / Cmd+Shift+P) и намерете команда като: \"Shell Command: Install 'cursor' command in PATH\" (или 'agy-ide' и т.н.)."
     msg_all_editors="Всички открити редактори"
     msg_quit="Изход"
     msg_select_install="Изберете къде да инсталирате CWC: "
@@ -357,6 +325,10 @@ ERROR_LOG="$CWC_DIR/error.log"
 TEMP_LOG="$(mktemp 2>/dev/null || printf '%s' "/tmp/cwc-install-$$.log")"
 INTERRUPTED=false
 
+is_wsl() {
+  grep -qi microsoft /proc/version 2>/dev/null
+}
+
 kill_spinner() {
   if [ -n "${SPINNER_PID:-}" ]; then
     kill "$SPINNER_PID" >/dev/null 2>&1 || true
@@ -369,7 +341,7 @@ kill_spinner() {
 open_error_log() {
   if [ "$(uname -s)" = "Darwin" ]; then
     open "$ERROR_LOG" >/dev/null 2>&1 || true
-  elif grep -qi microsoft /proc/version 2>/dev/null && command -v wslpath >/dev/null 2>&1; then
+  elif is_wsl && command -v wslpath >/dev/null 2>&1; then
     local win_path
     win_path="$(wslpath -w "$ERROR_LOG" 2>/dev/null || true)"
     if [ -n "$win_path" ]; then
@@ -469,20 +441,253 @@ if ! check_node_version; then
   fi
 fi
 
-check_editor() {
-  if command -v "$2" >/dev/null 2>&1; then
-    AVAILABLE_EDITORS+=("$1")
-    EDITOR_CMDS+=("$2")
-    EDITOR_SCHEMES+=("$3")
+AVAILABLE_EDITORS=()
+EDITOR_PATHS=()
+EDITOR_RUNNERS=()
+EDITOR_SCHEMES=()
+
+RESOLVED_PATH=""
+RESOLVED_RUNNER=""
+
+resolve_macos_editor() {
+  local cmd="$1" app_name="$2" bundle_id="$3"
+  local resolved app_path
+
+  # Tier 1: PATH
+  if resolved="$(command -v "$cmd" 2>/dev/null)" && [ -n "$resolved" ]; then
+    RESOLVED_PATH="$resolved"
+    RESOLVED_RUNNER="native"
+    return 0
   fi
+
+  # Tier 2: Standard .app paths
+  for app_path in "/Applications/${app_name}.app" "$HOME/Applications/${app_name}.app"; do
+    if [ -f "$app_path/Contents/Resources/app/bin/$cmd" ] && [ -x "$app_path/Contents/Resources/app/bin/$cmd" ]; then
+      RESOLVED_PATH="$app_path/Contents/Resources/app/bin/$cmd"
+      RESOLVED_RUNNER="native"
+      return 0
+    fi
+  done
+
+  # Tier 3: Spotlight lookup by CFBundleIdentifier
+  if [ -n "$bundle_id" ] && command -v mdfind >/dev/null 2>&1; then
+    while IFS= read -r app_path; do
+      if [ -n "$app_path" ] && [ -f "$app_path/Contents/Resources/app/bin/$cmd" ] && [ -x "$app_path/Contents/Resources/app/bin/$cmd" ]; then
+        RESOLVED_PATH="$app_path/Contents/Resources/app/bin/$cmd"
+        RESOLVED_RUNNER="native"
+        return 0
+      fi
+    done < <(mdfind "kMDItemCFBundleIdentifier == '$bundle_id'" 2>/dev/null || true)
+  fi
+
+  return 1
 }
 
-check_editor "VS Code" "code" "vscode"
-check_editor "VS Code Insiders" "code-insiders" "vscode-insiders"
-check_editor "VSCodium" "codium" "vscodium"
-check_editor "Cursor" "cursor" "cursor"
-check_editor "Antigravity" "agy-ide" "antigravity-ide"
-check_editor "Devin" "devin-desktop" "devin"
+extract_desktop_exec() {
+  local desktop_file="$1"
+  local exec_line
+  exec_line="$(sed -n 's/^Exec=//p' "$desktop_file" | head -n 1)"
+  [ -n "$exec_line" ] || return 1
+
+  if printf '%s' "$exec_line" | grep -q '^env[[:space:]]'; then
+    exec_line="$(printf '%s' "$exec_line" | sed 's/^env[[:space:]][[:space:]]*//')"
+    while printf '%s' "$exec_line" | grep -q '^[A-Za-z_][A-Za-z0-9_]*='; do
+      exec_line="$(printf '%s' "$exec_line" | sed 's/^[A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*[[:space:]]*//')"
+    done
+  fi
+
+  case "$exec_line" in
+    \"*)
+      printf '%s' "$exec_line" | sed -n 's/^"\([^"]*\)".*/\1/p'
+      ;;
+    \'*)
+      printf '%s' "$exec_line" | sed -n "s/^'\([^']*\)'.*/\1/p"
+      ;;
+    *)
+      printf '%s' "$exec_line" | sed 's/[[:space:]].*//'
+      ;;
+  esac
+}
+
+resolve_linux_editor() {
+  local cmd="$1" scheme="$2" flatpak_id="$3" linux_dirs="$4" appimage_pattern="$5"
+  local resolved desktop_name desktop_dir desktop_file exec_path exec_dir candidate dir_name
+
+  # Tier 1: PATH
+  if resolved="$(command -v "$cmd" 2>/dev/null)" && [ -n "$resolved" ]; then
+    RESOLVED_PATH="$resolved"
+    RESOLVED_RUNNER="native"
+    return 0
+  fi
+
+  # Tier 2: XDG URI handler (.desktop entry)
+  if command -v xdg-mime >/dev/null 2>&1; then
+    desktop_name="$(xdg-mime query default "x-scheme-handler/$scheme" 2>/dev/null || true)"
+    if [ -n "$desktop_name" ]; then
+      for desktop_dir in \
+        "${XDG_DATA_HOME:-$HOME/.local/share}/applications" \
+        "/usr/local/share/applications" \
+        "/usr/share/applications" \
+        "/var/lib/snapd/desktop/applications"; do
+        desktop_file="$desktop_dir/$desktop_name"
+        if [ -f "$desktop_file" ]; then
+          exec_path="$(extract_desktop_exec "$desktop_file" || true)"
+          if [ -n "$exec_path" ] && [ "${exec_path#/}" != "$exec_path" ]; then
+            exec_dir="$(dirname "$exec_path")"
+            for candidate in "$exec_dir/bin/$cmd" "$exec_dir/resources/app/bin/$cmd"; do
+              if [ -f "$candidate" ] && [ -x "$candidate" ]; then
+                RESOLVED_PATH="$candidate"
+                RESOLVED_RUNNER="native"
+                return 0
+              fi
+            done
+            if [ -f "$exec_path" ] && [ -x "$exec_path" ]; then
+              case "$(basename "$exec_path")" in
+                "$cmd"|*.[Aa][Pp][Pp][Ii][Mm][Aa][Gg][Ee])
+                  RESOLVED_PATH="$exec_path"
+                  RESOLVED_RUNNER="native"
+                  return 0
+                  ;;
+              esac
+            fi
+          fi
+          break
+        fi
+      done
+    fi
+  fi
+
+  # Tier 3: Snap and Flatpak
+  if [ -f "/snap/bin/$cmd" ] && [ -x "/snap/bin/$cmd" ]; then
+    RESOLVED_PATH="/snap/bin/$cmd"
+    RESOLVED_RUNNER="native"
+    return 0
+  fi
+
+  if [ -n "$flatpak_id" ] && command -v flatpak >/dev/null 2>&1 && flatpak info "$flatpak_id" >/dev/null 2>&1; then
+    RESOLVED_PATH="$flatpak_id"
+    RESOLVED_RUNNER="flatpak"
+    return 0
+  fi
+
+  # Tier 4: Known fallback paths and AppImages
+  for candidate in "$HOME/.local/bin/$cmd" "/usr/local/bin/$cmd"; do
+    if [ -f "$candidate" ] && [ -x "$candidate" ]; then
+      RESOLVED_PATH="$candidate"
+      RESOLVED_RUNNER="native"
+      return 0
+    fi
+  done
+
+  if [ -n "$linux_dirs" ]; then
+    local old_ifs="$IFS"
+    IFS=":"
+    for dir_name in $linux_dirs; do
+      IFS="$old_ifs"
+      for candidate in \
+        "/usr/share/${dir_name}/bin/${cmd}" \
+        "/usr/share/${dir_name}/resources/app/bin/${cmd}" \
+        "/opt/${dir_name}/bin/${cmd}" \
+        "/opt/${dir_name}/resources/app/bin/${cmd}"; do
+        if [ -f "$candidate" ] && [ -x "$candidate" ]; then
+          RESOLVED_PATH="$candidate"
+          RESOLVED_RUNNER="native"
+          return 0
+        fi
+      done
+    done
+    IFS="$old_ifs"
+  fi
+
+  if [ -n "$appimage_pattern" ] && [ -d "$HOME/Applications" ]; then
+    while IFS= read -r candidate; do
+      if [ -n "$candidate" ] && [ -f "$candidate" ] && [ -x "$candidate" ]; then
+        RESOLVED_PATH="$candidate"
+        RESOLVED_RUNNER="native"
+        return 0
+      fi
+    done < <(find "$HOME/Applications" -maxdepth 2 -type f -iname "*${appimage_pattern}*.appimage" 2>/dev/null | sort || true)
+  fi
+
+  return 1
+}
+
+resolve_wsl_editor() {
+  local cmd="$1" scheme="$2" flatpak_id="$3" linux_dirs="$4" appimage_pattern="$5"
+  local resolved reg_exe reg_hive reg_out raw_val win_exe wsl_exe wsl_dir candidate
+
+  # Tier 1a: PATH (Windows interop or native Linux)
+  if resolved="$(command -v "$cmd" 2>/dev/null)" && [ -n "$resolved" ]; then
+    RESOLVED_PATH="$resolved"
+    RESOLVED_RUNNER="native"
+    return 0
+  fi
+
+  # Tier 1b: Windows Registry URI scheme -> WSL extensionless POSIX shim
+  reg_exe=""
+  if command -v reg.exe >/dev/null 2>&1; then
+    reg_exe="reg.exe"
+  elif [ -x "/mnt/c/Windows/System32/reg.exe" ]; then
+    reg_exe="/mnt/c/Windows/System32/reg.exe"
+  fi
+
+  if [ -n "$reg_exe" ] && command -v wslpath >/dev/null 2>&1; then
+    for reg_hive in HKCU HKLM; do
+      reg_out="$("$reg_exe" query "${reg_hive}\\Software\\Classes\\${scheme}\\shell\\open\\command" /ve 2>/dev/null | tr -d '\r' || true)"
+      raw_val="$(printf '%s\n' "$reg_out" | sed -n 's/.*REG_\(EXPAND_\)\{0,1\}SZ[[:space:]]*//p' | head -n 1)"
+      [ -n "$raw_val" ] || continue
+
+      win_exe=""
+      if printf '%s' "$raw_val" | grep -q '^"'; then
+        win_exe="$(printf '%s' "$raw_val" | sed -n 's/^"\([^"]*\.[Ee][Xx][Ee]\)".*/\1/p')"
+      else
+        win_exe="$(printf '%s' "$raw_val" | sed -n 's/^\([^[:space:]]*\.[Ee][Xx][Ee]\).*/\1/p')"
+      fi
+      [ -n "$win_exe" ] || continue
+
+      wsl_exe="$(wslpath -u "$win_exe" 2>/dev/null || true)"
+      [ -n "$wsl_exe" ] || continue
+      wsl_dir="$(dirname "$wsl_exe")"
+
+      for candidate in "$wsl_dir/bin/$cmd" "$wsl_dir/resources/app/bin/$cmd"; do
+        if [ -f "$candidate" ] && [ -x "$candidate" ]; then
+          RESOLVED_PATH="$candidate"
+          RESOLVED_RUNNER="native"
+          return 0
+        fi
+      done
+    done
+  fi
+
+  # Tier 2: Native Linux fallback (e.g., WSLg Linux-installed editors)
+  resolve_linux_editor "$cmd" "$scheme" "$flatpak_id" "$linux_dirs" "$appimage_pattern"
+}
+
+check_editor() {
+  local name="$1" cmd="$2" scheme="$3" macos_app="$4" macos_bundle="$5" flatpak_id="$6" linux_dirs="$7" appimage_pattern="$8"
+  RESOLVED_PATH=""
+  RESOLVED_RUNNER=""
+
+  if [ "$(uname -s)" = "Darwin" ]; then
+    resolve_macos_editor "$cmd" "$macos_app" "$macos_bundle" || return 0
+  elif is_wsl; then
+    resolve_wsl_editor "$cmd" "$scheme" "$flatpak_id" "$linux_dirs" "$appimage_pattern" || return 0
+  else
+    resolve_linux_editor "$cmd" "$scheme" "$flatpak_id" "$linux_dirs" "$appimage_pattern" || return 0
+  fi
+
+  AVAILABLE_EDITORS+=("$name")
+  EDITOR_PATHS+=("$RESOLVED_PATH")
+  EDITOR_RUNNERS+=("$RESOLVED_RUNNER")
+  EDITOR_SCHEMES+=("$scheme")
+}
+
+check_editor "VS Code" "code" "vscode" "Visual Studio Code" "com.microsoft.VSCode" "com.visualstudio.code" "code:visual-studio-code" ""
+check_editor "VS Code Insiders" "code-insiders" "vscode-insiders" "Visual Studio Code - Insiders" "com.microsoft.VSCodeInsiders" "com.visualstudio.code.insiders" "code-insiders:visual-studio-code-insiders" ""
+check_editor "VSCodium" "codium" "vscodium" "VSCodium" "com.vscodium" "com.vscodium.codium" "codium:vscodium" "vscodium"
+check_editor "Cursor" "cursor" "cursor" "Cursor" "com.todesktop.230313mzl4w4u92" "" "cursor:Cursor" "cursor"
+check_editor "Antigravity" "agy-ide" "antigravity-ide" "Antigravity" "com.google.antigravity" "" "antigravity:Antigravity:agy-ide" "antigravity"
+check_editor "Devin" "devin-desktop" "devin" "Devin" "" "" "devin-desktop:devin:Devin" "devin"
 
 if [ ${#AVAILABLE_EDITORS[@]} -eq 0 ]; then
   fail "$msg_no_editors"
@@ -502,10 +707,6 @@ fi
 invalid_choice() { fail "$msg_invalid"; }
 
 if [ -z "$choice" ]; then
-  echo ""
-  echo "$msg_hint"
-  echo "$msg_hint2"
-
   echo ""
   for i in "${!AVAILABLE_EDITORS[@]}"; do
     echo "$((i+1))) ${AVAILABLE_EDITORS[$i]}"
@@ -616,10 +817,31 @@ clone_repo() {
   fi
 }
 
+install_extension() {
+  local runner="$1"
+  local target="$2"
+  local vsix="$3"
+
+  case "$runner" in
+    flatpak)
+      flatpak run --filesystem="$(dirname "$vsix"):ro" "$target" \
+        --install-extension "$vsix" --force
+      ;;
+    *)
+      local vsix_arg="$vsix"
+      if is_wsl && is_wsl_windows_bin "$target" && command -v wslpath >/dev/null 2>&1; then
+        vsix_arg="$(wslpath -w "$vsix")"
+      fi
+      "$target" --install-extension "$vsix_arg" --force
+      ;;
+  esac
+}
+
 i=$((choice-1))
 
 editor_name="${AVAILABLE_EDITORS[$i]}"
-editor_cmd="${EDITOR_CMDS[$i]}"
+editor_path="${EDITOR_PATHS[$i]}"
+editor_runner="${EDITOR_RUNNERS[$i]}"
 editor_scheme="${EDITOR_SCHEMES[$i]}"
 
 REPO_DIR="$CWC_DIR/repository-${editor_scheme}"
@@ -656,20 +878,18 @@ run_step "$msg_step_build" build_extension
 cd apps/editor
 
 vsix_files=(*.vsix)
-VSIX_FILE="${vsix_files[0]}"
+VSIX_FILE="$(pwd)/${vsix_files[0]}"
 
 if [ ! -f "$VSIX_FILE" ]; then
   fail "$msg_vsix_error"
 fi
 
-if ! run_step "$msg_step_install $editor_name" "$editor_cmd" --install-extension "$VSIX_FILE" --force; then
+if ! run_step "$msg_step_install $editor_name" install_extension "$editor_runner" "$editor_path" "$VSIX_FILE"; then
   fail "$msg_install_fail $editor_name."
 else
   if [ "$is_update" = false ]; then
     echo "$msg_success $editor_name!"
   fi
 fi
-
-cd "$ORIGINAL_DIR"
 
 cd "$ORIGINAL_DIR" || cd /
