@@ -1,4 +1,3 @@
-import { extract_path_from_line_of_code } from '@shared/utils/extract-path-from-line-of-code'
 import { FileItem, TextItem, InlineFileItem } from '../../response-parser'
 import { create_or_update_file_item } from './helpers/create-or-update-file-item'
 import { flush_text_block } from './helpers/flush-text-block'
@@ -19,8 +18,7 @@ export const file_blocks_parser = (params: {
   let current_content = ''
   let current_workspace_name: string | undefined = undefined
   let backtick_nesting_level = 0
-  let last_seen_file_path_comment: string | null = null
-  let last_seen_file_path_was_header = false
+  let last_seen_file_path: string | null = null
   let header_path_already_used = false
   let current_block_mode: 'overwrite' | 'append' = 'overwrite'
   let is_markdown_container_block = false
@@ -60,10 +58,10 @@ export const file_blocks_parser = (params: {
         backtick_nesting_level = 1
         current_workspace_name = undefined
         current_file_name = ''
-        if (last_seen_file_path_comment) {
+        if (last_seen_file_path) {
           const { workspace_name, relative_path } =
             extract_and_set_workspace_path({
-              raw_file_path: last_seen_file_path_comment,
+              raw_file_path: last_seen_file_path,
               is_single_root_folder_workspace:
                 params.is_single_root_folder_workspace
             })
@@ -86,7 +84,7 @@ export const file_blocks_parser = (params: {
             } else {
               current_file_name = ''
               current_workspace_name = undefined
-              last_seen_file_path_comment = null
+              last_seen_file_path = null
               current_block_mode = 'overwrite'
             }
           } else {
@@ -105,9 +103,11 @@ export const file_blocks_parser = (params: {
         continue
       }
 
-      const renamed_file_match = line
-        .trim()
-        .match(/^###\s+Renamed file:\s*`([^`]+)`.*?`([^`]+)`/i)
+      const trimmed_line = line.trim()
+
+      const renamed_file_match = trimmed_line.match(
+        /^###\s+Renamed file:\s*`([^`]+)`.*?`([^`]+)`/i
+      )
       if (
         renamed_file_match &&
         renamed_file_match[1] &&
@@ -147,19 +147,22 @@ export const file_blocks_parser = (params: {
           renamed_from_workspace
         })
 
-        last_seen_file_path_comment = renamed_file_match[2]
-        last_seen_file_path_was_header = true
+        last_seen_file_path = renamed_file_match[2]
         header_path_already_used = false
 
         continue
       }
 
-      const deleted_file_match = line
-        .trim()
-        .match(/^###\s+Deleted file:\s*`([^`]+)`$/i)
-      if (deleted_file_match && deleted_file_match[1]) {
+      const deleted_file_match = trimmed_line.match(
+        /^###\s+Deleted file:\s*(?:`([^`]+)`|(\S+))/i
+      )
+      const deleted_file_path =
+        deleted_file_match && (deleted_file_match[1] || deleted_file_match[2])
+      if (deleted_file_path) {
         renamed_from_path = undefined
         renamed_from_workspace = undefined
+        last_seen_file_path = null
+        header_path_already_used = false
         flush_text_block({
           text_block: current_text_block,
           results
@@ -167,7 +170,7 @@ export const file_blocks_parser = (params: {
         current_text_block = ''
         const { workspace_name, relative_path } =
           extract_and_set_workspace_path({
-            raw_file_path: deleted_file_match[1],
+            raw_file_path: deleted_file_path,
             is_single_root_folder_workspace:
               params.is_single_root_folder_workspace
           })
@@ -182,145 +185,24 @@ export const file_blocks_parser = (params: {
         continue
       }
 
-      let extracted_filename = extract_path_from_line_of_code(line)
-      const is_header_line = line.trim().startsWith('###')
-
-      if (!extracted_filename) {
-        if (is_header_line) {
-          const header_content = line.trim().replace(/^###\s+/, '')
-          const cleaned = header_content.replace(/^[`*]+|[`*]+$/g, '')
-          const extracted = extract_path_from_line_of_code(cleaned)
-          if (extracted) {
-            extracted_filename = extracted
-          } else if (
-            (cleaned.includes('/') ||
-              cleaned.includes('.') ||
-              cleaned.includes('\\')) &&
-            !cleaned.includes(' ')
-          ) {
-            extracted_filename = cleaned
-          }
-        }
-      }
-      if (!extracted_filename) {
-        const match = line.match(/`([^`]+)`/)
-        if (match && match[1]) {
-          const potential_path = match[1]
-          if (
-            (potential_path.includes('/') ||
-              potential_path.includes('\\') ||
-              potential_path.includes('.')) &&
-            !potential_path.includes('${') &&
-            !potential_path.includes(' ') &&
-            /[a-zA-Z0-9]/.test(potential_path)
-          ) {
-            const before = line.substring(0, match.index!)
-            const after = line.substring(match.index! + match[0].length)
-
-            // Avoid matching file paths that are part of a sentence.
-            if (
-              is_header_line ||
-              !(/[a-zA-Z]/.test(before) && /[a-zA-Z]/.test(after))
-            ) {
-              const trimmed_line = line.trim()
-              const is_comment_or_header =
-                trimmed_line.startsWith('#') ||
-                trimmed_line.startsWith('//') ||
-                trimmed_line.startsWith('--')
-              let is_followed_by_code_block = false
-              for (let j = i + 1; j < lines.length; j++) {
-                const next_line = lines[j].trim()
-                if (next_line.startsWith('```')) {
-                  if (is_comment_or_header) {
-                    is_followed_by_code_block = true
-                  } else {
-                    let all_intermediate_lines_empty = true
-                    for (let k = i + 1; k < j; k++) {
-                      if (lines[k].trim() !== '') {
-                        all_intermediate_lines_empty = false
-                        break
-                      }
-                    }
-                    if (all_intermediate_lines_empty) {
-                      is_followed_by_code_block = true
-                    }
-                  }
-                  break
-                }
-              }
-
-              if (is_followed_by_code_block) {
-                extracted_filename = potential_path
-              }
-            }
-          }
-        }
-      }
+      const file_header_match = trimmed_line.match(
+        /^###\s+(?:(?:New|Created|Updated)\s+)?file:\s*(?:`([^`]+)`|(\S+))/i
+      )
+      const extracted_filename =
+        file_header_match && (file_header_match[1] || file_header_match[2])
 
       if (extracted_filename) {
-        if (last_seen_file_path_was_header && !is_header_line) {
-          current_text_block += line + '\n'
-        } else {
-          flush_text_block({
-            text_block: current_text_block,
-            results
-          })
-          current_text_block = ''
-          last_seen_file_path_comment = extracted_filename
-          if (!line.trim().match(/^###\s+Renamed file:/i)) {
-            renamed_from_path = undefined
-            renamed_from_workspace = undefined
-          }
-
-          last_seen_file_path_was_header = is_header_line
-          header_path_already_used = false
-        }
+        flush_text_block({
+          text_block: current_text_block,
+          results
+        })
+        current_text_block = ''
+        last_seen_file_path = extracted_filename
+        renamed_from_path = undefined
+        renamed_from_workspace = undefined
+        header_path_already_used = false
       } else {
-        let is_lone_path_on_this_line = false
-        if (!last_seen_file_path_comment) {
-          let trimmed = line.trim()
-
-          const markdown_markers = ['***', '**', '*']
-          for (const marker of markdown_markers) {
-            if (trimmed.startsWith(marker) && trimmed.endsWith(marker)) {
-              trimmed = trimmed.slice(marker.length, -marker.length)
-              break
-            }
-          }
-
-          if (trimmed.endsWith(':')) {
-            trimmed = trimmed.slice(0, -1)
-          }
-
-          if (
-            trimmed &&
-            (trimmed.includes('/') ||
-              trimmed.includes('\\') ||
-              trimmed.includes('.')) &&
-            !trimmed.endsWith('.') &&
-            /^[a-zA-Z0-9_./@-]+$/.test(trimmed)
-          ) {
-            let is_followed_by_code_block = false
-            for (let j = i + 1; j < lines.length; j++) {
-              const next_line = lines[j].trim()
-              if (next_line.startsWith('```')) {
-                is_followed_by_code_block = true
-                break
-              }
-            }
-            if (is_followed_by_code_block) {
-              renamed_from_path = undefined
-              renamed_from_workspace = undefined
-              last_seen_file_path_comment = trimmed
-              last_seen_file_path_was_header = false
-              header_path_already_used = false
-              is_lone_path_on_this_line = true
-            }
-          }
-        }
-        if (!is_lone_path_on_this_line) {
-          current_text_block += line + '\n'
-        }
+        current_text_block += line + '\n'
       }
     } else if (state === 'CONTENT') {
       const trimmed_line = line.trim()
@@ -332,7 +214,7 @@ export const file_blocks_parser = (params: {
           current_content.trim() === ''
         ) {
           state = 'TEXT'
-          last_seen_file_path_comment = current_file_name
+          last_seen_file_path = current_file_name
           current_file_name = ''
           current_content = ''
           current_workspace_name = undefined
@@ -367,14 +249,11 @@ export const file_blocks_parser = (params: {
         trimmed_line === '```' &&
         backtick_nesting_level === 1 &&
         (current_language === 'markdown' || current_language === 'md') &&
-        !last_seen_file_path_was_header &&
+        !current_file_name &&
         ((current_content.trim() === '' &&
           i > 0 &&
           lines[i - 1].trim() !== '') ||
-          (i > 0 &&
-            (lines[i - 1].trim() === '' ||
-              (current_file_name.endsWith('.md') &&
-                lines[i - 1].trim().endsWith('```'))))) &&
+          (i > 0 && lines[i - 1].trim() === '')) &&
         (() => {
           for (let j = i + 1; j < lines.length; j++) {
             const next_line = lines[j].trim()
@@ -460,8 +339,7 @@ export const file_blocks_parser = (params: {
         }
 
         if (current_file_name && !current_content.trim()) {
-          last_seen_file_path_comment = current_file_name
-          last_seen_file_path_was_header = false
+          last_seen_file_path = current_file_name
           header_path_already_used = false
         }
 

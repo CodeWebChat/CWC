@@ -1,4 +1,4 @@
-### `src/hello-world.ts`
+### Updated file: `src/hello-world.ts`
 
 Lorem ipsum `src/welcome.ts`.
 
