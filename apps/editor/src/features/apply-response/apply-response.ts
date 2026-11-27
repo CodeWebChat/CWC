@@ -262,6 +262,9 @@ export const setup_apply_response = (params: {
           'codeWebChat.internal.generateCommitMessageWithProvidedTextAndCommit',
           commit_message_item.message
         )
+        if (args?.tab_id !== undefined) {
+          params.websocket_manager.send_code_review_accepted(args.tab_id)
+        }
         return true
       }
 
@@ -284,6 +287,9 @@ export const setup_apply_response = (params: {
           prompt_view_provider: params.prompt_view_provider,
           workspace_provider: params.workspace_provider
         })
+        if (args?.tab_id !== undefined) {
+          params.websocket_manager.send_code_review_accepted(args.tab_id)
+        }
         return true
       }
 
@@ -307,6 +313,9 @@ export const setup_apply_response = (params: {
             content: item.content
           }
         )
+        if (args?.tab_id !== undefined) {
+          params.websocket_manager.send_code_review_accepted(args.tab_id)
+        }
         return true
       }
 
@@ -464,6 +473,9 @@ export const setup_apply_response = (params: {
         params.prompt_view_provider.send_message({
           command: 'HIDE_PROGRESS'
         })
+        if (is_intelligent_file_search_results && args?.tab_id !== undefined) {
+          params.websocket_manager.send_code_review_accepted(args.tab_id)
+        }
       }
 
       if (code_review_data) {
@@ -526,6 +538,9 @@ export const setup_apply_response = (params: {
 
         if (changes_accepted) {
           params.prompt_view_api_calls_manager.cancel_all_requests()
+          if (args?.tab_id !== undefined) {
+            params.websocket_manager.send_code_review_accepted(args.tab_id)
+          }
           if (before_checkpoint) {
             await accept_checkpoint({
               extension_context: params.extension_context,

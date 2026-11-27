@@ -34,6 +34,12 @@ export type ApplyResponseMessage = {
     model?: string
     reasoning_effort?: string
   }
+  tab_id?: number
+}
+
+export type CodeReviewAcceptedMessage = {
+  action: 'code-review-accepted'
+  tab_id: number
 }
 
 export type ClientIdAssignmentMessage = {
@@ -59,6 +65,7 @@ export type WebSocketMessage =
   | BrowserConnectionStatusMessage
   | ClientIdAssignmentMessage
   | ApplyResponseMessage
+  | CodeReviewAcceptedMessage
   | PingMessage
   | PongMessage
   | ForwardedPortsMessage

@@ -271,13 +271,6 @@ const main = async () => {
   }
 }
 
-// Hash changes when reusing a tab
-window.addEventListener('hashchange', () => {
-  if (window.location.hash.startsWith(hash_prefix_new)) {
-    main()
-  }
-})
-
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', main)
 } else {

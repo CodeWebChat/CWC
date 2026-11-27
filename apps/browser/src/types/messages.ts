@@ -13,11 +13,4 @@ type ApplyResponseMessage = {
   }
 }
 
-type FinishedRespondingMessage = {
-  action: 'finished-responding'
-}
-
-export type Message =
-  | ChatInitializedMessage
-  | ApplyResponseMessage
-  | FinishedRespondingMessage
+export type Message = ChatInitializedMessage | ApplyResponseMessage

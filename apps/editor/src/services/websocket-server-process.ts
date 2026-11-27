@@ -214,7 +214,10 @@ class WebSocketServer {
       return
     }
 
-    if (msg_data.action === 'initialize-chat') {
+    if (
+      msg_data.action === 'initialize-chat' ||
+      msg_data.action === 'code-review-accepted'
+    ) {
       if (
         this.browser_client &&
         this.browser_client.ws.readyState === WebSocket.OPEN

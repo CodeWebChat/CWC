@@ -67,6 +67,7 @@ export type ApplyResponseArgs = {
   web_configuration_details?: WebConfigurationDetails
   is_from_agentic_cli?: boolean
   edit_format?: string
+  tab_id?: number
 }
 
 export const process_response = async (params: {
@@ -110,7 +111,8 @@ export const process_response = async (params: {
             ...state,
             ai_content: file_in_code_review?.ai_content,
             proposed_content:
-              file_in_code_review?.proposed_content ?? file_in_code_review?.content,
+              file_in_code_review?.proposed_content ??
+              file_in_code_review?.content,
             current_content: file_in_code_review?.content,
             is_checked: file_in_code_review?.is_checked,
             apply_failed: file_in_code_review?.apply_failed,

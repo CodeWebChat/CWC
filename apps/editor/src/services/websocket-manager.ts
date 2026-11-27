@@ -45,6 +45,17 @@ export class WebSocketManager {
     }
   }
 
+  send_code_review_accepted(tab_id: number) {
+    if (this.client?.readyState === WebSocket.WebSocket.OPEN) {
+      this.client.send(
+        JSON.stringify({
+          action: 'code-review-accepted',
+          tab_id
+        })
+      )
+    }
+  }
+
   constructor(extension_context: vscode.ExtensionContext) {
     this.extension_context = extension_context
     this._initialize_server()
@@ -276,7 +287,8 @@ export class WebSocketManager {
           const apply_msg = message as ApplyResponseMessage
           vscode.commands.executeCommand('codeWebChat.applyFromClipboard', {
             raw_instructions: apply_msg.raw_instructions,
-            web_configuration_details: apply_msg.web_configuration_details
+            web_configuration_details: apply_msg.web_configuration_details,
+            tab_id: apply_msg.tab_id
           })
         }
       } catch (error) {

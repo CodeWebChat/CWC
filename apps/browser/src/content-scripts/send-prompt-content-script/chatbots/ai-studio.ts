@@ -1,4 +1,3 @@
-import { Message } from '@/types/messages'
 import { Chatbot } from '../types/chatbot'
 import { CHATBOTS } from '@shared/constants/chatbots'
 import { show_response_ready_notification } from '../utils/show-response-ready-notification'
@@ -255,9 +254,6 @@ export const ai_studio: Chatbot = {
           if (has_thumb_up) {
             const has_been_processed = footer.hasAttribute('data-cwc-processed')
             if (!has_been_processed) {
-              chrome.runtime.sendMessage<Message>({
-                action: 'finished-responding'
-              })
               show_response_ready_notification({ chatbot_name: 'AI Studio' })
               footer.setAttribute('data-cwc-processed', 'true')
             }

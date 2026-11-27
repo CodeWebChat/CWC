@@ -13,6 +13,7 @@ export const apply_from_clipboard_command = (params: {
     async (args?: {
       raw_instructions?: string
       web_configuration_details?: any
+      tab_id?: number
     }) => {
       const clipboard_text = await vscode.env.clipboard.readText()
       if (!clipboard_text) {
@@ -47,7 +48,8 @@ export const apply_from_clipboard_command = (params: {
       apply_response({
         response: clipboard_text,
         raw_instructions: args?.raw_instructions,
-        web_configuration_details: args?.web_configuration_details
+        web_configuration_details: args?.web_configuration_details,
+        tab_id: args?.tab_id
       })
     }
   )

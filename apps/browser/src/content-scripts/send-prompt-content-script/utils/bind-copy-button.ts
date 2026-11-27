@@ -98,23 +98,16 @@ export const observe_for_responses = (params: {
     active_observer.disconnect()
   }
 
-  let has_sent_finished_responding = true
+  let has_notified_response_ready = true
 
   const observer = new MutationObserver(() => {
     if (params.is_generating()) {
-      has_sent_finished_responding = false
+      has_notified_response_ready = false
       return
     }
 
-    if (!has_sent_finished_responding) {
-      chrome.runtime
-        .sendMessage<Message>({
-          action: 'finished-responding'
-        })
-        .catch((e) =>
-          console.debug('Failed to send finished-responding message', e)
-        )
-      has_sent_finished_responding = true
+    if (!has_notified_response_ready) {
+      has_notified_response_ready = true
       show_response_ready_notification({ chatbot_name: params.chatbot_name })
     }
 

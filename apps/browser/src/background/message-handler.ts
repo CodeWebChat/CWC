@@ -1,7 +1,8 @@
 import {
   WebSocketMessage,
   InitializeChatMessage,
-  ApplyResponseMessage
+  ApplyResponseMessage,
+  CodeReviewAcceptedMessage
 } from '@shared/types/websocket-message'
 import { send_message_to_server } from './websocket'
 import { is_message } from '@/utils/is-message'
@@ -16,18 +17,36 @@ const chat_queue: ChatQueueItem[] = []
 let is_processing = false
 let is_waiting_for_focus = false
 let is_first_item_in_queue = true
-let last_opened_tab_id: number | undefined
-let last_opened_tab_client_id: string | undefined
-let last_opened_tab_chatbot: string | undefined
-let last_opened_tab_injected_apply_button = false
-let is_finished_responding = false
-let is_response_copied = false
 
 const CHAT_INITIALIZATION_TIMEOUT = 5000
 
 export const handle_messages = (message: WebSocketMessage) => {
   if (message.action === 'initialize-chat') {
     handle_initialize_chat_message(message as InitializeChatMessage)
+  } else if (message.action === 'code-review-accepted') {
+    handle_code_review_accepted_message(message as CodeReviewAcceptedMessage)
+  }
+}
+
+const handle_code_review_accepted_message = async (
+  message: CodeReviewAcceptedMessage
+) => {
+  try {
+    const [active_tab] = await chrome.tabs.query({
+      active: true,
+      lastFocusedWindow: true
+    })
+    if (active_tab?.id !== undefined && active_tab.id === message.tab_id) {
+      const window_tabs = await chrome.tabs.query({
+        windowId: active_tab.windowId
+      })
+      if (window_tabs.length === 1) {
+        await chrome.tabs.create({ windowId: active_tab.windowId })
+      }
+      await chrome.tabs.remove(active_tab.id)
+    }
+  } catch (error) {
+    console.error('Error closing tab after code review accepted:', error)
   }
 }
 
@@ -91,48 +110,10 @@ const process_next_chat = async () => {
 
   const target_url = `${current_chat_message.url}#cwc-${batch_id}`
 
-  let tab_reused = false
-
-  if (
-    last_opened_tab_id !== undefined &&
-    last_opened_tab_client_id === current_chat_message.client_id &&
-    last_opened_tab_chatbot === current_chat_message.chatbot &&
-    is_finished_responding &&
-    is_response_copied &&
-    last_opened_tab_injected_apply_button &&
-    current_chat_message.inject_apply_response_button
-  ) {
-    try {
-      const tab = await chrome.tabs.get(last_opened_tab_id)
-      if (tab.active) {
-        await chrome.tabs.update(last_opened_tab_id, {
-          url: target_url,
-          active: true
-        })
-        tab_reused = true
-      }
-    } catch {
-      last_opened_tab_id = undefined
-      last_opened_tab_client_id = undefined
-      last_opened_tab_chatbot = undefined
-      is_response_copied = false
-    }
-  }
-
-  if (!tab_reused) {
-    const new_tab = await chrome.tabs.create({
-      active: true,
-      url: target_url
-    })
-    last_opened_tab_id = new_tab.id
-    last_opened_tab_client_id = current_chat_message.client_id
-    last_opened_tab_chatbot = current_chat_message.chatbot
-  }
-
-  last_opened_tab_injected_apply_button =
-    current_chat_message.inject_apply_response_button ?? false
-  is_finished_responding = false
-  is_response_copied = false
+  await chrome.tabs.create({
+    active: true,
+    url: target_url
+  })
 
   current_queue_item.timeout_id = setTimeout(() => {
     console.warn(
@@ -213,28 +194,20 @@ export const setup_message_listeners = () => {
     }
   })
 
-  chrome.runtime.onMessage.addListener(
-    (message: any, sender: any, _: any): any => {
-      if (is_message(message)) {
-        if (message.action === 'chat-initialized') {
-          handle_chat_initialized()
-        } else if (message.action === 'apply-response') {
-          if (sender.tab?.id && sender.tab.id === last_opened_tab_id) {
-            is_response_copied = true
-          }
-          send_message_to_server({
-            action: 'apply-response',
-            client_id: message.client_id,
-            raw_instructions: message.raw_instructions,
-            web_configuration_details: message.web_configuration_details
-          } as ApplyResponseMessage)
-        } else if (message.action === 'finished-responding') {
-          if (sender.tab?.id && sender.tab.id === last_opened_tab_id) {
-            is_finished_responding = true
-          }
-        }
+  chrome.runtime.onMessage.addListener((message: any, sender): any => {
+    if (is_message(message)) {
+      if (message.action === 'chat-initialized') {
+        handle_chat_initialized()
+      } else if (message.action === 'apply-response') {
+        send_message_to_server({
+          action: 'apply-response',
+          client_id: message.client_id,
+          raw_instructions: message.raw_instructions,
+          web_configuration_details: message.web_configuration_details,
+          tab_id: sender.tab?.id
+        } as ApplyResponseMessage)
       }
-      return false
     }
-  )
+    return false
+  })
 }
