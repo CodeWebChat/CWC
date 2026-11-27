@@ -8,7 +8,7 @@ export const build_user_content = (params: {
   provider: Provider
   part1: string
   part2: string
-  disable_cache?: boolean
+  accuracy_boost?: boolean
 }): any => {
   const is_anthropic = is_anthropic_base_url(params.provider.base_url)
   const is_openai = is_openai_base_url(params.provider.base_url)
@@ -51,17 +51,15 @@ export const build_user_content = (params: {
   if (is_anthropic || is_openai) {
     const cache_config: any = {}
 
-    if (!params.disable_cache) {
-      if (is_anthropic) {
-        cache_config.cache_control = { type: 'ephemeral' }
-        if (params.provider.extended_cache) {
-          cache_config.cache_control.ttl = '1h'
-        }
-      } else if (is_openai) {
-        cache_config.prompt_cache_breakpoint = { mode: 'explicit' }
-        if (params.provider.extended_cache) {
-          cache_config.prompt_cache_breakpoint.ttl = '12h'
-        }
+    if (is_anthropic) {
+      cache_config.cache_control = { type: 'ephemeral' }
+      if (params.provider.extended_cache && !params.accuracy_boost) {
+        cache_config.cache_control.ttl = '1h'
+      }
+    } else if (is_openai) {
+      cache_config.prompt_cache_breakpoint = { mode: 'explicit' }
+      if (params.provider.extended_cache && !params.accuracy_boost) {
+        cache_config.prompt_cache_breakpoint.ttl = '12h'
       }
     }
 

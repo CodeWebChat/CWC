@@ -127,7 +127,7 @@ export const handle_make_api_call = async (
         provider,
         part1,
         part2,
-        disable_cache: !!accuracy_boost
+        accuracy_boost: !!accuracy_boost
       })
     }
 
@@ -146,9 +146,9 @@ export const handle_make_api_call = async (
     }
 
     const is_openai = is_openai_base_url(provider.base_url)
-    if (is_openai && !accuracy_boost && has_part1) {
+    if (is_openai && has_part1) {
       body.prompt_cache_options = { mode: 'explicit' }
-      if (provider.extended_cache) {
+      if (provider.extended_cache && !accuracy_boost) {
         body.prompt_cache_options.ttl = '12h'
       }
     }
