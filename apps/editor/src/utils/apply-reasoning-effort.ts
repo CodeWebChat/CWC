@@ -1,15 +1,16 @@
 import { ApiConfiguration, Provider } from '@/services/providers-manager'
-import { PROVIDERS } from '@/constants/providers'
+import {
+  is_anthropic_base_url,
+  is_google_base_url,
+  is_openai_base_url
+} from '@/utils/provider-base-url'
 
 export const apply_reasoning_effort = (params: {
   body: { [key: string]: any }
   provider: Provider
   reasoning_effort?: ApiConfiguration['reasoning_effort']
 }) => {
-  if (
-    params.provider.base_url ==
-    'https://generativelanguage.googleapis.com/v1beta/openai/v1'
-  ) {
+  if (is_google_base_url(params.provider.base_url)) {
     if (params.reasoning_effort) {
       params.body.extra_body = {
         google: {
@@ -20,14 +21,14 @@ export const apply_reasoning_effort = (params: {
         }
       }
     }
-  } else if (params.provider.base_url === PROVIDERS.Anthropic.base_url) {
+  } else if (is_anthropic_base_url(params.provider.base_url)) {
     if (params.reasoning_effort === 'none') {
       params.body.thinking = { type: 'disabled' }
     } else if (params.reasoning_effort) {
       params.body.thinking = { type: 'adaptive', display: 'summarized' }
       params.body.output_config = { effort: params.reasoning_effort }
     }
-  } else if (params.provider.base_url === PROVIDERS.OpenAI.base_url) {
+  } else if (is_openai_base_url(params.provider.base_url)) {
     if (params.reasoning_effort) {
       params.body.reasoning =
         params.reasoning_effort === 'none'

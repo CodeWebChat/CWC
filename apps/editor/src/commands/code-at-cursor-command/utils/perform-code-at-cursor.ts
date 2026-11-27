@@ -30,7 +30,7 @@ import {
 } from '@/constants/state-keys'
 import { show_incomplete_setup_warning } from '@/utils/show-missing-configuration-notification'
 import { ConfigWebConfigurationFormat } from '@/utils/web-configuration-format-converters'
-import { PROVIDERS } from '../../../constants/providers'
+import { is_openai_base_url } from '../../../utils/provider-base-url'
 
 export const perform_code_at_cursor = async (params: {
   workspace_provider: WorkspaceProvider
@@ -546,8 +546,8 @@ export const perform_code_at_cursor = async (params: {
       model: code_at_cursor_api_configuration.model
     }
 
-    const is_openai = provider.base_url === PROVIDERS.OpenAI.base_url
-    if (is_openai) {
+    const is_openai = is_openai_base_url(provider.base_url)
+    if (is_openai && part1.trim()) {
       body.prompt_cache_options = { mode: 'explicit' }
       if (provider.extended_cache) {
         body.prompt_cache_options.ttl = '12h'

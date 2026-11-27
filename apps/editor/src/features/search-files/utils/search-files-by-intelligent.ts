@@ -10,7 +10,7 @@ import { Logger } from '@shared/utils/logger'
 import { FileData } from './analyze-files'
 import { Provider } from '@/services/providers-manager'
 import { t } from '@/i18n'
-import { PROVIDERS } from '@/constants/providers'
+import { is_openai_base_url } from '@/utils/provider-base-url'
 import { shrink_file } from './shrink-file'
 import { get_markdown_backticks } from '@/utils/get-markdown-backticks'
 
@@ -50,7 +50,7 @@ export const search_files_by_intelligent = async (
     model: selected_config.model
   }
 
-  const is_openai = provider.base_url === PROVIDERS.OpenAI.base_url
+  const is_openai = is_openai_base_url(provider.base_url)
   if (is_openai) {
     body.prompt_cache_options = { mode: 'explicit' }
   }

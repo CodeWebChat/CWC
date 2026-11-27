@@ -7,6 +7,10 @@ import { Scrollable as UiScrollable } from '@ui/components/editor/common/Scrolla
 import { Fieldset as UiFieldset } from '@ui/components/editor/prompt-view/Fieldset'
 import { Toggler as UiToggler } from '@ui/components/editor/common/Toggler'
 import { use_translation } from '../../i18n/use-translation'
+import {
+  is_anthropic_base_url,
+  is_openai_base_url
+} from '@/utils/provider-base-url'
 
 export type ProviderDraft = {
   name: string
@@ -102,8 +106,8 @@ export const EditProviderForm: React.FC<Props> = (props) => {
             />
           </UiField>
 
-          {(base_url.includes('api.anthropic.com') ||
-            base_url.includes('api.openai.com')) && (
+          {(is_anthropic_base_url(base_url) ||
+            is_openai_base_url(base_url)) && (
             <UiField
               label={t('edit-provider-form.extended-cache.title')}
               info={
@@ -111,7 +115,7 @@ export const EditProviderForm: React.FC<Props> = (props) => {
                   {t('edit-provider-form.extended-cache.description')}{' '}
                   <a
                     href={
-                      base_url.includes('api.anthropic.com')
+                      is_anthropic_base_url(base_url)
                         ? 'https://platform.claude.com/docs/en/build-with-claude/prompt-caching#ttl-support'
                         : 'https://developers.openai.com/api/docs/guides/prompt-caching#cache-lifetime'
                     }

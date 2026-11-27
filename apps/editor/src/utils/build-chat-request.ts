@@ -1,4 +1,10 @@
-import { PROVIDERS } from '@/constants/providers'
+import {
+  is_anthropic_base_url,
+  is_openai_base_url,
+  strip_trailing_slashes
+} from '@/utils/provider-base-url'
+
+export { is_anthropic_base_url, is_openai_base_url }
 
 const ANTHROPIC_MAX_TOKENS = 64000
 
@@ -6,12 +12,6 @@ export type ChatApiFormat =
   | 'chat-completions'
   | 'anthropic-messages'
   | 'openai-responses'
-
-export const is_anthropic_base_url = (base_url: string): boolean =>
-  base_url === PROVIDERS.Anthropic.base_url
-
-export const is_openai_base_url = (base_url: string): boolean =>
-  base_url === PROVIDERS.OpenAI.base_url
 
 const get_text_from_content = (content: any): string => {
   if (typeof content === 'string') return content
@@ -70,7 +70,7 @@ const build_openai_responses_request = (params: {
   }
 
   return {
-    url: `${params.base_url}/responses`,
+    url: `${strip_trailing_slashes(params.base_url)}/responses`,
     body: {
       store: false,
       ...rest,
@@ -87,14 +87,16 @@ export const build_chat_request = (params: {
   base_url: string
   body: { [key: string]: any }
 }): { url: string; body: { [key: string]: any }; format: ChatApiFormat } => {
-  if (is_openai_base_url(params.base_url)) {
+  const base_url = strip_trailing_slashes(params.base_url)
+
+  if (is_openai_base_url(base_url)) {
     if (!has_audio_input(params.body.messages ?? [])) {
       return build_openai_responses_request(params)
     }
 
     const { reasoning, ...rest } = params.body
     return {
-      url: `${params.base_url}/chat/completions`,
+      url: `${base_url}/chat/completions`,
       body: reasoning?.effort
         ? { ...rest, reasoning_effort: reasoning.effort }
         : rest,
@@ -102,9 +104,9 @@ export const build_chat_request = (params: {
     }
   }
 
-  if (!is_anthropic_base_url(params.base_url)) {
+  if (!is_anthropic_base_url(base_url)) {
     return {
-      url: `${params.base_url}/chat/completions`,
+      url: `${base_url}/chat/completions`,
       body: params.body,
       format: 'chat-completions'
     }
@@ -124,7 +126,7 @@ export const build_chat_request = (params: {
   }
 
   return {
-    url: `${params.base_url}/messages`,
+    url: `${base_url}/messages`,
     body: {
       max_tokens: ANTHROPIC_MAX_TOKENS,
       ...rest,

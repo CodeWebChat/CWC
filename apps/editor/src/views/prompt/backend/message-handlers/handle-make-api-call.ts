@@ -18,7 +18,7 @@ import {
   EDIT_FORMAT_INSTRUCTIONS_TRUNCATED,
   EDIT_FORMAT_INSTRUCTIONS_WHOLE
 } from '@/constants/edit-format-instructions'
-import { PROVIDERS } from '@/constants/providers'
+import { is_openai_base_url } from '@/utils/provider-base-url'
 import { get_api_configuration } from '@/utils/get-api-configuration'
 import { show_incomplete_setup_warning } from '@/utils/show-missing-configuration-notification'
 import { apply_response } from '@/features/apply-response/apply-response'
@@ -95,6 +95,7 @@ export const handle_make_api_call = async (
     let system_instructions = ''
     let user_content = ''
     let completed_tasks: string[] | undefined = undefined
+    let has_part1 = false
 
     if (prompt_type === 'edit') {
       edit_format = prompt_view_provider.edit_format
@@ -121,10 +122,12 @@ export const handle_make_api_call = async (
         user_instructions: processed_instructions,
         accuracy_boost
       })
+      has_part1 = !!part1.trim()
       user_content = build_user_content({
         provider,
         part1,
-        part2
+        part2,
+        disable_cache: !!accuracy_boost
       })
     }
 
@@ -142,8 +145,8 @@ export const handle_make_api_call = async (
       model: api_configuration.model
     }
 
-    const is_openai = provider.base_url === PROVIDERS.OpenAI.base_url
-    if (is_openai) {
+    const is_openai = is_openai_base_url(provider.base_url)
+    if (is_openai && !accuracy_boost && has_part1) {
       body.prompt_cache_options = { mode: 'explicit' }
       if (provider.extended_cache) {
         body.prompt_cache_options.ttl = '12h'
