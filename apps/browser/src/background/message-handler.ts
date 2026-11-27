@@ -21,6 +21,7 @@ let last_opened_tab_client_id: string | undefined
 let last_opened_tab_chatbot: string | undefined
 let last_opened_tab_injected_apply_button = false
 let is_finished_responding = false
+let is_response_copied = false
 
 const CHAT_INITIALIZATION_TIMEOUT = 5000
 
@@ -97,6 +98,7 @@ const process_next_chat = async () => {
     last_opened_tab_client_id === current_chat_message.client_id &&
     last_opened_tab_chatbot === current_chat_message.chatbot &&
     is_finished_responding &&
+    is_response_copied &&
     last_opened_tab_injected_apply_button &&
     current_chat_message.inject_apply_response_button
   ) {
@@ -113,6 +115,7 @@ const process_next_chat = async () => {
       last_opened_tab_id = undefined
       last_opened_tab_client_id = undefined
       last_opened_tab_chatbot = undefined
+      is_response_copied = false
     }
   }
 
@@ -129,6 +132,7 @@ const process_next_chat = async () => {
   last_opened_tab_injected_apply_button =
     current_chat_message.inject_apply_response_button ?? false
   is_finished_responding = false
+  is_response_copied = false
 
   current_queue_item.timeout_id = setTimeout(() => {
     console.warn(
@@ -215,6 +219,9 @@ export const setup_message_listeners = () => {
         if (message.action === 'chat-initialized') {
           handle_chat_initialized()
         } else if (message.action === 'apply-response') {
+          if (sender.tab?.id && sender.tab.id === last_opened_tab_id) {
+            is_response_copied = true
+          }
           send_message_to_server({
             action: 'apply-response',
             client_id: message.client_id,
