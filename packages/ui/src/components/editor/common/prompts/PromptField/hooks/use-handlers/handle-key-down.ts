@@ -243,29 +243,30 @@ export const create_handle_key_down = (
       return
     }
 
-      const selection = window.getSelection()
-      if (
-        selection &&
-        selection.rangeCount > 0 &&
-        !selection.isCollapsed &&
-        params.input_ref.current?.contains(selection.getRangeAt(0).startContainer)
-      ) {
-        e.preventDefault()
-        const input_element = params.input_ref.current!
-        const bounds = get_raw_selection_bounds({
-          input_element,
-          raw_text: props.value,
-          context_file_paths: props.selected_files ?? []
-        })
-        if (bounds) {
-          const new_value =
-            props.value.substring(0, bounds.raw_start) + props.value.substring(bounds.raw_end)
+    const selection = window.getSelection()
+    if (
+      selection &&
+      selection.rangeCount > 0 &&
+      !selection.isCollapsed &&
+      params.input_ref.current?.contains(selection.getRangeAt(0).startContainer)
+    ) {
+      e.preventDefault()
+      const input_element = params.input_ref.current!
+      const bounds = get_raw_selection_bounds({
+        input_element,
+        raw_text: props.value,
+        context_file_paths: props.selected_files ?? []
+      })
+      if (bounds) {
+        const new_value =
+          props.value.substring(0, bounds.raw_start) +
+          props.value.substring(bounds.raw_end)
 
-          refs.has_modified_current_entry_ref.current = true
-          utils.update_value(new_value, bounds.raw_start)
-        }
-        return
+        refs.has_modified_current_entry_ref.current = true
+        utils.update_value(new_value, bounds.raw_start)
       }
+      return
+    }
 
     if (selection?.isCollapsed && refs.raw_caret_pos_ref.current === 0) {
       e.preventDefault()
@@ -293,26 +294,6 @@ export const create_handle_key_down = (
         refs.has_modified_current_entry_ref.current = true
         utils.update_value(new_value, symbol_at_caret.start)
         return
-      }
-
-      const text_before = props.value.substring(0, raw_pos)
-      const backticks_count = (text_before.match(/`/g) || []).length
-
-      if (
-        backticks_count > 0 &&
-        backticks_count % 2 === 0 &&
-        text_before.endsWith('`')
-      ) {
-        const start_pos = text_before.lastIndexOf('`', raw_pos - 2)
-        if (start_pos !== -1) {
-          e.preventDefault()
-          const new_value =
-            props.value.substring(0, start_pos) + props.value.substring(raw_pos)
-
-          refs.has_modified_current_entry_ref.current = true
-          utils.update_value(new_value, start_pos)
-          return
-        }
       }
     }
 
