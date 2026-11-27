@@ -186,7 +186,7 @@ export const file_blocks_parser = (params: {
       }
 
       const file_header_match = trimmed_line.match(
-        /^###\s+(?:(?:New|Created|Updated)\s+)?file:\s*(?:`([^`]+)`|(\S+))/i
+        /^###\s+(?:New|Created|Updated)\s+file:\s*(?:`([^`]+)`|(\S+))/i
       )
       const extracted_filename =
         file_header_match && (file_header_match[1] || file_header_match[2])

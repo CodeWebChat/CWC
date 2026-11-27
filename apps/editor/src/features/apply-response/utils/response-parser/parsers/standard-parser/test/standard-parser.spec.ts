@@ -160,24 +160,9 @@ describe('standard-parser', () => {
       })
     })
 
-    it('parses File heading', () => {
-      const text =
-        '### File: `src/calculator.py`\n\n```python\ndef add(a, b):\n  return a + b\n```'
-      const result = parse_response({
-        response: text,
-        is_single_root_folder_workspace: true
-      })
-
-      expect(result).toHaveLength(1)
-      expect(result[0]).toMatchObject({
-        type: 'file',
-        file_path: 'src/calculator.py',
-        content: 'def add(a, b):\n  return a + b'
-      })
-    })
-
     it('does not treat non-standard file path formats as file headings', () => {
       const cases = [
+        '### File: `src/hello-world.ts`\n\n```ts\nconsole.log(1)\n```',
         '### `src/hello-world.ts`\n\n```ts\nconsole.log(1)\n```',
         '**src/hello-world.ts**\n\n```ts\nconsole.log(1)\n```',
         'src/hello-world.ts:\n```ts\nconsole.log(1)\n```',
