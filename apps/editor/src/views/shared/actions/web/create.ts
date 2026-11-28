@@ -124,10 +124,7 @@ export const create = async (params: {
 
   const new_web_configuration: ConfigWebConfigurationFormat = {
     name: new_name,
-    chatbot: selected_chatbot,
-    systemInstructions: CHATBOTS[selected_chatbot].supports_system_instructions
-      ? CHATBOTS[selected_chatbot].default_system_instructions
-      : undefined
+    chatbot: selected_chatbot
   }
 
   return { config: new_web_configuration, insertion_index }

@@ -102,11 +102,7 @@ export const EditWebConfigurationForm: React.FC<Props> = (props) => {
     set_model(undefined)
     set_new_url(undefined)
     set_reasoning_effort(undefined)
-    if (CHATBOTS[new_chatbot].supports_system_instructions) {
-      set_system_instructions(CHATBOTS[new_chatbot].default_system_instructions)
-    } else {
-      set_system_instructions(undefined)
-    }
+    set_system_instructions(undefined)
     set_options([])
   }
 
@@ -290,9 +286,12 @@ export const EditWebConfigurationForm: React.FC<Props> = (props) => {
                 value={system_instructions || ''}
                 on_change={set_system_instructions}
                 min_rows={2}
-                placeholder={t(
-                  'edit-web-configuration-form.system-instructions.placeholder'
-                )}
+                placeholder={
+                  chatbot_config.default_system_instructions ||
+                  t(
+                    'edit-web-configuration-form.system-instructions.placeholder'
+                  )
+                }
               />
             </UiField>
           )}
