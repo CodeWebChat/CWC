@@ -639,16 +639,6 @@
           "group": "navigation@3"
         },
         {
-          "command": "codeWebChat.restoreContext",
-          "when": "view == codeWebChatViewSelectedFiles",
-          "group": "2_more@1"
-        },
-        {
-          "command": "codeWebChat.saveContext",
-          "when": "view == codeWebChatViewSelectedFiles",
-          "group": "2_more@2"
-        },
-        {
           "command": "codeWebChat.expandContextFolders",
           "when": "view == codeWebChatViewSelectedFiles",
           "group": "navigation@6"
@@ -707,6 +697,16 @@
           "command": "codeWebChat.searchFilesWorkspaceAction",
           "when": "view == codeWebChatViewWorkspace",
           "group": "navigation@2"
+        },
+        {
+          "command": "codeWebChat.restoreContext",
+          "when": "view == codeWebChatViewWorkspace",
+          "group": "1_more@1"
+        },
+        {
+          "command": "codeWebChat.saveContext",
+          "when": "view == codeWebChatViewWorkspace",
+          "group": "1_more@2"
         },
         {
           "command": "codeWebChat.selectFile",
