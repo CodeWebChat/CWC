@@ -56,8 +56,6 @@ export const TemplatesForm: React.FC<Props> = (props) => {
         item_text: t('general.prompt.templates.item'),
         items_text: t('general.prompt.templates.items'),
         items_text_many: t('general.prompt.templates.items-many'),
-        expand: t('common.expand'),
-        collapse: t('common.collapse'),
         add_new: t('actions.add-new')
       }}
     />

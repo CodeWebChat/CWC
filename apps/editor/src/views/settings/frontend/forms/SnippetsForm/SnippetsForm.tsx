@@ -56,8 +56,6 @@ export const SnippetsForm: React.FC<Props> = (props) => {
         item_text: t('general.prompt.snippets.item'),
         items_text: t('general.prompt.snippets.items'),
         items_text_many: t('general.prompt.snippets.items-many'),
-        expand: t('common.expand'),
-        collapse: t('common.collapse'),
         add_new: t('actions.add-new')
       }}
     />

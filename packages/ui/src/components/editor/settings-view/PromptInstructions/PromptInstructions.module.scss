@@ -12,12 +12,6 @@
   border-radius: 10px;
   overflow: hidden;
 
-  &--expanded {
-    .group__header {
-      background-color: var(--cwc-bg-tertiary);
-    }
-  }
-
   &--accent-blue {
     border-color: var(--cwc-blue-foreground);
     .group__header {
@@ -25,9 +19,6 @@
       .group__icon,
       .group__label {
         color: var(--cwc-blue-foreground);
-      }
-      &:hover {
-        background-color: var(--cwc-blue-background);
       }
     }
   }
@@ -40,9 +31,6 @@
       .group__label {
         color: var(--cwc-purple-foreground);
       }
-      &:hover {
-        background-color: var(--cwc-purple-background);
-      }
     }
   }
 
@@ -51,13 +39,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 14px 8px 12px;
-    cursor: pointer;
-    user-select: none;
-
-    &:hover {
-      background-color: var(--cwc-bg-tertiary);
-    }
+    padding: 8px 12px;
+    background-color: var(--cwc-bg-tertiary);
   }
 
   &__title {
